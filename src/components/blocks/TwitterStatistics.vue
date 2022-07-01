@@ -1,6 +1,9 @@
 <template>
   <v-card flat :href="twitterUrl" target="_blank" :loading="loading">
-    <v-card-title>Twitter Statistics</v-card-title>
+    <v-card-title>
+      <twitter-icon size="1x" fill="white" class="mr-2"></twitter-icon>
+      Twitter Statistics
+    </v-card-title>
     <v-card-text>
       <v-row align="center" class="spacer" no-gutters>
         <v-col cols="3">
@@ -23,10 +26,11 @@
 
 <script>
 import axios from "axios";
+import { TwitterIcon } from "vue-simple-icons";
 
 export default {
   components: {
-    //
+    TwitterIcon,
   },
 
   data() {
