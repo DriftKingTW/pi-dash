@@ -1,18 +1,8 @@
 <template>
-  <v-row>
-    <v-col cols="3" class="pa-0">
-      <TwitterStatistics :style="cardHeight1U" class="mx-2 mt-2" />
-    </v-col>
-    <v-col cols="3"> </v-col>
-    <v-col cols="3"> </v-col>
-    <v-col cols="3"> </v-col>
-    <v-col cols="3" class="pa-0">
-      <TwitterStatistics :style="cardHeight1U" class="mx-2 mt-2" />
-    </v-col>
-    <v-col cols="3"> </v-col>
-    <v-col cols="3"> </v-col>
-    <v-col cols="3"> </v-col>
-  </v-row>
+  <div class="grid-container">
+    <TwitterStatistics class="twitter-block" />
+    <TwitterStatistics class="test-block" />
+  </div>
 </template>
 
 <script>
@@ -23,8 +13,28 @@ export default {
   name: "HomeView",
   components: { TwitterStatistics },
 
-  computed: {
-    cardHeight1U: () => "height: 133px",
-  },
+  computed: {},
 };
 </script>
+
+<style scoped>
+.grid-container {
+  display: grid;
+  height: 290px;
+  padding: 0.6rem;
+  gap: 0.6rem;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 2;
+  grid-template-areas:
+    ". twitter . ."
+    ". test . .";
+}
+
+.twitter-block {
+  grid-area: twitter;
+}
+
+.test-block {
+  grid-area: test;
+}
+</style>
