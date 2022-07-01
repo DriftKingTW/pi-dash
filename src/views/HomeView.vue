@@ -1,17 +1,18 @@
 <template>
   <div class="grid-container">
+    <ClockBlock class="clock-block" />
     <TwitterStatistics class="twitter-block" />
-    <TwitterStatistics class="test-block" />
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
 import TwitterStatistics from "@/components/blocks/TwitterStatistics.vue";
+import ClockBlock from "@/components/blocks/ClockBlock.vue";
 
 export default {
   name: "HomeView",
-  components: { TwitterStatistics },
+  components: { TwitterStatistics, ClockBlock },
 
   computed: {},
 };
@@ -26,15 +27,15 @@ export default {
   grid-template-columns: 1fr 1fr 1fr 1fr;
   grid-template-rows: 2;
   grid-template-areas:
-    ". twitter . ."
-    ". test . .";
+    "clock twitter . ."
+    "clock twitter . .";
 }
 
 .twitter-block {
   grid-area: twitter;
 }
 
-.test-block {
-  grid-area: test;
+.clock-block {
+  grid-area: clock;
 }
 </style>
