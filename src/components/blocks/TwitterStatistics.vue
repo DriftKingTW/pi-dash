@@ -1,18 +1,14 @@
 <template>
-  <v-app>
-    <AppBar />
-    <v-main>
-      <router-view />
-    </v-main>
-  </v-app>
+  <v-card flat>
+    <v-card-title>Statistics</v-card-title>
+    <v-card-text> Test </v-card-text>
+  </v-card>
 </template>
 
 <script>
-import AppBar from "@/components/AppBar.vue";
-
 export default {
   components: {
-    AppBar,
+    //
   },
 
   data() {
