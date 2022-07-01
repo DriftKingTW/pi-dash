@@ -13,7 +13,7 @@
     </nav>
 
     <v-main>
-      <router-view :key="routerViewKey" />
+      <router-view />
     </v-main>
   </v-app>
 </template>
