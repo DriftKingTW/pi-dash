@@ -13,6 +13,11 @@
       </v-toolbar-title>
     </div>
     <v-spacer></v-spacer>
+    <v-divider vertical class="mx-1"></v-divider>
+    <v-btn text>
+      <v-icon small left>mdi-clock</v-icon>
+      {{ now }}
+    </v-btn>
   </v-app-bar>
 </template>
 
@@ -26,17 +31,25 @@ export default {
 
   data() {
     return {
-      //
+      now: "",
     };
   },
 
   mounted() {
     this.initialize();
+    setInterval(() => {
+      this.updateTime();
+    }, 1000);
   },
 
   methods: {
     initialize() {
       //
+    },
+
+    updateTime() {
+      const date = new Date();
+      this.now = date.toLocaleString();
     },
   },
 
