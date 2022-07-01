@@ -1,14 +1,14 @@
 <template>
-  <v-app-bar app color="primary" dark dense flat>
+  <v-app-bar app color="primary" dark height="30px" flat>
     <div class="d-flex align-center">
+      <v-app-bar-nav-icon>
+        <raspberry-pi-icon
+          size="1.2x"
+          fill="white"
+          class="mr-2"
+        ></raspberry-pi-icon>
+      </v-app-bar-nav-icon>
       <v-toolbar-title>
-        <v-app-bar-nav-icon>
-          <raspberry-pi-icon
-            size="1.5x"
-            fill="white"
-            class="mr-2"
-          ></raspberry-pi-icon>
-        </v-app-bar-nav-icon>
         <strong>Pi Dash</strong>
       </v-toolbar-title>
     </div>
