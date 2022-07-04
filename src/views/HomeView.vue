@@ -24,11 +24,11 @@ export default {
   height: 290px;
   padding: 0.6rem;
   gap: 0.6rem;
-  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-columns: 0.8fr 1.2fr 1fr;
   grid-template-rows: 2;
   grid-template-areas:
-    "clock twitter . ."
-    "clock twitter . .";
+    "twitter . clock"
+    ". . clock";
 }
 
 .twitter-block {

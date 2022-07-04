@@ -1,27 +1,38 @@
 <template>
   <v-card>
-    <v-card-title v-if="now">
-      <v-spacer></v-spacer>
-      <h1>{{ `${now.hour}:${now.minute}:${now.second}` }}</h1>
-      <small class="ml-2">{{ now.ampm }}</small>
-    </v-card-title>
-    <v-card-subtitle class="text-right" v-if="now">
-      <span>
-        {{ `${now.dayName} ${now.day} ${now.monthName} ${now.year}` }}
-      </span>
-    </v-card-subtitle>
-    <v-card-text> </v-card-text>
+    <div class="d-flex ml-2">
+      <v-card>
+        <v-card-text class="pa-0">
+          <Calendar :attributes="attrs" color="blue" is-dark height="100px" />
+        </v-card-text>
+      </v-card>
+      <v-card flat>
+        <v-card-title v-if="now">
+          <v-spacer></v-spacer>
+          <h1>{{ `${now.hour}:${now.minute}:${now.second}` }}</h1>
+          <small class="ml-2">{{ now.ampm }}</small>
+        </v-card-title>
+        <v-card-subtitle class="text-right" v-if="now">
+          <span>
+            {{ `${now.dayName} ${now.day} ${now.monthName} ${now.year}` }}
+          </span>
+        </v-card-subtitle>
+      </v-card>
+    </div>
   </v-card>
 </template>
 
 <script>
+import Calendar from "v-calendar/lib/components/calendar.umd";
+
 export default {
   components: {
-    //
+    Calendar,
   },
 
   data() {
     return {
+      date: null,
       now: {
         year: "",
         month: "",
@@ -33,6 +44,13 @@ export default {
         second: "",
         ampm: "",
       },
+      attrs: [
+        {
+          key: "today",
+          highlight: true,
+          dates: new Date(),
+        },
+      ],
     };
   },
 
@@ -64,6 +82,7 @@ export default {
       ];
       const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
       const date = new Date();
+      this.date = date;
       this.now.year = date.getFullYear();
       this.now.month = date.getMonth();
       this.now.monthName = months[this.now.month];
@@ -84,3 +103,10 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+.vc-is-dark {
+  background-color: #1e1e1e;
+  border-color: #1e1e1e;
+}
+</style>
