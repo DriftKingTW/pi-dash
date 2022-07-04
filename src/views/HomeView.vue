@@ -1,6 +1,6 @@
 <template>
   <div class="grid-container">
-    <ClockBlock class="clock-block" />
+    <CalendarClock class="clock-block" />
     <TwitterStatistics class="twitter-block" />
   </div>
 </template>
@@ -8,11 +8,11 @@
 <script>
 // @ is an alias to /src
 import TwitterStatistics from "@/components/blocks/TwitterStatistics.vue";
-import ClockBlock from "@/components/blocks/ClockBlock.vue";
+import CalendarClock from "@/components/blocks/CalendarClock.vue";
 
 export default {
   name: "HomeView",
-  components: { TwitterStatistics, ClockBlock },
+  components: { TwitterStatistics, CalendarClock },
 
   computed: {},
 };
