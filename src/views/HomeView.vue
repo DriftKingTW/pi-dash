@@ -16,7 +16,7 @@
         </v-tab-item>
       </v-tabs-items>
     </div>
-
+    <ControlCenter class="control-block" />
     <CalendarClock class="clock-block" />
   </div>
 </template>
@@ -26,10 +26,16 @@
 import SocialStatistics from "@/components/blocks/SocialStatistics.vue";
 import FamilyMartTracking from "@/components/blocks/FamilyMartTracking.vue";
 import CalendarClock from "@/components/blocks/CalendarClock.vue";
+import ControlCenter from "@/components/blocks/ControlCenter.vue";
 
 export default {
   name: "HomeView",
-  components: { SocialStatistics, FamilyMartTracking, CalendarClock },
+  components: {
+    SocialStatistics,
+    FamilyMartTracking,
+    CalendarClock,
+    ControlCenter,
+  },
 
   data() {
     return {
@@ -51,12 +57,16 @@ export default {
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 2;
   grid-template-areas:
-    "statistics . clock"
-    "statistics . clock";
+    "statistics control clock"
+    "statistics control clock";
 }
 
 .statistics-block {
   grid-area: statistics;
+}
+
+.control-block {
+  grid-area: control;
 }
 
 .clock-block {
