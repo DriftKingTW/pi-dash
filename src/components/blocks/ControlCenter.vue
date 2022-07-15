@@ -59,7 +59,7 @@ export default {
 
   data() {
     return {
-      hostUrl: "${this.hostUrl}",
+      hostUrl: "localhost:61901",
       loading: true,
       currentPlaying: {
         isPlaying: 0,
