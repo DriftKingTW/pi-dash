@@ -53,6 +53,18 @@
             <v-icon>mdi-volume-off</v-icon>
           </v-btn>
         </v-col>
+
+        <v-col
+          cols="12"
+          class="py-1 px-6 d-flex align-center justify-space-between"
+        >
+          <v-btn v-if="dnd" icon large @click="trigger('DND')">
+            <v-icon>mdi-bell</v-icon>
+          </v-btn>
+          <v-btn v-else icon large @click="trigger('DND')">
+            <v-icon>mdi-bell-off</v-icon>
+          </v-btn>
+        </v-col>
       </v-row>
     </v-card-text>
   </v-card>
@@ -77,6 +89,7 @@ export default {
         elapsedTime: 0,
         duration: 0,
       },
+      dnd: false,
       data: {},
     };
   },
@@ -88,7 +101,7 @@ export default {
   methods: {
     async initialize() {
       setInterval(() => {
-        this.getCurrentPlaying();
+        this.updateStatus();
       }, 500);
     },
 
@@ -100,6 +113,22 @@ export default {
         this.getCurrentPlaying();
       } catch (e) {
         console.log(e);
+      }
+    },
+
+    updateStatus() {
+      this.getCurrentPlaying();
+      this.getDNDStatus();
+    },
+
+    async getDNDStatus() {
+      let res = await axios.get(
+        `http://${this.hostUrl}/get_number_variable/?variableName=SystemDoNotDisturbState`
+      );
+      if (res.data === 1) {
+        this.dnd = true;
+      } else {
+        this.dnd = false;
       }
     },
 
