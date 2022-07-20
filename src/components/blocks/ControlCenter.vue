@@ -8,9 +8,13 @@
       <v-row>
         <v-col cols="12" class="pa-1">
           <v-list-item>
-            <v-list-item-avatar>
-              <!-- <v-img :src="currentPlaying.cover" :alt="''"></v-img> -->
-              <v-icon>mdi-music</v-icon>
+            <v-list-item-avatar tile>
+              <v-img
+                v-if="currentPlaying.cover"
+                :src="currentPlaying.cover"
+                :alt="''"
+              ></v-img>
+              <v-icon v-else>mdi-music</v-icon>
             </v-list-item-avatar>
 
             <v-list-item-content>
@@ -143,10 +147,6 @@ export default {
         );
         this.currentPlaying.isPlaying = res.data;
         res = await axios.get(
-          `http://${this.hostUrl}/get_string_variable/?variableName=BTTNowPlayingInfoTitle`
-        );
-        this.currentPlaying.title = res.data;
-        res = await axios.get(
           `http://${this.hostUrl}/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`
         );
         this.currentPlaying.album = res.data;
@@ -155,11 +155,29 @@ export default {
         );
         this.currentPlaying.artist = res.data;
         res = await axios.get(
-          `http://${this.hostUrl}/get_string_variable/?variableName=BTTNowPlayingInfoArtworkData`
+          `http://${this.hostUrl}/get_string_variable/?variableName=BTTNowPlayingInfoTitle`
         );
-        this.currentPlaying.cover = res.data;
+        this.currentPlaying.title = res.data;
       } catch (e) {
         console.log(e);
+      }
+    },
+
+    async getAlbumArt() {
+      const res = await axios.get(
+        process.env.VUE_APP_MB_API_URL +
+          `/release/?fmt=json&query=${this.currentPlaying.title} AND artist:${this.currentPlaying.artist}&limit=1`
+      );
+      this.currentPlaying.cover =
+        process.env.VUE_APP_COVERART_API_URL +
+        `/release/${res.data.releases[0].id}/front`;
+    },
+  },
+
+  watch: {
+    "currentPlaying.title": function (newVal, oldVal) {
+      if (newVal !== oldVal) {
+        this.getAlbumArt();
       }
     },
   },
