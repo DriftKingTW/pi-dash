@@ -9,7 +9,8 @@
         <v-col cols="12" class="pa-1">
           <v-list-item>
             <v-list-item-avatar>
-              <v-img :src="currentPlaying.cover" :alt="''"></v-img>
+              <!-- <v-img :src="currentPlaying.cover" :alt="''"></v-img> -->
+              <v-icon>mdi-music</v-icon>
             </v-list-item-avatar>
 
             <v-list-item-content>
