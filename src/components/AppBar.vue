@@ -14,10 +14,10 @@
     </div>
     <v-spacer></v-spacer>
     <v-divider vertical class="mx-1"></v-divider>
-    <v-btn text>
+    <!-- <v-btn text>
       <v-icon small left>mdi-clock</v-icon>
       {{ now }}
-    </v-btn>
+    </v-btn> -->
   </v-app-bar>
 </template>
 
