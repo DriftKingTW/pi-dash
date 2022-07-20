@@ -86,7 +86,6 @@ export default {
 
   data() {
     return {
-      hostUrl: "localhost:61901",
       loading: true,
       currentPlaying: {
         isPlaying: 0,
@@ -116,7 +115,8 @@ export default {
     async trigger(triggerName) {
       try {
         await axios.get(
-          `http://${this.hostUrl}/trigger_named/?trigger_name=${triggerName}`
+          process.env.VUE_APP_BTT_API_URL +
+            `/trigger_named/?trigger_name=${triggerName}`
         );
         this.getCurrentPlaying();
       } catch (e) {
@@ -131,7 +131,8 @@ export default {
 
     async getDNDStatus() {
       let res = await axios.get(
-        `http://${this.hostUrl}/get_number_variable/?variableName=SystemDoNotDisturbState`
+        process.env.VUE_APP_BTT_API_URL +
+          `/get_number_variable/?variableName=SystemDoNotDisturbState`
       );
       if (res.data === 1) {
         this.dnd = true;
@@ -143,19 +144,23 @@ export default {
     async getCurrentPlaying() {
       try {
         let res = await axios.get(
-          `http://${this.hostUrl}/get_number_variable/?variableName=BTTCurrentlyPlaying`
+          process.env.VUE_APP_BTT_API_URL +
+            `/get_number_variable/?variableName=BTTCurrentlyPlaying`
         );
         this.currentPlaying.isPlaying = res.data;
         res = await axios.get(
-          `http://${this.hostUrl}/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`
+          process.env.VUE_APP_BTT_API_URL +
+            `/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`
         );
         this.currentPlaying.album = res.data;
         res = await axios.get(
-          `http://${this.hostUrl}/get_string_variable/?variableName=BTTNowPlayingInfoArtist`
+          process.env.VUE_APP_BTT_API_URL +
+            `/get_string_variable/?variableName=BTTNowPlayingInfoArtist`
         );
         this.currentPlaying.artist = res.data;
         res = await axios.get(
-          `http://${this.hostUrl}/get_string_variable/?variableName=BTTNowPlayingInfoTitle`
+          process.env.VUE_APP_BTT_API_URL +
+            `/get_string_variable/?variableName=BTTNowPlayingInfoTitle`
         );
         this.currentPlaying.title = res.data;
       } catch (e) {
