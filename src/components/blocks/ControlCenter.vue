@@ -2,7 +2,7 @@
   <v-card flat :loading="loading">
     <v-card-title>
       <v-icon left>mdi-tune-vertical</v-icon>
-      ControlCenter
+      Control Center
     </v-card-title>
     <v-card-text class="align-center">
       <v-row>
@@ -31,30 +31,30 @@
           cols="12"
           class="py-1 px-6 d-flex align-center justify-space-between"
         >
-          <v-btn icon large @click="trigger('Previous')">
+          <v-btn icon x-large @click="trigger('Previous')">
             <v-icon>mdi-skip-previous</v-icon>
           </v-btn>
           <v-btn
             v-if="!currentPlaying.isPlaying"
             icon
-            large
+            x-large
             @click="trigger('PlayPause')"
           >
             <v-icon>mdi-play</v-icon>
           </v-btn>
-          <v-btn v-else icon large @click="trigger('PlayPause')">
+          <v-btn v-else icon x-large @click="trigger('PlayPause')">
             <v-icon>mdi-pause</v-icon>
           </v-btn>
-          <v-btn icon large @click="trigger('Next')">
+          <v-btn icon x-large @click="trigger('Next')">
             <v-icon>mdi-skip-next</v-icon>
           </v-btn>
-          <v-btn icon large @click="trigger('Mute')">
+          <v-btn icon x-large @click="trigger('Mute')">
             <v-icon>mdi-volume-off</v-icon>
           </v-btn>
-          <v-btn icon large @click="trigger('VolumeDown')">
+          <v-btn icon x-large @click="trigger('VolumeDown')">
             <v-icon>mdi-volume-minus</v-icon>
           </v-btn>
-          <v-btn icon large @click="trigger('VolumeUp')">
+          <v-btn icon x-large @click="trigger('VolumeUp')">
             <v-icon>mdi-volume-plus</v-icon>
           </v-btn>
         </v-col>
@@ -63,16 +63,16 @@
           cols="12"
           class="py-1 px-6 d-flex align-center justify-space-between"
         >
-          <v-btn v-if="dnd" icon large @click="trigger('DND')">
+          <v-btn v-if="dnd" icon x-large @click="trigger('DND')">
             <v-icon>mdi-bell</v-icon>
           </v-btn>
-          <v-btn v-else icon large @click="trigger('DND')">
+          <v-btn v-else icon x-large @click="trigger('DND')">
             <v-icon>mdi-bell-off</v-icon>
           </v-btn>
-          <v-btn icon large @click="trigger('ToggleLyric')">
+          <v-btn icon x-large @click="trigger('ToggleLyric')">
             <v-icon>mdi-subtitles</v-icon>
           </v-btn>
-          <v-btn icon large @click="trigger('ToggleFan')">
+          <v-btn icon x-large @click="trigger('ToggleFan')">
             <v-icon>mdi-fan</v-icon>
           </v-btn>
         </v-col>
