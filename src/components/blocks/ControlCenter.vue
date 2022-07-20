@@ -64,6 +64,9 @@
           <v-btn v-else icon large @click="trigger('DND')">
             <v-icon>mdi-bell-off</v-icon>
           </v-btn>
+          <v-btn icon large @click="trigger('ToggleLyric')">
+            <v-icon>mdi-subtitles</v-icon>
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-text>
