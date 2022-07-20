@@ -44,14 +44,14 @@
           <v-btn icon large @click="trigger('Next')">
             <v-icon>mdi-skip-next</v-icon>
           </v-btn>
-          <v-btn icon large @click="trigger('VolumeUp')">
-            <v-icon>mdi-volume-plus</v-icon>
+          <v-btn icon large @click="trigger('Mute')">
+            <v-icon>mdi-volume-off</v-icon>
           </v-btn>
           <v-btn icon large @click="trigger('VolumeDown')">
             <v-icon>mdi-volume-minus</v-icon>
           </v-btn>
-          <v-btn icon large @click="trigger('Mute')">
-            <v-icon>mdi-volume-off</v-icon>
+          <v-btn icon large @click="trigger('VolumeUp')">
+            <v-icon>mdi-volume-plus</v-icon>
           </v-btn>
         </v-col>
 
