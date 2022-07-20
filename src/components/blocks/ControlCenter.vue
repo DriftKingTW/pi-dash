@@ -12,7 +12,7 @@
               <v-img
                 v-if="currentPlaying.cover.length > 0"
                 :src="currentPlaying.cover"
-                :alt="''"
+                :alt="currentPlaying.album"
               ></v-img>
               <v-icon v-else>mdi-music</v-icon>
             </v-list-item-avatar>
