@@ -96,7 +96,7 @@ export default {
       loading: true,
       currentPlaying: {
         isPlaying: 0,
-        title: "No song playing...",
+        title: "Not Playing...",
         artist: "",
         album: "",
         cover: "",
