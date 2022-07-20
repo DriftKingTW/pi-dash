@@ -10,7 +10,7 @@
           <v-list-item>
             <v-list-item-avatar tile>
               <v-img
-                v-if="currentPlaying.cover"
+                v-if="currentPlaying.cover.length > 0"
                 :src="currentPlaying.cover"
                 :alt="''"
               ></v-img>
@@ -166,17 +166,22 @@ export default {
     async getAlbumArt() {
       const res = await axios.get(
         process.env.VUE_APP_MB_API_URL +
-          `/release/?fmt=json&query=${this.currentPlaying.title} AND artist:${this.currentPlaying.artist}&limit=1`
+          `/release/?fmt=json&limit=1&query=${this.currentPlaying.title} AND artist:${this.currentPlaying.artist}`
       );
-      this.currentPlaying.cover =
+      const coverRes = await axios.get(
         process.env.VUE_APP_COVERART_API_URL +
-        `/release/${res.data.releases[0].id}/front`;
+          `/release/${res.data.releases[0].id}`
+      );
+      if (coverRes.data.images[0].thumbnails.small) {
+        this.currentPlaying.cover = coverRes.data.images[0].thumbnails.small;
+      }
     },
   },
 
   watch: {
     "currentPlaying.title": function (newVal, oldVal) {
       if (newVal !== oldVal) {
+        this.currentPlaying.cover = "";
         this.getAlbumArt();
       }
     },
