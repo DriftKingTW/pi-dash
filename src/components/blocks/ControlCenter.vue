@@ -38,7 +38,7 @@
           >
             <v-icon>mdi-play</v-icon>
           </v-btn>
-          <v-btn v-else icon x-large @click="trigger('PlayPause')">
+          <v-btn v-else icon large @click="trigger('PlayPause')">
             <v-icon>mdi-pause</v-icon>
           </v-btn>
           <v-btn icon large @click="trigger('Next')">
