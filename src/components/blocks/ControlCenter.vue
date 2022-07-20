@@ -6,6 +6,7 @@
     </v-card-title>
     <v-card-text class="align-center">
       <v-row>
+        <!-- Music Info -->
         <v-col cols="12" class="pa-1">
           <v-list-item>
             <v-list-item-avatar tile>
@@ -27,6 +28,8 @@
             </v-list-item-content>
           </v-list-item>
         </v-col>
+
+        <!-- Playback/Volume Controls -->
         <v-col
           cols="12"
           class="py-1 px-6 d-flex align-center justify-space-between"
@@ -59,6 +62,7 @@
           </v-btn>
         </v-col>
 
+        <!-- Other Controls -->
         <v-col
           cols="12"
           class="py-1 px-6 d-flex align-center justify-space-between"
@@ -110,11 +114,13 @@ export default {
 
   methods: {
     async initialize() {
+      // Update status every 0.5 second
       setInterval(() => {
         this.updateStatus();
       }, 500);
     },
 
+    // Trigger BTT actions
     async trigger(triggerName) {
       try {
         await axios.get(
@@ -144,6 +150,7 @@ export default {
       }
     },
 
+    // Get playing info from BTT http server
     async getCurrentPlaying() {
       try {
         let res = await axios.get(
@@ -190,6 +197,7 @@ export default {
   },
 
   watch: {
+    // Get album and music info when playing changes
     "currentPlaying.title": function (newVal, oldVal) {
       if (newVal !== oldVal) {
         this.currentPlaying.cover = "";
@@ -199,11 +207,7 @@ export default {
   },
 
   computed: {
-    progress: function () {
-      return (
-        (this.currentPlaying.elapsedTime / this.currentPlaying.duration) * 100
-      );
-    },
+    //
   },
 };
 </script>
