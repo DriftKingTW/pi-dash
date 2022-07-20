@@ -72,6 +72,9 @@
           <v-btn icon large @click="trigger('ToggleLyric')">
             <v-icon>mdi-subtitles</v-icon>
           </v-btn>
+          <v-btn icon large @click="trigger('ToggleFan')">
+            <v-icon>mdi-fan</v-icon>
+          </v-btn>
         </v-col>
       </v-row>
     </v-card-text>
