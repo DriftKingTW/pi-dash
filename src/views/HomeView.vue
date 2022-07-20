@@ -44,6 +44,25 @@ export default {
     };
   },
 
+  mounted() {
+    this.initialize();
+  },
+
+  methods: {
+    initialize() {
+      // Load tab state from localStorage
+      if (localStorage.getItem("tab")) {
+        this.tab = Number(localStorage.getItem("tab"));
+      }
+    },
+  },
+
+  watch: {
+    tab: function (val) {
+      localStorage.setItem("tab", val);
+    },
+  },
+
   computed: {},
 };
 </script>
