@@ -33,7 +33,7 @@
           <v-btn
             v-if="!currentPlaying.isPlaying"
             icon
-            x-large
+            large
             @click="trigger('PlayPause')"
           >
             <v-icon>mdi-play</v-icon>
