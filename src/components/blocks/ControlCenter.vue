@@ -4,7 +4,7 @@
       <v-icon left>mdi-tune-vertical</v-icon>
       ControlCenter
     </v-card-title>
-    <v-card-text class="d-flex align-center">
+    <v-card-text class="align-center">
       <v-row>
         <v-col cols="12" class="pa-1">
           <v-list-item>
@@ -13,25 +13,32 @@
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title>
+              <v-list-item-title class="d-inline-block text-truncate">
                 {{ currentPlaying.title }}
               </v-list-item-title>
-              <v-list-item-subtitle>
+              <v-list-item-subtitle class="d-inline-block text-truncate">
                 {{ currentPlaying.artist }} - {{ currentPlaying.album }}
               </v-list-item-subtitle>
             </v-list-item-content>
           </v-list-item>
-          <v-progress-linear
-            :value="progress"
-            color="indigo accent-4"
-          ></v-progress-linear>
         </v-col>
-        <v-col cols="12" class="pa-1 d-flex align-center justify-center">
+        <v-col
+          cols="12"
+          class="py-1 px-6 d-flex align-center justify-space-between"
+        >
           <v-btn icon large @click="trigger('Previous')">
             <v-icon>mdi-skip-previous</v-icon>
           </v-btn>
-          <v-btn icon x-large @click="trigger('PlayPause')">
-            <v-icon>mdi-play-pause</v-icon>
+          <v-btn
+            v-if="!currentPlaying.isPlaying"
+            icon
+            x-large
+            @click="trigger('PlayPause')"
+          >
+            <v-icon>mdi-play</v-icon>
+          </v-btn>
+          <v-btn v-else icon x-large @click="trigger('PlayPause')">
+            <v-icon>mdi-pause</v-icon>
           </v-btn>
           <v-btn icon large @click="trigger('Next')">
             <v-icon>mdi-skip-next</v-icon>
@@ -82,9 +89,6 @@ export default {
     async initialize() {
       setInterval(() => {
         this.getCurrentPlaying();
-        if (this.currentPlaying.isPlaying === 1) {
-          this.currentPlaying.elapsedTime += 0.5;
-        }
       }, 500);
     },
 
@@ -121,16 +125,6 @@ export default {
           `http://${this.hostUrl}/get_string_variable/?variableName=BTTNowPlayingInfoArtworkData`
         );
         this.currentPlaying.cover = res.data;
-        res = await axios.get(
-          `http://${this.hostUrl}/get_number_variable/?variableName=BTTNowPlayingInfoDuration`
-        );
-        this.currentPlaying.duration = Number(res.data);
-        if (this.currentPlaying.isPlaying === 0) {
-          res = await axios.get(
-            `http://${this.hostUrl}/get_number_variable/?variableName=BTTNowPlayingInfoElapsedTime`
-          );
-          this.currentPlaying.elapsedTime = Number(res.data);
-        }
       } catch (e) {
         console.log(e);
       }
