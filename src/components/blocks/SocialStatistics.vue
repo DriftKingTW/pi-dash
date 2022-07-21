@@ -1,6 +1,6 @@
 <template>
   <v-card flat :href="twitterUrl" target="_blank" :loading="loading">
-    <v-card-title>
+    <v-card-title class="pb-0">
       <v-icon left>mdi-account-group-outline</v-icon>
       Social Statistics
     </v-card-title>
@@ -8,20 +8,46 @@
       <v-list two-line>
         <v-list-item>
           <v-list-item-avatar>
-            <v-img :src="data.profile_image_url" :alt="data.name"></v-img>
+            <v-img
+              :src="twitterData.profile_image_url"
+              :alt="twitterData.name"
+            ></v-img>
           </v-list-item-avatar>
 
           <v-list-item-content>
             <v-list-item-title>
-              {{ data.name }}
+              {{ twitterData.name }}
             </v-list-item-title>
             <v-list-item-subtitle>
               <!-- <twitter-icon size="1x" fill="white" class="mr-1"> </twitter-icon> -->
               <v-icon left small>mdi-twitter</v-icon>
               {{
-                data.public_metrics ? data.public_metrics.followers_count : ""
+                twitterData.public_metrics
+                  ? twitterData.public_metrics.followers_count
+                  : ""
               }}
               followers
+            </v-list-item-subtitle>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider :inset="true"></v-divider>
+        <v-list-item>
+          <v-list-item-avatar>
+            <v-img
+              :src="facebookData.picture ? facebookData.picture.data.url : ''"
+              :alt="facebookData.name"
+            ></v-img>
+          </v-list-item-avatar>
+
+          <v-list-item-content>
+            <v-list-item-title>
+              {{ facebookData.name }}
+            </v-list-item-title>
+            <v-list-item-subtitle>
+              <!-- <twitter-icon size="1x" fill="white" class="mr-1"> </twitter-icon> -->
+              <v-icon left small>mdi-facebook</v-icon>
+              {{ facebookData.fan_count }}
+              fans
             </v-list-item-subtitle>
           </v-list-item-content>
         </v-list-item>
@@ -43,7 +69,8 @@ export default {
   data() {
     return {
       loading: true,
-      data: {},
+      twitterData: {},
+      facebookData: {},
     };
   },
 
@@ -55,10 +82,14 @@ export default {
     async initialize() {
       this.loading = true;
       try {
-        const res = await axios.get(
+        const resTwitter = await axios.get(
           `${process.env.VUE_APP_API_URL}/twitter/statistics`
         );
-        this.data = { ...res.data };
+        this.twitterData = { ...resTwitter.data };
+        const resFacebook = await axios.get(
+          `${process.env.VUE_APP_API_URL}/facebook/statistics`
+        );
+        this.facebookData = { ...resFacebook.data };
       } catch (e) {
         console.log(e);
       }
@@ -68,7 +99,7 @@ export default {
 
   computed: {
     twitterUrl: function () {
-      return `https://twitter.com/${this.data.username}`;
+      return `https://twitter.com/${this.twitterData.username}`;
     },
   },
 };
