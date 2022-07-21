@@ -36,3 +36,9 @@ export default {
   },
 };
 </script>
+
+<style>
+.v-btn:hover:before {
+  opacity: 0 !important;
+}
+</style>
