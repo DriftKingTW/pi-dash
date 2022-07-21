@@ -1,5 +1,5 @@
 <template>
-  <v-card flat :href="twitterUrl" target="_blank" :loading="loading">
+  <v-card flat :loading="loading">
     <v-card-title class="pb-0">
       <v-icon left>mdi-account-group-outline</v-icon>
       Social Statistics
@@ -98,9 +98,7 @@ export default {
   },
 
   computed: {
-    twitterUrl: function () {
-      return `https://twitter.com/${this.twitterData.username}`;
-    },
+    //
   },
 };
 </script>
