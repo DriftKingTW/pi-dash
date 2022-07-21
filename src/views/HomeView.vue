@@ -73,11 +73,8 @@ export default {
   height: 290px;
   padding: 0.6rem;
   gap: 0.6rem;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 2;
-  grid-template-areas:
-    "statistics control clock"
-    "statistics control clock";
+  grid-template-columns: 33% 33% auto;
+  grid-template-areas: "statistics control clock";
 }
 
 .statistics-block {

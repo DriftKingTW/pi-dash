@@ -1,15 +1,17 @@
 <template>
   <v-card>
     <div class="d-flex ml-2">
-      <v-card>
+      <v-card flat>
         <v-card-text class="pa-0">
           <Calendar :attributes="attrs" color="blue" is-dark height="100px" />
         </v-card-text>
       </v-card>
-      <v-card flat>
+      <v-card flat class="flex-grow-1">
         <v-card-title v-if="now">
           <v-spacer></v-spacer>
-          <h1>{{ `${now.hour}:${now.minute}:${now.second}` }}</h1>
+          <div class="text-h4">
+            {{ `${now.hour}:${now.minute}:${now.second}` }}
+          </div>
           <small class="ml-2">{{ now.ampm }}</small>
         </v-card-title>
         <v-card-subtitle class="text-right" v-if="now">
