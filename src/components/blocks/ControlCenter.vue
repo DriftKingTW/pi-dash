@@ -67,18 +67,37 @@
           cols="12"
           class="py-1 px-6 d-flex align-center justify-space-between"
         >
-          <v-btn v-if="dnd" icon x-large @click="trigger('DND')">
-            <v-icon>mdi-bell</v-icon>
-          </v-btn>
-          <v-btn v-else icon x-large @click="trigger('DND')">
-            <v-icon>mdi-bell-off</v-icon>
-          </v-btn>
-          <v-btn icon x-large @click="trigger('ToggleLyric')">
-            <v-icon>mdi-subtitles</v-icon>
-          </v-btn>
-          <v-btn icon x-large @click="trigger('ToggleFan')">
-            <v-icon>mdi-fan</v-icon>
-          </v-btn>
+          <div class="d-flex flex-column">
+            <v-btn v-if="dnd" icon x-large @click="trigger('DND')">
+              <v-icon>mdi-bell</v-icon>
+            </v-btn>
+
+            <v-btn v-else icon x-large @click="trigger('DND')">
+              <v-icon>mdi-bell-off</v-icon>
+            </v-btn>
+            <div class="text-center caption">DnD</div>
+          </div>
+
+          <div class="d-flex flex-column">
+            <v-btn icon x-large @click="trigger('ToggleLyric')">
+              <v-icon>mdi-subtitles</v-icon>
+            </v-btn>
+            <div class="text-center caption">Lyrics</div>
+          </div>
+
+          <div class="d-flex flex-column">
+            <v-btn icon x-large @click="trigger('ToggleFan')">
+              <v-icon>mdi-fan</v-icon>
+            </v-btn>
+            <div class="text-center caption">Fan</div>
+          </div>
+
+          <div class="d-flex flex-column">
+            <v-btn icon x-large @click="trigger('ToggleScreenBar')">
+              <v-icon>mdi-lightbulb</v-icon>
+            </v-btn>
+            <div class="text-center caption">Screen Bar</div>
+          </div>
         </v-col>
       </v-row>
     </v-card-text>
