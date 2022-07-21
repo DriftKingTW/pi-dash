@@ -2,7 +2,7 @@
   <v-card>
     <div class="d-flex ml-2">
       <v-card flat>
-        <v-card-text class="pa-0">
+        <v-card-text class="pa-0 calendar">
           <Calendar :attributes="attrs" color="blue" is-dark height="100px" />
         </v-card-text>
       </v-card>
@@ -107,8 +107,8 @@ export default {
 </script>
 
 <style scoped>
-.vc-is-dark {
-  background-color: #1e1e1e;
-  border-color: #1e1e1e;
+.calendar >>> .vc-container.vc-is-dark {
+  background-color: #1e1e1e !important;
+  border-color: #1e1e1e !important;
 }
 </style>
