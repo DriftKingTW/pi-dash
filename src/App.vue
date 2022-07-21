@@ -42,8 +42,13 @@ export default {
   .v-btn:hover:before {
     opacity: 0 !important;
   }
+
   .v-tab:hover:before {
     opacity: 0 !important;
+  }
+
+  .vc-arrow:hover {
+    background: none !important;
   }
 }
 </style>
