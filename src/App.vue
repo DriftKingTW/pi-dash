@@ -27,7 +27,7 @@ export default {
 
   methods: {
     initialize() {
-      //
+      document.title = "Pi Dash";
     },
   },
 
