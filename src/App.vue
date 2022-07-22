@@ -38,17 +38,18 @@ export default {
 </script>
 
 <style>
-@media (pointer: coarse) {
-  .v-btn:hover:before {
-    opacity: 0 !important;
-  }
+/* Currently this method not working in Pi's touch screen */
+/* @media (pointer: coarse) {
+} */
+.v-btn:hover:before {
+  opacity: 0 !important;
+}
 
-  .v-tab:hover:before {
-    opacity: 0 !important;
-  }
+.v-tab:hover:before {
+  opacity: 0 !important;
+}
 
-  .vc-arrow:hover {
-    background: none !important;
-  }
+.vc-arrow:hover {
+  background: none !important;
 }
 </style>
