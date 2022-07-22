@@ -13,7 +13,7 @@
       </v-toolbar-title>
     </div>
     <v-spacer></v-spacer>
-    <v-divider vertical class="mx-1"></v-divider>
+    <!-- <v-divider vertical class="mx-1"></v-divider> -->
     <!-- <v-btn text>
       <v-icon small left>mdi-clock</v-icon>
       {{ now }}
