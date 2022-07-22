@@ -38,7 +38,7 @@ export default {
 </script>
 
 <style>
-@media (pointer: coarse) {
+@media (hover: hover) {
   .v-btn:hover:before {
     opacity: 0 !important;
   }
