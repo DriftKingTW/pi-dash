@@ -16,6 +16,7 @@
         dense
         append-outer-icon="mdi-plus"
         color="white"
+        @click="handleInput"
         @click:append-outer="addPackage"
         @keyup.enter="addPackage"
       >
@@ -53,6 +54,7 @@
 
 <script>
 import axios from "axios";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -127,12 +129,21 @@ export default {
         return [];
       }
     },
+
+    handleInput() {
+      if (this.input.length > 0) {
+        this.trackingId = this.input;
+        this.$store.commit("clearInput");
+      }
+    },
   },
 
   computed: {
     familyMartTrackingUrl: function () {
       return `https://ecfme.fme.com.tw/fmedcfpwebv2/index.aspx`;
     },
+
+    ...mapState(["input"]),
   },
 };
 </script>

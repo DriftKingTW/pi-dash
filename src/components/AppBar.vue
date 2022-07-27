@@ -14,10 +14,9 @@
     </div>
     <v-spacer></v-spacer>
     <!-- <v-divider vertical class="mx-1"></v-divider> -->
-    <!-- <v-btn text>
-      <v-icon small left>mdi-clock</v-icon>
-      {{ now }}
-    </v-btn> -->
+    <v-btn icon @click="$store.commit('openKeyboard')">
+      <v-icon small>mdi-keyboard</v-icon>
+    </v-btn>
   </v-app-bar>
 </template>
 
