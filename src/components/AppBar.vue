@@ -27,6 +27,10 @@
       {{ `BTT Server ${statusMessages[connectionStatus]}` }}
     </v-chip>
     <v-divider vertical class="mx-1"></v-divider>
+    <v-btn icon @dblclick="reloadPage">
+      <v-icon small>mdi-refresh</v-icon>
+    </v-btn>
+    <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @click="$store.commit('openKeyboard')">
       <v-icon small>mdi-keyboard</v-icon>
     </v-btn>
@@ -63,6 +67,10 @@ export default {
     updateTime() {
       const date = new Date();
       this.now = date.toLocaleString();
+    },
+
+    reloadPage() {
+      window.location.reload();
     },
   },
 
