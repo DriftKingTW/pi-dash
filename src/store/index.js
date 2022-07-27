@@ -6,6 +6,10 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    snackbar: false,
+    snackbarText: "",
+    snackbarColor: "info",
+    timeout: 3000,
     osk: false,
     input: "",
     connectionStatus: "disconnected",
@@ -18,6 +22,16 @@ export default new Vuex.Store({
     getField,
   },
   mutations: {
+    triggerSnackbar(state, { status, text }) {
+      if (status) state.snackbarColor = status;
+      if (text) state.snackbarText = text;
+      state.snackbar = true;
+    },
+
+    closeSnackbar(state) {
+      state.snackbar = false;
+    },
+
     openKeyboard(state) {
       state.osk = true;
     },

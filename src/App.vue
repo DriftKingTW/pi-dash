@@ -42,6 +42,7 @@
         </v-card>
       </v-dialog>
     </v-main>
+    <SnackBar />
   </v-app>
 </template>
 
@@ -49,11 +50,13 @@
 import AppBar from "@/components/AppBar.vue";
 import SimpleKeyboard from "@/components/SimpleKeyboard.vue";
 import { mapFields } from "vuex-map-fields";
+import SnackBar from "@/components/SnackBar";
 
 export default {
   components: {
     AppBar,
     SimpleKeyboard,
+    SnackBar,
   },
 
   data() {

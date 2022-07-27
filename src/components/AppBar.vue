@@ -27,7 +27,7 @@
       {{ `BTT Server ${statusMessages[connectionStatus]}` }}
     </v-chip>
     <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @dblclick="reloadPage">
+    <v-btn icon @dblclick="reloadPage" @click="showReloadHint">
       <v-icon small>mdi-refresh</v-icon>
     </v-btn>
     <v-divider vertical class="mx-1"></v-divider>
@@ -71,6 +71,13 @@ export default {
 
     reloadPage() {
       window.location.reload();
+    },
+
+    showReloadHint() {
+      this.$store.commit("triggerSnackbar", {
+        status: "warning",
+        text: "Double click to reload page",
+      });
     },
   },
 
