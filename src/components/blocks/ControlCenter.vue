@@ -160,17 +160,26 @@ export default {
 
     updateStatus() {
       this.getCurrentPlaying();
-      this.getDNDStatus();
+      this.getSystemStatus();
     },
 
-    async getDNDStatus() {
-      let res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
-        query: `/get_number_variable/?variableName=SystemDoNotDisturbState`,
-      });
-      if (res.data === 1) {
-        this.dnd = true;
-      } else {
-        this.dnd = false;
+    async getSystemStatus() {
+      try {
+        let res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
+          query: `/get_number_variable/?variableName=SystemDoNotDisturbState`,
+        });
+        if (res.data === 1) {
+          this.dnd = true;
+        } else {
+          this.dnd = false;
+        }
+        if (res.data === "error") {
+          this.$store.commit("updateConnectionStatus", false);
+        } else {
+          this.$store.commit("updateConnectionStatus", true);
+        }
+      } catch (e) {
+        console.log(e);
       }
     },
 

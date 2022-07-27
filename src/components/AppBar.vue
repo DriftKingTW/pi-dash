@@ -13,7 +13,20 @@
       </v-toolbar-title>
     </div>
     <v-spacer></v-spacer>
-    <!-- <v-divider vertical class="mx-1"></v-divider> -->
+    <v-chip
+      v-if="connectionStatus === 'disconnected'"
+      small
+      color="primary"
+      class="error--text"
+    >
+      <v-icon small left color="error">mdi-server-network-off</v-icon>
+      {{ `BTT Server ${statusMessages[connectionStatus]}` }}
+    </v-chip>
+    <v-chip v-else small color="primary">
+      <v-icon small left>mdi-server-network</v-icon>
+      {{ `BTT Server ${statusMessages[connectionStatus]}` }}
+    </v-chip>
+    <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @click="$store.commit('openKeyboard')">
       <v-icon small>mdi-keyboard</v-icon>
     </v-btn>
@@ -22,6 +35,7 @@
 
 <script>
 import { RaspberryPiIcon } from "vue-simple-icons";
+import { mapState } from "vuex";
 
 export default {
   components: {
@@ -53,7 +67,7 @@ export default {
   },
 
   computed: {
-    //
+    ...mapState(["statusMessages", "connectionStatus"]),
   },
 };
 </script>

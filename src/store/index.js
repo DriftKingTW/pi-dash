@@ -8,6 +8,11 @@ export default new Vuex.Store({
   state: {
     osk: false,
     input: "",
+    connectionStatus: "disconnected",
+    statusMessages: {
+      connected: "Connected",
+      disconnected: "Disconnected",
+    },
   },
   getters: {
     getField,
@@ -27,6 +32,14 @@ export default new Vuex.Store({
 
     clearInput(state) {
       state.input = "";
+    },
+
+    updateConnectionStatus(state, status) {
+      if (status) {
+        state.connectionStatus = "connected";
+      } else {
+        state.connectionStatus = "disconnected";
+      }
     },
 
     updateField,
