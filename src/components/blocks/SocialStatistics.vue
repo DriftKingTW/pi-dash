@@ -1,11 +1,11 @@
 <template>
-  <v-card flat :loading="loading">
+  <v-card color="primary" flat :loading="loading">
     <v-card-title class="pb-0">
       <v-icon left>mdi-account-group-outline</v-icon>
       Social Statistics
     </v-card-title>
     <v-card-text>
-      <v-list two-line>
+      <v-list two-line color="primary">
         <v-list-item>
           <v-list-item-avatar>
             <v-img

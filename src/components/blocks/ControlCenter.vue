@@ -1,5 +1,5 @@
 <template>
-  <v-card flat :loading="loading">
+  <v-card color="primary" flat :loading="loading">
     <v-card-title>
       <v-icon left>mdi-tune-vertical</v-icon>
       Control Center

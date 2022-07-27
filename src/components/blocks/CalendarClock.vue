@@ -1,12 +1,12 @@
 <template>
-  <v-card>
+  <v-card color="primary">
     <div class="d-flex ml-2">
-      <v-card flat>
+      <v-card color="primary" flat>
         <v-card-text class="pa-0 calendar">
           <Calendar :attributes="attrs" color="blue" is-dark height="100px" />
         </v-card-text>
       </v-card>
-      <v-card flat class="flex-grow-1">
+      <v-card color="primary" flat class="flex-grow-1">
         <v-card-title v-if="now">
           <v-spacer></v-spacer>
           <div class="text-h4">
@@ -108,7 +108,7 @@ export default {
 
 <style scoped>
 .calendar >>> .vc-container.vc-is-dark {
-  background-color: #1e1e1e !important;
-  border-color: #1e1e1e !important;
+  background-color: var(--v-primary-base) !important;
+  border: none;
 }
 </style>
