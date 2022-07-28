@@ -43,9 +43,21 @@
       </v-dialog>
     </v-main>
     <SnackBar />
-    <v-snackbar bottom right :value="updateExists" :timeout="0" color="primary">
-      An update is available
-      <v-btn text @click="refreshApp"> Update </v-btn>
+    <v-snackbar
+      bottom
+      right
+      :value="updateExists"
+      :timeout="-1"
+      color="info"
+      transition="slide-x-reverse-transition"
+    >
+      <v-icon left small>mdi-alert-circle-outline</v-icon>
+      An update is available!
+      <template v-slot:action="{ attrs }">
+        <v-btn text small class="ma-0" @click="refreshApp" v-bind="attrs">
+          Update
+        </v-btn>
+      </template>
     </v-snackbar>
   </v-app>
 </template>
@@ -65,6 +77,7 @@ export default {
 
   data() {
     return {
+      refreshing: false,
       registration: null,
       updateExists: false,
       theme: "hg-theme-default dark-theme",
@@ -75,6 +88,7 @@ export default {
     document.addEventListener("swUpdated", this.updateAvailable, {
       once: true,
     });
+
     navigator.serviceWorker.addEventListener("controllerchange", () => {
       // We'll also need to add 'refreshing' to our data originally set to false.
       if (this.refreshing) return;
