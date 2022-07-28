@@ -212,7 +212,7 @@ export default {
         process.env.VUE_APP_MB_API_URL +
           `/release/?fmt=json&limit=1&query=${this.currentPlaying.title} AND artist:${this.currentPlaying.artist}`
       );
-      if (res.data.releases.length > 0) {
+      if (res.data.releases && res.data.releases.length > 0) {
         const coverRes = await axios.get(
           process.env.VUE_APP_COVERART_API_URL +
             `/release/${res.data.releases[0].id}`
