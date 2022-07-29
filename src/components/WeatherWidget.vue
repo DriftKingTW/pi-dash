@@ -100,7 +100,6 @@ export default {
         const res = await axios.get(
           `${process.env.VUE_APP_API_URL}/weather?city=${this.city}`
         );
-        console.log(res.data);
         this.currentWeather.description = this.titleCase(
           res.data.current.weather[0].description
         );
