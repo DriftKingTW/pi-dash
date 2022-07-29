@@ -8,17 +8,20 @@
       </v-card>
       <v-card color="primary" flat class="flex-grow-1">
         <v-card-title v-if="now">
-          <v-spacer></v-spacer>
           <div class="text-h4">
             {{ `${now.hour}:${now.minute}:${now.second}` }}
           </div>
           <small class="ml-2">{{ now.ampm }}</small>
         </v-card-title>
-        <v-card-subtitle class="text-right" v-if="now">
+        <v-card-subtitle v-if="now">
           <span>
             {{ `${now.dayName} ${now.day} ${now.monthName} ${now.year}` }}
           </span>
         </v-card-subtitle>
+        <v-card-text>
+          <v-divider></v-divider>
+          <WeatherWidget />
+        </v-card-text>
       </v-card>
     </div>
   </v-card>
@@ -26,10 +29,12 @@
 
 <script>
 import Calendar from "v-calendar/lib/components/calendar.umd";
+import WeatherWidget from "@/components/WeatherWidget";
 
 export default {
   components: {
     Calendar,
+    WeatherWidget,
   },
 
   data() {
