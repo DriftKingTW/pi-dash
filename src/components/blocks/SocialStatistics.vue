@@ -75,9 +75,10 @@ export default {
   },
 
   mounted() {
+    this.initialize();
     setInterval(() => {
       this.initialize();
-    }, 10 * 60 * 1000 /* 30 minutes */);
+    }, 10 * 60 * 1000 /* 10 minutes */);
   },
 
   methods: {
