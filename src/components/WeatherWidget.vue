@@ -7,9 +7,10 @@
       </div>
       <v-spacer></v-spacer>
       <v-img
+        v-if="currentWeather.icon"
         :src="`https://openweathermap.org/img/wn/${currentWeather.icon}@2x.png`"
-        max-height="70px"
-        max-width="70px"
+        max-height="65px"
+        max-width="65px"
         contain
       ></v-img>
     </div>
@@ -38,6 +39,24 @@
         {{ currentWeather.visibility }} m
       </div>
     </span>
+    <div class="d-flex align-center mt-2">
+      <div
+        class="flex-grow-1"
+        v-for="(hourly, i) in hourlyWeather"
+        :key="`hourly_key_${i}`"
+      >
+        <div class="d-flex flex-column align-center justify-center">
+          <v-img
+            v-if="hourly.icon"
+            :src="`https://openweathermap.org/img/wn/${hourly.icon}.png`"
+            max-height="24px"
+            max-width="24px"
+            contain
+          ></v-img>
+          <span>{{ hourly.pop.toFixed(1) }}%</span>
+        </div>
+      </div>
+    </div>
   </v-card>
 </template>
 
@@ -62,7 +81,12 @@ export default {
         feelsLike: 0,
         visibility: 0,
       },
-      hourlyWeather: {},
+      hourlyWeather: [
+        { pop: 0, icon: "" },
+        { pop: 0, icon: "" },
+        { pop: 0, icon: "" },
+        { pop: 0, icon: "" },
+      ],
     };
   },
 
@@ -87,6 +111,10 @@ export default {
         this.currentWeather.windSpeed = res.data.current.wind_speed;
         this.currentWeather.feelsLike = res.data.current.feels_like;
         this.currentWeather.visibility = res.data.current.visibility;
+        for (let i = 0; i < this.hourlyWeather.length; i++) {
+          this.hourlyWeather[i].pop = res.data.hourly[i].pop;
+          this.hourlyWeather[i].icon = res.data.hourly[i].weather[0].icon;
+        }
       } catch (e) {
         console.error(e);
       }
