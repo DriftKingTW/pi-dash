@@ -1,7 +1,7 @@
 <template>
   <v-card flat color="primary">
     <div class="d-flex align-center">
-      <div>
+      <div class="mt-2">
         <h2>{{ currentWeather.temperature.toFixed(1) }}°C</h2>
         <small>{{ currentWeather.description }}</small>
       </div>
@@ -9,36 +9,12 @@
       <v-img
         v-if="currentWeather.icon"
         :src="`https://openweathermap.org/img/wn/${currentWeather.icon}@2x.png`"
-        max-height="65px"
-        max-width="65px"
+        max-height="48px"
+        max-width="48px"
         contain
       ></v-img>
     </div>
-    <v-divider class="mb-2"></v-divider>
-    <span class="d-flex">
-      <div class="caption flex-grow-1">
-        <v-icon small class="mr-1">mdi-sun-wireless</v-icon>
-        {{ currentWeather.uvi.toFixed(0) }} UVI
-      </div>
-      <div class="caption flex-grow-1">
-        <v-icon small>mdi-water-percent</v-icon>
-        {{ currentWeather.humidity }} %
-      </div>
-      <div class="caption flex-grow-1">
-        <v-icon small>mdi-windsock</v-icon>
-        {{ currentWeather.windSpeed.toFixed(0) }} m/s
-      </div>
-    </span>
-    <span class="d-flex">
-      <div class="caption flex-grow-1">
-        <v-icon small class="mr-1">mdi-human</v-icon>
-        {{ currentWeather.feelsLike.toFixed(1) }}°C
-      </div>
-      <div class="caption flex-grow-1">
-        <v-icon small class="mr-1">mdi-eye</v-icon>
-        {{ currentWeather.visibility }} m
-      </div>
-    </span>
+
     <div class="d-flex align-center mt-2">
       <div
         class="flex-grow-1"
@@ -57,6 +33,34 @@
         </div>
       </div>
     </div>
+
+    <v-divider class="my-2"></v-divider>
+
+    <span class="d-flex">
+      <div class="caption flex-grow-1">
+        <v-icon small class="mr-1">mdi-sun-wireless</v-icon>
+        {{ currentWeather.uvi.toFixed(0) }} UVI
+      </div>
+      <div class="caption flex-grow-1">
+        <v-icon small>mdi-water-percent</v-icon>
+        {{ currentWeather.humidity }} %
+      </div>
+      <div class="caption flex-grow-1">
+        <v-icon small>mdi-windsock</v-icon>
+        {{ currentWeather.windSpeed.toFixed(0) }} m/s
+      </div>
+    </span>
+
+    <span class="d-flex">
+      <div class="caption flex-grow-1">
+        <v-icon small class="mr-1">mdi-human</v-icon>
+        {{ currentWeather.feelsLike.toFixed(1) }}°C
+      </div>
+      <div class="caption flex-grow-1">
+        <v-icon small class="mr-1">mdi-eye</v-icon>
+        {{ currentWeather.visibility }} m
+      </div>
+    </span>
   </v-card>
 </template>
 

@@ -13,13 +13,13 @@
           </div>
           <small class="ml-2">{{ now.ampm }}</small>
         </v-card-title>
-        <v-card-subtitle v-if="now">
+        <v-card-subtitle v-if="now" class="pb-2">
           <span>
             {{ `${now.dayName} ${now.day} ${now.monthName} ${now.year}` }}
           </span>
         </v-card-subtitle>
         <v-card-text>
-          <v-divider></v-divider>
+          <v-divider class="mb-2"></v-divider>
           <WeatherWidget />
         </v-card-text>
       </v-card>
