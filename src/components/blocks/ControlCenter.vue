@@ -208,6 +208,14 @@ export default {
     },
 
     async getAlbumArt() {
+      const errorMessage = "error";
+      if (
+        this.currentPlaying.title === errorMessage &&
+        this.currentPlaying.artist === errorMessage &&
+        this.currentPlaying.album === errorMessage
+      ) {
+        return;
+      }
       const res = await axios.get(
         process.env.VUE_APP_MB_API_URL +
           `/release/?fmt=json&limit=1&query=${this.currentPlaying.title} AND artist:${this.currentPlaying.artist}`
