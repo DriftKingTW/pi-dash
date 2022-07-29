@@ -37,26 +37,26 @@
     <v-divider class="my-2"></v-divider>
 
     <span class="d-flex">
-      <div class="caption flex-grow-1">
+      <div class="caption flex-grow-1 text-center">
         <v-icon small class="mr-1">mdi-sun-wireless</v-icon>
         {{ currentWeather.uvi.toFixed(0) }} UVI
       </div>
-      <div class="caption flex-grow-1">
+      <div class="caption flex-grow-1 text-center">
         <v-icon small>mdi-water-percent</v-icon>
         {{ currentWeather.humidity }} %
       </div>
-      <div class="caption flex-grow-1">
+      <div class="caption flex-grow-1 text-center">
         <v-icon small>mdi-windsock</v-icon>
         {{ currentWeather.windSpeed.toFixed(0) }} m/s
       </div>
     </span>
 
     <span class="d-flex">
-      <div class="caption flex-grow-1">
+      <div class="caption flex-grow-1 text-center">
         <v-icon small class="mr-1">mdi-human</v-icon>
         {{ currentWeather.feelsLike.toFixed(1) }}°C
       </div>
-      <div class="caption flex-grow-1">
+      <div class="caption flex-grow-1 text-center">
         <v-icon small class="mr-1">mdi-eye</v-icon>
         {{ currentWeather.visibility }} m
       </div>
