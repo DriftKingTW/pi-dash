@@ -79,13 +79,6 @@
           </div>
 
           <div class="d-flex flex-column">
-            <v-btn icon x-large @click="trigger('ToggleLyric')">
-              <v-icon>mdi-subtitles</v-icon>
-            </v-btn>
-            <div class="text-center caption">Lyrics</div>
-          </div>
-
-          <div class="d-flex flex-column">
             <v-btn icon x-large @click="trigger('ToggleFan')">
               <v-icon>mdi-fan</v-icon>
             </v-btn>
@@ -96,14 +89,27 @@
             <v-btn icon x-large @click="trigger('ToggleScreenBar')">
               <v-icon>mdi-lightbulb</v-icon>
             </v-btn>
-            <div class="text-center caption">Screen Bar</div>
+            <div class="text-center caption">Sc. Bar</div>
+          </div>
+          <div class="d-flex flex-column">
+            <v-btn icon x-large @click="trigger('ToggleLyric')">
+              <v-icon>mdi-subtitles</v-icon>
+            </v-btn>
+            <div class="text-center caption">Lyrics</div>
+          </div>
+
+          <div class="d-flex flex-column">
+            <v-btn icon x-large @click="trigger('ShowFloatingWebView')">
+              <v-icon>mdi-picture-in-picture-bottom-right</v-icon>
+            </v-btn>
+            <div class="text-center caption">PiP</div>
           </div>
 
           <div class="d-flex flex-column">
             <v-btn icon x-large @click="screenOff">
               <v-icon>mdi-television-off</v-icon>
             </v-btn>
-            <div class="text-center caption">Screen OFF</div>
+            <div class="text-center caption">Sc. OFF</div>
           </div>
         </v-col>
       </v-row>
