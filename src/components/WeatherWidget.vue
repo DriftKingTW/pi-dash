@@ -29,7 +29,7 @@
             max-width="24px"
             contain
           ></v-img>
-          <span>{{ hourly.pop.toFixed(1) }}%</span>
+          <span>{{ hourly.pop.toFixed(1) * 100 }}%</span>
         </div>
       </div>
     </div>
