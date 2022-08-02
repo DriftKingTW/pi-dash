@@ -27,6 +27,10 @@
       {{ `BTT Server ${statusMessages[connectionStatus]}` }}
     </v-chip>
     <v-divider vertical class="mx-1"></v-divider>
+    <v-btn icon @click="screenOff">
+      <v-icon small>mdi-television-off</v-icon>
+    </v-btn>
+    <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @dblclick="reloadPage" @click="showReloadHint">
       <v-icon small>mdi-refresh</v-icon>
     </v-btn>
@@ -40,6 +44,7 @@
 <script>
 import { RaspberryPiIcon } from "vue-simple-icons";
 import { mapState } from "vuex";
+import axios from "axios";
 
 export default {
   components: {
@@ -78,6 +83,16 @@ export default {
         status: "warning",
         text: "Double click to reload page",
       });
+    },
+
+    async screenOff() {
+      try {
+        await axios.get(process.env.VUE_APP_API_URL + "/shell/display", {
+          params: { action: "off" },
+        });
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 

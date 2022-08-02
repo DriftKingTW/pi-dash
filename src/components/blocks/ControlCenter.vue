@@ -104,13 +104,6 @@
             </v-btn>
             <div class="text-center caption">PiP</div>
           </div>
-
-          <div class="d-flex flex-column">
-            <v-btn icon x-large @click="screenOff">
-              <v-icon>mdi-television-off</v-icon>
-            </v-btn>
-            <div class="text-center caption">Sc. OFF</div>
-          </div>
         </v-col>
       </v-row>
     </v-card-text>
@@ -236,16 +229,6 @@ export default {
         }
       }
       this.loading = false;
-    },
-
-    async screenOff() {
-      try {
-        await axios.get(process.env.VUE_APP_API_URL + "/shell/display", {
-          params: { action: "off" },
-        });
-      } catch (e) {
-        console.log(e);
-      }
     },
   },
 
