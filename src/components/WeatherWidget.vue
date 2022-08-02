@@ -74,7 +74,9 @@ export default {
 
   data() {
     return {
-      city: "taipei",
+      city: process.env.VUE_APP_WEATHER_CITY,
+      lat: process.env.VUE_APP_WEATHER_LAT,
+      lon: process.env.VUE_APP_WEATHER_LON,
       currentWeather: {
         description: "",
         icon: "",
@@ -104,9 +106,12 @@ export default {
   methods: {
     async initialize() {
       try {
-        const res = await axios.get(
-          `${process.env.VUE_APP_API_URL}/weather?city=${this.city}`
-        );
+        let url = this.city
+          ? `${process.env.VUE_APP_API_URL}/weather?city=${this.city}`
+          : `${process.env.VUE_APP_API_URL}/weather?lat=${this.lat}&lon=${this.lon}`;
+
+        const res = await axios.get(url);
+
         this.currentWeather.description = this.titleCase(
           res.data.current.weather[0].description
         );
