@@ -102,6 +102,7 @@ export default {
       this.now.ampm = date.getHours() > 12 ? "PM" : "AM";
       this.now.minute = String(date.getMinutes()).padStart(2, "0");
       this.now.second = String(date.getSeconds()).padStart(2, "0");
+      this.attrs[0].dates = this.date;
     },
   },
 
