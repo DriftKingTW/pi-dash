@@ -9,7 +9,7 @@
         <v-col cols="6" class="px-0 pr-4">
           <v-list dense color="primary">
             <v-list-item>
-              <v-list-icon class="mr-4 my-2">
+              <v-list-item-icon class="mr-4 my-2">
                 <v-badge
                   avatar
                   bordered
@@ -25,7 +25,7 @@
                     ></v-img>
                   </v-avatar>
                 </v-badge>
-              </v-list-icon>
+              </v-list-item-icon>
 
               <v-list-item-content>
                 <v-list-item-title>
@@ -43,7 +43,7 @@
             </v-list-item>
             <v-divider :inset="true"></v-divider>
             <v-list-item>
-              <v-list-icon class="mr-4 my-2">
+              <v-list-item-icon class="mr-4 my-2">
                 <v-badge
                   avatar
                   bordered
@@ -63,7 +63,7 @@
                     ></v-img>
                   </v-avatar>
                 </v-badge>
-              </v-list-icon>
+              </v-list-item-icon>
 
               <v-list-item-content>
                 <v-list-item-title>
@@ -82,11 +82,11 @@
         <v-col cols="6" class="px-0 pr-4">
           <v-list dense color="primary">
             <v-list-item>
-              <v-list-icon class="mr-4 my-2">
+              <v-list-item-icon class="mr-4 my-2">
                 <v-avatar size="40">
                   <pixiv-icon size="3x" fill="white"></pixiv-icon>
                 </v-avatar>
-              </v-list-icon>
+              </v-list-item-icon>
 
               <v-list-item-content>
                 <v-list-item-title>
@@ -100,11 +100,11 @@
             </v-list-item>
             <v-divider :inset="true"></v-divider>
             <v-list-item>
-              <v-list-icon class="mr-4 my-2">
+              <v-list-item-icon class="mr-4 my-2">
                 <v-avatar size="40">
                   <pixiv-icon size="3x" fill="white"></pixiv-icon>
                 </v-avatar>
-              </v-list-icon>
+              </v-list-item-icon>
 
               <v-list-item-content>
                 <v-list-item-title>
