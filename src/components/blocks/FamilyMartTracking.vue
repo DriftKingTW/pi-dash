@@ -35,13 +35,22 @@
             label
             color="primary lighten-1"
             class="mb-2"
+            :class="d.status.includes('完成取件') ? 'grey--text' : ''"
             close
             @click:close="removePackage(i)"
           >
             <v-icon small left>mdi-truck-cargo-container</v-icon>
             {{ d.orderId }} {{ d.status }} {{ d.receiveDate }}
           </v-chip>
-          <v-chip v-else small label color="primary lighten-1" class="mb-2">
+          <v-chip
+            v-else
+            small
+            label
+            color="primary lighten-1"
+            class="mb-2"
+            close
+            @click:close="removePackage(i)"
+          >
             <v-icon small left>mdi-emoticon-sad</v-icon>
             No Data
           </v-chip>
@@ -106,7 +115,7 @@ export default {
     },
 
     addPackage() {
-      this.packages = [...this.packages, this.trackingId];
+      this.packages = [this.trackingId, ...this.packages];
       this.trackingId = "";
       this.savePackages();
       this.initialize();
