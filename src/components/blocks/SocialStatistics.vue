@@ -6,7 +6,7 @@
     </v-card-title>
     <v-card-text>
       <v-row>
-        <v-col cols="6" class="px-0 pr-4">
+        <v-col cols="6" class="pa-0 pr-4 pt-4">
           <v-list dense color="primary">
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
@@ -79,7 +79,7 @@
           </v-list>
         </v-col>
 
-        <v-col cols="6" class="px-0 pr-4">
+        <v-col cols="6" class="pa-0 pr-4 pt-4">
           <v-list dense color="primary">
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
@@ -117,6 +117,23 @@
               </v-list-item-content>
             </v-list-item>
             <v-divider :inset="true"></v-divider>
+            <v-list-item>
+              <v-list-item-icon class="mr-4 my-2">
+                <v-avatar size="40">
+                  <pixiv-icon size="3x" fill="white"></pixiv-icon>
+                </v-avatar>
+              </v-list-item-icon>
+
+              <v-list-item-content>
+                <v-list-item-title>
+                  {{ fanboxData.name }}
+                </v-list-item-title>
+                <v-list-item-subtitle>
+                  {{ fanboxData.fans }} fans (¥{{ fanboxData.pledge }})
+                </v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
+            <v-divider :inset="true"></v-divider>
           </v-list>
         </v-col>
       </v-row>
@@ -140,6 +157,7 @@ export default {
       facebookData: {},
       pixivDataMain: {},
       pixivDataSub: {},
+      fanboxData: {},
     };
   },
 
@@ -173,6 +191,11 @@ export default {
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=dkaze`
         );
         this.pixivDataSub = { ...resPixivSub.data };
+
+        const resFanbox = await axios.get(
+          `${process.env.VUE_APP_API_URL}/pixiv/statistics/fanbox?user=dkaze`
+        );
+        this.fanboxData = { ...resFanbox.data };
       } catch (e) {
         console.log(e);
       }
