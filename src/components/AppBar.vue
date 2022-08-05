@@ -41,6 +41,10 @@
       <v-icon small>mdi-refresh</v-icon>
     </v-btn>
     <v-divider vertical class="mx-1"></v-divider>
+    <v-btn icon @click="syncClipboard">
+      <v-icon small>mdi-clipboard-arrow-down-outline</v-icon>
+    </v-btn>
+    <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @click="$store.commit('openKeyboard')">
       <v-icon small>mdi-keyboard</v-icon>
     </v-btn>
@@ -51,6 +55,7 @@
 import { RaspberryPiIcon } from "vue-simple-icons";
 import { mapState } from "vuex";
 import axios from "axios";
+import copy from "copy-to-clipboard";
 
 export default {
   components: {
@@ -105,6 +110,29 @@ export default {
         status: "warning",
         text: "Double click to reload page",
       });
+    },
+
+    // Trigger BTT actions
+    async trigger(triggerName) {
+      try {
+        await axios.post(process.env.VUE_APP_BTT_API_URL, {
+          query: `/trigger_named/?trigger_name=${triggerName}`,
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    async syncClipboard() {
+      try {
+        await this.trigger("SetClipboardVariable");
+        const res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
+          query: `/get_string_variable/?variableName=LatestClipboardData`,
+        });
+        copy(res.data);
+      } catch (e) {
+        console.log(e);
+      }
     },
   },
 
