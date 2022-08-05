@@ -125,9 +125,14 @@ export default {
 
     async syncClipboard() {
       try {
-        await this.trigger("SetClipboardVariable");
+        this.trigger("SetClipboardVariable");
+        await new Promise((resolve) => setTimeout(resolve, 500));
         const res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
           query: `/get_string_variable/?variableName=LatestClipboardData`,
+        });
+        this.$store.commit("triggerSnackbar", {
+          status: "success",
+          text: "Clipboard synced: " + res.data,
         });
         copy(res.data);
       } catch (e) {
