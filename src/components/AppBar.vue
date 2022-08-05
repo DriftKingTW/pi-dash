@@ -27,6 +27,12 @@
       {{ `BTT Server ${statusMessages[connectionStatus]}` }}
     </v-chip>
     <v-divider vertical class="mx-1"></v-divider>
+    <v-btn text>
+      <v-icon small left>mdi-thermometer</v-icon>
+      {{ temperature }}
+      <v-icon small right>mdi-temperature-celsius</v-icon>
+    </v-btn>
+    <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @click="screenOff">
       <v-icon small>mdi-television-off</v-icon>
     </v-btn>
@@ -53,25 +59,41 @@ export default {
 
   data() {
     return {
-      now: "",
+      temperature: "",
     };
   },
 
   mounted() {
     this.initialize();
     setInterval(() => {
-      this.updateTime();
-    }, 1000);
+      this.initialize();
+    }, 5000);
   },
 
   methods: {
     initialize() {
-      //
+      this.updateTemperature();
     },
 
-    updateTime() {
-      const date = new Date();
-      this.now = date.toLocaleString();
+    async updateTemperature() {
+      try {
+        const result = await axios.get(
+          process.env.VUE_APP_API_URL + "/shell/temperature"
+        );
+        this.temperature = result.data;
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    async screenOff() {
+      try {
+        await axios.get(process.env.VUE_APP_API_URL + "/shell/display", {
+          params: { action: "off" },
+        });
+      } catch (e) {
+        console.log(e);
+      }
     },
 
     reloadPage() {
@@ -83,16 +105,6 @@ export default {
         status: "warning",
         text: "Double click to reload page",
       });
-    },
-
-    async screenOff() {
-      try {
-        await axios.get(process.env.VUE_APP_API_URL + "/shell/display", {
-          params: { action: "off" },
-        });
-      } catch (e) {
-        console.log(e);
-      }
     },
   },
 
