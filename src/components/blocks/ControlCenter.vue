@@ -19,7 +19,7 @@
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title class="d-inline-block text-truncate">
+              <v-list-item-title class="d-inline-block text-truncate font-weight-bold">
                 {{ currentPlaying.title }}
               </v-list-item-title>
               <v-list-item-subtitle class="d-inline-block text-truncate">
