@@ -99,6 +99,13 @@
           </div>
 
           <div class="d-flex flex-column">
+            <v-btn icon x-large @click="trigger('GetSMSVerification')">
+              <v-icon>mdi-message-text</v-icon>
+            </v-btn>
+            <div class="text-center caption">CoVE</div>
+          </div>
+
+          <div class="d-flex flex-column">
             <v-btn icon x-large @click="trigger('ShowFloatingWebView')">
               <v-icon>mdi-picture-in-picture-bottom-right</v-icon>
             </v-btn>
