@@ -59,7 +59,7 @@ export default {
 
   data() {
     return {
-      temperature: "",
+      temperature: {},
     };
   },
 
@@ -80,7 +80,7 @@ export default {
         const result = await axios.get(
           process.env.VUE_APP_API_URL + "/shell/temperature"
         );
-        this.temperature = result.data;
+        this.temperature = result.data.value;
       } catch (e) {
         console.log(e);
       }
