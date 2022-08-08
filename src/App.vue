@@ -141,6 +141,10 @@ export default {
 </script>
 
 <style>
+::-webkit-scrollbar {
+  display: none;
+}
+
 /* Currently this method not working in Pi's touch screen */
 /* @media (pointer: coarse) {
 } */
