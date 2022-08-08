@@ -141,13 +141,11 @@ export default {
 </script>
 
 <style>
-html::-webkit-scrollbar {
-  display: none;
+::-webkit-scrollbar {
+  width: 0px;
+  background: transparent; /* make scrollbar transparent */
 }
-html {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-}
+
 /* Currently this method not working in Pi's touch screen */
 /* @media (pointer: coarse) {
 } */
