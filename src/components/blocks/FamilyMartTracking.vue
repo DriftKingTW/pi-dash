@@ -132,7 +132,7 @@ export default {
     },
 
     loadPackages() {
-      if (localStorage.getItem("familyMartPackages").length !== null) {
+      if (localStorage.getItem("familyMartPackages") !== null) {
         return JSON.parse(localStorage.getItem("familyMartPackages"));
       } else {
         return [];
