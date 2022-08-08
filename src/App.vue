@@ -141,9 +141,8 @@ export default {
 </script>
 
 <style>
-::-webkit-scrollbar {
-  width: 0px;
-  background: transparent; /* make scrollbar transparent */
+html {
+  overflow: hidden;
 }
 
 /* Currently this method not working in Pi's touch screen */
