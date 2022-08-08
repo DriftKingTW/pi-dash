@@ -141,10 +141,13 @@ export default {
 </script>
 
 <style>
-::-webkit-scrollbar {
+html::-webkit-scrollbar {
   display: none;
 }
-
+html {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
 /* Currently this method not working in Pi's touch screen */
 /* @media (pointer: coarse) {
 } */
