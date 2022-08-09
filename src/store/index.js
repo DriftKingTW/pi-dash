@@ -6,6 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    navDrawer: false,
     isMacMode: false,
     snackbar: false,
     snackbarText: "",
@@ -23,6 +24,10 @@ export default new Vuex.Store({
     getField,
   },
   mutations: {
+    toggleNavDrawer(state) {
+      state.navDrawer = !state.navDrawer;
+    },
+
     syncMacModeFromLocalStorage(state) {
       if (localStorage.getItem("isMacMode") === "true") {
         state.isMacMode = true;

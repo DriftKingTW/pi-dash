@@ -1,6 +1,7 @@
 <template>
   <v-app>
     <AppBar />
+    <NavigationDrawer />
     <v-main>
       <router-view />
       <v-dialog
@@ -67,12 +68,14 @@ import AppBar from "@/components/AppBar.vue";
 import SimpleKeyboard from "@/components/SimpleKeyboard.vue";
 import { mapFields } from "vuex-map-fields";
 import SnackBar from "@/components/SnackBar";
+import NavigationDrawer from "@/components/NavigationDrawer";
 
 export default {
   components: {
     AppBar,
     SimpleKeyboard,
     SnackBar,
+    NavigationDrawer,
   },
 
   data() {

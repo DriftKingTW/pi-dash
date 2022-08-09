@@ -1,12 +1,12 @@
 <template>
   <v-app-bar app color="primary" dark height="30px" flat>
     <div class="d-flex align-center">
-      <v-app-bar-nav-icon>
-        <raspberry-pi-icon
+      <v-app-bar-nav-icon @click="$store.commit('toggleNavDrawer')">
+        <!-- <raspberry-pi-icon
           size="1.2x"
           fill="white"
           class="mr-2"
-        ></raspberry-pi-icon>
+        ></raspberry-pi-icon> -->
       </v-app-bar-nav-icon>
       <v-toolbar-title>
         <strong>Pi Dash</strong>
@@ -59,14 +59,14 @@
 </template>
 
 <script>
-import { RaspberryPiIcon } from "vue-simple-icons";
+// import { RaspberryPiIcon } from "vue-simple-icons";
 import { mapState } from "vuex";
 import axios from "axios";
 import copy from "copy-to-clipboard";
 
 export default {
   components: {
-    RaspberryPiIcon,
+    // RaspberryPiIcon,
   },
 
   data() {
