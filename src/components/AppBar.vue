@@ -26,27 +26,34 @@
       <v-icon small left>mdi-server-network</v-icon>
       {{ `BTT Server ${statusMessages[connectionStatus]}` }}
     </v-chip>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn text>
-      <v-icon small left>mdi-thermometer</v-icon>
-      {{ temperature }}
-      <v-icon small right>mdi-temperature-celsius</v-icon>
-    </v-btn>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="screenOff">
-      <v-icon small>mdi-television-off</v-icon>
-    </v-btn>
+    <template v-if="isMacMode">
+      <v-divider vertical class="mx-1"></v-divider>
+      <v-btn text>
+        <v-icon small left>mdi-thermometer</v-icon>
+        {{ temperature }}
+        <v-icon small right>mdi-temperature-celsius</v-icon>
+      </v-btn>
+      <v-divider vertical class="mx-1"></v-divider>
+      <v-btn icon @click="screenOff">
+        <v-icon small>mdi-television-off</v-icon>
+      </v-btn>
+      <v-divider vertical class="mx-1"></v-divider>
+      <v-btn icon @click="syncClipboard">
+        <v-icon small>mdi-clipboard-arrow-down-outline</v-icon>
+      </v-btn>
+      <v-divider vertical class="mx-1"></v-divider>
+      <v-btn icon @click="$store.commit('openKeyboard')">
+        <v-icon small>mdi-keyboard</v-icon>
+      </v-btn>
+    </template>
     <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @dblclick="reloadPage" @click="showReloadHint">
       <v-icon small>mdi-refresh</v-icon>
     </v-btn>
     <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="syncClipboard">
-      <v-icon small>mdi-clipboard-arrow-down-outline</v-icon>
-    </v-btn>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="$store.commit('openKeyboard')">
-      <v-icon small>mdi-keyboard</v-icon>
+    <v-btn icon @click="$store.commit('toggleMacMode')">
+      <v-icon small v-if="isMacMode">mdi-laptop</v-icon>
+      <v-icon small v-else>mdi-laptop-off</v-icon>
     </v-btn>
   </v-app-bar>
 </template>
@@ -142,7 +149,7 @@ export default {
   },
 
   computed: {
-    ...mapState(["statusMessages", "connectionStatus"]),
+    ...mapState(["statusMessages", "connectionStatus", "isMacMode"]),
   },
 };
 </script>

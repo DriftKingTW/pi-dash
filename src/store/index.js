@@ -6,6 +6,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    isMacMode: false,
     snackbar: false,
     snackbarText: "",
     snackbarColor: "info",
@@ -22,6 +23,19 @@ export default new Vuex.Store({
     getField,
   },
   mutations: {
+    syncMacModeFromLocalStorage(state) {
+      if (localStorage.getItem("isMacMode") === "true") {
+        state.isMacMode = true;
+      } else {
+        state.isMacMode = false;
+      }
+    },
+
+    toggleMacMode(state) {
+      state.isMacMode = !state.isMacMode;
+      localStorage.setItem("isMacMode", state.isMacMode);
+    },
+
     triggerSnackbar(state, { status, text }) {
       if (status) state.snackbarColor = status;
       if (text) state.snackbarText = text;

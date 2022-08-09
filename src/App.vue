@@ -105,6 +105,7 @@ export default {
   methods: {
     initialize() {
       document.title = "Pi Dash";
+      this.$store.commit("syncMacModeFromLocalStorage");
     },
 
     onChange(input) {
