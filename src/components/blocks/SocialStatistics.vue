@@ -177,29 +177,65 @@ export default {
         );
         this.twitterData = { ...resTwitter.data };
 
+        if (this.twitterData) {
+          this.twitterData.public_metrics.followers_count =
+            this.numberWithCommas(
+              this.twitterData.public_metrics.followers_count
+            );
+        }
+
         const resFacebook = await axios.get(
           `${process.env.VUE_APP_API_URL}/facebook/statistics`
         );
         this.facebookData = { ...resFacebook.data };
+
+        if (this.facebookData) {
+          this.facebookData.fan_count = this.numberWithCommas(
+            this.facebookData.fan_count
+          );
+        }
 
         const resPixivMain = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=driftkingtw`
         );
         this.pixivDataMain = { ...resPixivMain.data };
 
+        if (this.pixivDataMain) {
+          this.pixivDataMain.followerCount = this.numberWithCommas(
+            this.pixivDataMain.followerCount
+          );
+        }
+
         const resPixivSub = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=dkaze`
         );
         this.pixivDataSub = { ...resPixivSub.data };
 
+        if (this.pixivDataSub) {
+          this.pixivDataSub.followerCount = this.numberWithCommas(
+            this.pixivDataSub.followerCount
+          );
+        }
+
         const resFanbox = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics/fanbox?user=dkaze`
         );
         this.fanboxData = { ...resFanbox.data };
+
+        if (this.fanboxData) {
+          this.fanboxData.pledge = this.numberWithCommas(
+            this.fanboxData.pledge
+          );
+          this.fanboxData.fans = this.numberWithCommas(this.fanboxData.fans);
+        }
       } catch (e) {
         console.log(e);
       }
       this.loading = false;
+    },
+
+    numberWithCommas(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
   },
 
