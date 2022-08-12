@@ -137,6 +137,7 @@ export default {
         const res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
           query: `/get_string_variable/?variableName=LatestClipboardData`,
         });
+        this.$store.commit("updateInput", res.data);
         this.$store.commit("triggerSnackbar", {
           status: "success",
           text: "Clipboard synced: " + res.data,
