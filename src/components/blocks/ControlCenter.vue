@@ -19,7 +19,9 @@
             </v-list-item-avatar>
 
             <v-list-item-content>
-              <v-list-item-title class="d-inline-block text-truncate font-weight-bold">
+              <v-list-item-title
+                class="d-inline-block text-truncate font-weight-bold"
+              >
                 {{ currentPlaying.title }}
               </v-list-item-title>
               <v-list-item-subtitle class="d-inline-block text-truncate">
@@ -155,9 +157,9 @@ export default {
     // Trigger BTT actions
     async trigger(triggerName) {
       try {
-        await axios.post(process.env.VUE_APP_BTT_API_URL, {
-          query: `/trigger_named/?trigger_name=${triggerName}`,
-        });
+        await axios.get(
+          `${process.env.VUE_APP_BTT_API_URL}/trigger_named/?trigger_name=${triggerName}`
+        );
         this.getCurrentPlaying();
       } catch (e) {
         console.log(e);
@@ -171,9 +173,9 @@ export default {
 
     async getSystemStatus() {
       try {
-        let res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
-          query: `/get_number_variable/?variableName=SystemDoNotDisturbState`,
-        });
+        let res = await axios.get(
+          `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=SystemDoNotDisturbState`
+        );
         if (res.data === 1) {
           this.dnd = true;
         } else {
@@ -192,21 +194,21 @@ export default {
     // Get playing info from BTT http server
     async getCurrentPlaying() {
       try {
-        let res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
-          query: `/get_number_variable/?variableName=BTTCurrentlyPlaying`,
-        });
+        let res = await axios.get(
+          `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=BTTCurrentlyPlaying`
+        );
         this.currentPlaying.isPlaying = res.data;
-        res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
-          query: `/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`,
-        });
+        res = await axios.get(
+          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`
+        );
         this.currentPlaying.album = res.data;
-        res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
-          query: `/get_string_variable/?variableName=BTTNowPlayingInfoArtist`,
-        });
+        res = await axios.get(
+          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoArtist`
+        );
         this.currentPlaying.artist = res.data;
-        res = await axios.post(process.env.VUE_APP_BTT_API_URL, {
-          query: `/get_string_variable/?variableName=BTTNowPlayingInfoTitle`,
-        });
+        res = await axios.get(
+          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoTitle`
+        );
         this.currentPlaying.title = res.data;
       } catch (e) {
         console.log(e);
