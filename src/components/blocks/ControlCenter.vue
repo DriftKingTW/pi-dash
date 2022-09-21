@@ -158,7 +158,9 @@ export default {
     async trigger(triggerName) {
       try {
         await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/trigger_named/?trigger_name=${triggerName}`
+          `${process.env.VUE_APP_BTT_API_URL}/trigger_named/?trigger_name=${triggerName}`,
+          {},
+          { timeout: 1000 * 2 }
         );
         this.getCurrentPlaying();
       } catch (e) {
@@ -174,7 +176,9 @@ export default {
     async getSystemStatus() {
       try {
         let res = await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=SystemDoNotDisturbState`
+          `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=SystemDoNotDisturbState`,
+          {},
+          { timeout: 1000 * 2 }
         );
         if (res.data === 1) {
           this.dnd = true;
@@ -195,19 +199,27 @@ export default {
     async getCurrentPlaying() {
       try {
         let res = await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=BTTCurrentlyPlaying`
+          `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=BTTCurrentlyPlaying`,
+          {},
+          { timeout: 1000 * 2 }
         );
         this.currentPlaying.isPlaying = res.data;
         res = await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`
+          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`,
+          {},
+          { timeout: 1000 * 2 }
         );
         this.currentPlaying.album = res.data;
         res = await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoArtist`
+          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoArtist`,
+          {},
+          { timeout: 1000 * 2 }
         );
         this.currentPlaying.artist = res.data;
         res = await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoTitle`
+          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoTitle`,
+          {},
+          { timeout: 1000 * 2 }
         );
         this.currentPlaying.title = res.data;
       } catch (e) {

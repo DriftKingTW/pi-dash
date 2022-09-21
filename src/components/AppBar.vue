@@ -123,7 +123,9 @@ export default {
     async trigger(triggerName) {
       try {
         await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/trigger_named/?trigger_name=${triggerName}`
+          `${process.env.VUE_APP_BTT_API_URL}/trigger_named/?trigger_name=${triggerName}`,
+          {},
+          { timeout: 1000 * 2 }
         );
       } catch (e) {
         console.log(e);
@@ -135,7 +137,9 @@ export default {
         this.trigger("SetClipboardVariable");
         await new Promise((resolve) => setTimeout(resolve, 500));
         const res = await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=LatestClipboardData`
+          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=LatestClipboardData`,
+          {},
+          { timeout: 1000 * 2 }
         );
         this.$store.commit("updateInput", res.data);
         this.$store.commit("triggerSnackbar", {
