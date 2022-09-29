@@ -34,8 +34,12 @@
         <v-icon small right>mdi-temperature-celsius</v-icon>
       </v-btn>
       <v-divider vertical class="mx-1"></v-divider>
-      <v-btn icon @click="screenOff">
-        <v-icon small>mdi-television-off</v-icon>
+      <v-btn icon @click="piOff">
+        <v-icon small>mdi-power</v-icon>
+      </v-btn>
+      <v-divider vertical class="mx-1"></v-divider>
+      <v-btn icon @click="piReboot">
+        <v-icon small>mdi-restart</v-icon>
       </v-btn>
       <v-divider vertical class="mx-1"></v-divider>
       <v-btn icon @click="syncClipboard">
@@ -102,6 +106,26 @@ export default {
       try {
         await axios.get(process.env.VUE_APP_API_URL + "/shell/display", {
           params: { action: "off" },
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    async piOff() {
+      try {
+        await axios.get(process.env.VUE_APP_API_URL + "/shell/power", {
+          params: { action: "off" },
+        });
+      } catch (e) {
+        console.log(e);
+      }
+    },
+
+    async piReboot() {
+      try {
+        await axios.get(process.env.VUE_APP_API_URL + "/shell/power", {
+          params: { action: "reboot" },
         });
       } catch (e) {
         console.log(e);
