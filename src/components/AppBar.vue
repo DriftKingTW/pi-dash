@@ -51,7 +51,7 @@
       </v-btn>
     </template>
     <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="reloadPage" @click="showReloadHint">
+    <v-btn icon @click="reloadPage">
       <v-icon small>mdi-refresh</v-icon>
     </v-btn>
     <v-divider vertical class="mx-1"></v-divider>
