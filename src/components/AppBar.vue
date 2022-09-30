@@ -42,6 +42,10 @@
         <v-icon small>mdi-restart</v-icon>
       </v-btn>
       <v-divider vertical class="mx-1"></v-divider>
+      <v-btn icon @click="screenOff">
+        <v-icon small>mdi-television-off</v-icon>
+      </v-btn>
+      <v-divider vertical class="mx-1"></v-divider>
       <v-btn icon @click="syncClipboard">
         <v-icon small>mdi-clipboard-arrow-down-outline</v-icon>
       </v-btn>
