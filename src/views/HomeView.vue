@@ -74,7 +74,7 @@ export default {
   padding: 0.6rem;
   gap: 0.6rem;
   grid-template-columns: 33% 33% auto;
-  grid-template-areas: "statistics control clock";
+  grid-template-areas: "clock control statistics";
 }
 
 .statistics-block {

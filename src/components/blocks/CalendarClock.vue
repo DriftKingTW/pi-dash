@@ -1,11 +1,6 @@
 <template>
   <v-card color="primary">
     <div class="d-flex ml-2">
-      <v-card color="primary" flat>
-        <v-card-text class="pa-0 calendar">
-          <Calendar :attributes="attrs" color="blue" is-dark height="100px" />
-        </v-card-text>
-      </v-card>
       <v-card color="primary" flat class="flex-grow-1">
         <v-card-title v-if="now">
           <div class="text-h4">
@@ -21,6 +16,11 @@
         <v-card-text>
           <v-divider class="mb-2"></v-divider>
           <WeatherWidget />
+        </v-card-text>
+      </v-card>
+      <v-card color="primary" flat>
+        <v-card-text class="pa-0 calendar">
+          <Calendar :attributes="attrs" color="blue" is-dark height="100px" />
         </v-card-text>
       </v-card>
     </div>
