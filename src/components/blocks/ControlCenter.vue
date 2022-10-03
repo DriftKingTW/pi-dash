@@ -177,10 +177,13 @@ export default {
     },
 
     async getSystemStatus() {
-      try {
-        let res = await axios.get(
+      const getSystemDoNotDisturbState = () => {
+        return axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=SystemDoNotDisturbState`
         );
+      };
+      try {
+        const res = await getSystemDoNotDisturbState();
         if (res.data === 1) {
           this.dnd = true;
         } else {
@@ -198,23 +201,41 @@ export default {
 
     // Get playing info from BTT http server
     async getCurrentPlaying() {
-      try {
-        let res = await axios.get(
+      const getBTTCurrentlyPlaying = () => {
+        return axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=BTTCurrentlyPlaying`
         );
-        this.currentPlaying.isPlaying = res.data;
-        res = await axios.get(
+      };
+
+      const getBTTNowPlayingInfoAlbum = () => {
+        return axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`
         );
-        this.currentPlaying.album = res.data;
-        res = await axios.get(
+      };
+
+      const getBTTNowPlayingInfoArtist = () => {
+        return axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoArtist`
         );
-        this.currentPlaying.artist = res.data;
-        res = await axios.get(
+      };
+
+      const getBTTNowPlayingInfoTitle = () => {
+        return axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoTitle`
         );
-        this.currentPlaying.title = res.data;
+      };
+      try {
+        const res = await Promise.all([
+          getBTTCurrentlyPlaying(),
+          getBTTNowPlayingInfoAlbum(),
+          getBTTNowPlayingInfoArtist(),
+          getBTTNowPlayingInfoTitle(),
+        ]);
+
+        this.currentPlaying.isPlaying = res[0].data;
+        this.currentPlaying.album = res[1].data;
+        this.currentPlaying.artist = res[2].data;
+        this.currentPlaying.title = res[3].data;
       } catch (e) {
         console.log(e);
       }
