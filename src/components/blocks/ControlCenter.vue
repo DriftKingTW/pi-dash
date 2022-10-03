@@ -122,6 +122,10 @@
 <script>
 import axios from "axios";
 
+const timeout = (ms) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};
+
 export default {
   components: {},
 
@@ -148,10 +152,11 @@ export default {
 
   methods: {
     async initialize() {
-      // Update status every 0.5 second
-      setInterval(() => {
+      // Update status with 0.5 second interval
+      for (;;) {
         this.updateStatus();
-      }, 500);
+        await timeout(500);
+      }
     },
 
     // Trigger BTT actions
