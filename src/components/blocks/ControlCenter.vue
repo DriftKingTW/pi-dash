@@ -152,10 +152,10 @@ export default {
 
   methods: {
     async initialize() {
-      // Update status with 0.5 second interval
+      // Update status with 0.3 second interval
       for (;;) {
         this.updateStatus();
-        await timeout(500);
+        await timeout(300);
       }
     },
 
