@@ -155,7 +155,7 @@ export default {
       // Update status with 0.3 second interval
       for (;;) {
         this.updateStatus();
-        await timeout(300);
+        await timeout(500);
       }
     },
 
