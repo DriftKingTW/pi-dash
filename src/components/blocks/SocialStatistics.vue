@@ -120,7 +120,10 @@
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
                 <v-avatar size="40">
-                  <pixiv-icon size="3x" fill="white"></pixiv-icon>
+                  <v-img
+                    :src="require(`@/assets/images/pixivfanbox.png`)"
+                    :alt="'Fanbox Logo'"
+                  ></v-img>
                 </v-avatar>
               </v-list-item-icon>
 
