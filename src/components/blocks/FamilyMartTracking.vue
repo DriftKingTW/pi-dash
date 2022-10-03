@@ -139,10 +139,13 @@ export default {
       }
     },
 
-    handleInput() {
+    async handleInput() {
       if (this.input.length > 0) {
         this.trackingId = this.input;
         this.$store.commit("clearInput");
+      } else {
+        const clipboardText = await navigator.clipboard.readText();
+        this.trackingId = clipboardText;
       }
     },
   },
