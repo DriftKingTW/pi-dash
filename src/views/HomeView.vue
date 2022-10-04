@@ -1,7 +1,13 @@
 <template>
   <div class="grid-container">
+    <CalendarClock class="clock-block" />
     <div class="statistics-block d-flex flex-column">
-      <v-tabs v-model="tab" color="white" class="flex-grow-0" background-color="primary">
+      <v-tabs
+        v-model="tab"
+        color="white"
+        class="flex-grow-0"
+        background-color="primary"
+      >
         <v-tabs-slider></v-tabs-slider>
         <v-tab v-for="item in tabItems" :key="item">
           {{ item }}
@@ -17,7 +23,6 @@
       </v-tabs-items>
     </div>
     <ControlCenter class="control-block" />
-    <CalendarClock class="clock-block" />
   </div>
 </template>
 
