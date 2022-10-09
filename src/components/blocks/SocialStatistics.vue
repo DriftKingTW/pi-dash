@@ -83,7 +83,7 @@
           <v-list dense color="primary">
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
-                <v-avatar size="40">
+                <v-avatar size="40" color="white">
                   <pixiv-icon size="3x" fill="#0096fa"></pixiv-icon>
                 </v-avatar>
               </v-list-item-icon>
@@ -101,7 +101,7 @@
             <v-divider :inset="true"></v-divider>
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
-                <v-avatar size="40">
+                <v-avatar size="40" color="white">
                   <pixiv-icon size="3x" fill="#0096fa"></pixiv-icon>
                 </v-avatar>
               </v-list-item-icon>
