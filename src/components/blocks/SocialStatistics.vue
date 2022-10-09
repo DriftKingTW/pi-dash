@@ -84,7 +84,7 @@
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
                 <v-avatar size="40">
-                  <pixiv-icon size="3x" fill="white"></pixiv-icon>
+                  <pixiv-icon size="3x" fill="#0096fa"></pixiv-icon>
                 </v-avatar>
               </v-list-item-icon>
 
@@ -102,7 +102,7 @@
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
                 <v-avatar size="40">
-                  <pixiv-icon size="3x" fill="white"></pixiv-icon>
+                  <pixiv-icon size="3x" fill="#0096fa"></pixiv-icon>
                 </v-avatar>
               </v-list-item-icon>
 
