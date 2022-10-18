@@ -72,6 +72,7 @@ export default {
 
   data() {
     return {
+      timer: null,
       loading: true,
       trackingId: "",
       packages: [],
@@ -82,7 +83,7 @@ export default {
 
   mounted() {
     this.initialize();
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.initialize();
     }, 1000 * 60 * 30 /* 30 minutes */);
   },
@@ -156,6 +157,10 @@ export default {
     },
 
     ...mapState(["input"]),
+  },
+
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
 };
 </script>

@@ -163,6 +163,7 @@ export default {
 
   data() {
     return {
+      timer: null,
       loading: true,
       twitterData: {},
       facebookData: {},
@@ -174,7 +175,7 @@ export default {
 
   mounted() {
     this.initialize();
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.initialize();
     }, 60 * 60 * 1000 /* 60 minutes */);
   },
@@ -252,6 +253,10 @@ export default {
 
   computed: {
     //
+  },
+
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
 };
 </script>

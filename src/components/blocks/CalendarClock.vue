@@ -39,6 +39,7 @@ export default {
 
   data() {
     return {
+      timer: null,
       date: null,
       now: {
         year: "",
@@ -67,7 +68,7 @@ export default {
 
   methods: {
     initialize() {
-      setInterval(() => {
+      this.timer = setInterval(() => {
         this.updateTime();
       }, 1000);
     },
@@ -108,6 +109,10 @@ export default {
 
   computed: {
     //
+  },
+
+  beforeDestroy() {
+    clearInterval(this.timer);
   },
 };
 </script>
