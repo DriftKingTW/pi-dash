@@ -58,6 +58,17 @@ export default {
           highlight: true,
           dates: new Date(),
         },
+        {
+          key: "1",
+          dot: "red",
+          dates: {
+            on: [{ days: 1 }, { days: 15 }],
+          },
+          popover: {
+            label: "Fanbox Update",
+            visibility: "click",
+          },
+        },
       ],
     };
   },
@@ -103,7 +114,9 @@ export default {
       this.now.ampm = date.getHours() > 12 ? "PM" : "AM";
       this.now.minute = String(date.getMinutes()).padStart(2, "0");
       this.now.second = String(date.getSeconds()).padStart(2, "0");
-      this.attrs[0].dates = this.date;
+      if (this.attrs[0].dates.getDate() !== this.date.getDate()) {
+        this.attrs[0].dates = this.date;
+      }
     },
   },
 
