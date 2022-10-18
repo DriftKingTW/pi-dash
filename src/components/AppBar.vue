@@ -85,14 +85,13 @@ export default {
 
   mounted() {
     this.initialize();
-    setInterval(() => {
-      this.initialize();
-    }, 5000);
   },
 
   methods: {
     initialize() {
-      this.updateTemperature();
+      setInterval(() => {
+        this.updateTemperature();
+      }, 5000); // 5 seconds
     },
 
     async updateTemperature() {

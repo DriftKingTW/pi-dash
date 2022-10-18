@@ -29,13 +29,13 @@
 
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ twitterData.name }}
+                  {{ twitterData.name ? twitterData.name : "Loading..." }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   {{
                     twitterData.public_metrics
                       ? twitterData.public_metrics.followers_count
-                      : ""
+                      : 0
                   }}
                   followers
                 </v-list-item-subtitle>
@@ -67,10 +67,10 @@
 
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ facebookData.name }}
+                  {{ facebookData.name ? facebookData.name : "Loading..." }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ facebookData.fan_count }}
+                  {{ facebookData.fan_count ? facebookData.fan_count : 0 }}
                   fans
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -90,10 +90,14 @@
 
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ pixivDataMain.name }}
+                  {{ pixivDataMain.name ? pixivDataMain.name : "Loading..." }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ pixivDataMain.followerCount }}
+                  {{
+                    pixivDataMain.followerCount
+                      ? pixivDataMain.followerCount
+                      : 0
+                  }}
                   followers
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -108,10 +112,12 @@
 
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ pixivDataSub.name }}
+                  {{ pixivDataSub.name ? pixivDataSub.name : "Loading..." }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ pixivDataSub.followerCount }}
+                  {{
+                    pixivDataSub.followerCount ? pixivDataSub.followerCount : 0
+                  }}
                   followers
                 </v-list-item-subtitle>
               </v-list-item-content>
@@ -129,10 +135,12 @@
 
               <v-list-item-content>
                 <v-list-item-title>
-                  {{ fanboxData.name }}
+                  {{ fanboxData.name ? fanboxData.name : "Loading..." }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ fanboxData.fans }} fans (¥{{ fanboxData.pledge }})
+                  {{ fanboxData.fans ? fanboxData.fans : 0 }} fans (¥{{
+                    fanboxData.pledge ? fanboxData.pledge : 0
+                  }})
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -168,7 +176,7 @@ export default {
     this.initialize();
     setInterval(() => {
       this.initialize();
-    }, 60 * 60 * 1000 /* 10 minutes */);
+    }, 60 * 60 * 1000 /* 60 minutes */);
   },
 
   methods: {

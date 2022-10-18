@@ -70,7 +70,7 @@
           class="py-1 px-6 d-flex align-center justify-space-between"
         >
           <div class="d-flex flex-column">
-            <v-btn v-if="dnd" icon x-large @click="trigger('DND')">
+            <v-btn v-if="!dnd" icon x-large @click="trigger('DND')">
               <v-icon>mdi-bell</v-icon>
             </v-btn>
 
@@ -154,8 +154,8 @@ export default {
     async initialize() {
       // Update status with 0.3 second interval
       for (;;) {
-        this.updateStatus();
-        await timeout(500);
+        await this.updateStatus();
+        await timeout(300);
       }
     },
 
@@ -171,71 +171,59 @@ export default {
       }
     },
 
-    updateStatus() {
-      this.getCurrentPlaying();
-      this.getSystemStatus();
-    },
-
-    async getSystemStatus() {
-      const getSystemDoNotDisturbState = () => {
-        return axios.get(
+    // Get playing info and system status from BTT http server
+    async updateStatus() {
+      const getSystemDoNotDisturbState = async () => {
+        return await axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=SystemDoNotDisturbState`
         );
       };
-      try {
-        const res = await getSystemDoNotDisturbState();
-        if (res.data === 1) {
-          this.dnd = true;
-        } else {
-          this.dnd = false;
-        }
-        if (res.data === "error") {
-          this.$store.commit("updateConnectionStatus", false);
-        } else {
-          this.$store.commit("updateConnectionStatus", true);
-        }
-      } catch (e) {
-        console.log(e);
-      }
-    },
 
-    // Get playing info from BTT http server
-    async getCurrentPlaying() {
-      const getBTTCurrentlyPlaying = () => {
-        return axios.get(
+      const getBTTCurrentlyPlaying = async () => {
+        return await axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_number_variable/?variableName=BTTCurrentlyPlaying`
         );
       };
 
-      const getBTTNowPlayingInfoAlbum = () => {
-        return axios.get(
+      const getBTTNowPlayingInfoAlbum = async () => {
+        return await axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoAlbum`
         );
       };
 
-      const getBTTNowPlayingInfoArtist = () => {
-        return axios.get(
+      const getBTTNowPlayingInfoArtist = async () => {
+        return await axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoArtist`
         );
       };
 
-      const getBTTNowPlayingInfoTitle = () => {
-        return axios.get(
+      const getBTTNowPlayingInfoTitle = async () => {
+        return await axios.get(
           `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=BTTNowPlayingInfoTitle`
         );
       };
+
       try {
         const res = await Promise.all([
           getBTTCurrentlyPlaying(),
           getBTTNowPlayingInfoAlbum(),
           getBTTNowPlayingInfoArtist(),
           getBTTNowPlayingInfoTitle(),
+          getSystemDoNotDisturbState(),
         ]);
 
         this.currentPlaying.isPlaying = res[0].data;
         this.currentPlaying.album = res[1].data;
         this.currentPlaying.artist = res[2].data;
         this.currentPlaying.title = res[3].data;
+
+        const resDnD = res[4];
+        this.dnd = resDnD.data === 1 ? true : false;
+        if (resDnD.data === "error") {
+          this.$store.commit("updateConnectionStatus", false);
+        } else {
+          this.$store.commit("updateConnectionStatus", true);
+        }
       } catch (e) {
         console.log(e);
       }

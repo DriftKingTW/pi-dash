@@ -84,7 +84,7 @@ export default {
     this.initialize();
     setInterval(() => {
       this.initialize();
-    }, 1000 * 60 * 30 /* 10 minutes */);
+    }, 1000 * 60 * 30 /* 30 minutes */);
   },
 
   methods: {
