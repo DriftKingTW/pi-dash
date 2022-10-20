@@ -30,6 +30,7 @@
 <script>
 import Calendar from "v-calendar/lib/components/calendar.umd";
 import WeatherWidget from "@/components/WeatherWidget";
+import axios from "axios";
 
 export default {
   components: {
@@ -65,9 +66,7 @@ export default {
               backgroundColor: "brown",
             },
           },
-          dates: {
-            weekdays: [1, 7],
-          },
+          dates: [],
         },
         {
           key: "fanbox",
@@ -93,6 +92,26 @@ export default {
       this.timer = setInterval(() => {
         this.updateTime();
       }, 1000);
+      this.getTaiwanHoliday();
+    },
+
+    async getTaiwanHoliday() {
+      const year = new Date().getFullYear();
+      const url = `https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/${year}.json`;
+      const res = await axios.get(url);
+      const holidays = res.data
+        .filter((d) => d.isHoliday)
+        .map(
+          (d) =>
+            new Date(
+              d.date.slice(0, 4) +
+                "-" +
+                d.date.slice(4, 6) +
+                "-" +
+                d.date.slice(6, 8)
+            )
+        );
+      this.attrs[1].dates = [...holidays];
     },
 
     updateTime() {
