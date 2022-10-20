@@ -59,8 +59,19 @@ export default {
           dates: new Date(),
         },
         {
-          key: "1",
-          dot: "red",
+          key: "weekend",
+          dot: {
+            style: {
+              backgroundColor: "brown",
+            },
+          },
+          dates: {
+            weekdays: [1, 7],
+          },
+        },
+        {
+          key: "fanbox",
+          dot: "orange",
           dates: {
             on: [{ days: 1 }, { days: 15 }],
           },
