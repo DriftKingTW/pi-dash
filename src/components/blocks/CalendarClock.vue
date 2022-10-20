@@ -92,11 +92,12 @@ export default {
       this.timer = setInterval(() => {
         this.updateTime();
       }, 1000);
-      this.getTaiwanHoliday();
+      this.getTaiwanHoliday(new Date().getFullYear());
+      this.getTaiwanHoliday(new Date().getFullYear() + 1);
+      this.getTaiwanHoliday(new Date().getFullYear() - 1);
     },
 
-    async getTaiwanHoliday() {
-      const year = new Date().getFullYear();
+    async getTaiwanHoliday(year = false) {
       const url = `https://cdn.jsdelivr.net/gh/ruyut/TaiwanCalendar/data/${year}.json`;
       const res = await axios.get(url);
       const holidays = res.data
@@ -111,7 +112,7 @@ export default {
                 d.date.slice(6, 8)
             )
         );
-      this.attrs[1].dates = [...holidays];
+      this.attrs[1].dates = [...this.attrs[1].dates, ...holidays];
     },
 
     updateTime() {
