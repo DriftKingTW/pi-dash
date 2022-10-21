@@ -20,6 +20,9 @@
         <v-tab-item>
           <FamilyMartTracking />
         </v-tab-item>
+        <v-tab-item>
+          <CountdownTimer />
+        </v-tab-item>
       </v-tabs-items>
     </div>
     <ControlCenter class="control-block" />
@@ -32,6 +35,7 @@ import SocialStatistics from "@/components/blocks/SocialStatistics.vue";
 import FamilyMartTracking from "@/components/blocks/FamilyMartTracking.vue";
 import CalendarClock from "@/components/blocks/CalendarClock.vue";
 import ControlCenter from "@/components/blocks/ControlCenter.vue";
+import CountdownTimer from "@/components/blocks/CountdownTimer.vue";
 
 export default {
   name: "HomeView",
@@ -40,12 +44,13 @@ export default {
     FamilyMartTracking,
     CalendarClock,
     ControlCenter,
+    CountdownTimer,
   },
 
   data() {
     return {
       tab: null,
-      tabItems: ["Social", "Shipping"],
+      tabItems: ["Social", "Shipping", "Timer"],
     };
   },
 
