@@ -20,7 +20,13 @@
       </v-card>
       <v-card color="primary" flat>
         <v-card-text class="pa-0 calendar">
-          <Calendar :attributes="attrs" color="blue" is-dark height="100px" />
+          <Calendar
+            :attributes="attrs"
+            :first-day-of-week="1"
+            color="blue"
+            is-dark
+            height="100px"
+          />
         </v-card-text>
       </v-card>
     </div>
