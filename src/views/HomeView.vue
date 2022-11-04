@@ -18,10 +18,10 @@
           <SocialStatistics />
         </v-tab-item>
         <v-tab-item>
-          <FamilyMartTracking />
+          <CountdownTimer />
         </v-tab-item>
         <v-tab-item>
-          <CountdownTimer />
+          <FamilyMartTracking />
         </v-tab-item>
       </v-tabs-items>
     </div>
@@ -50,7 +50,7 @@ export default {
   data() {
     return {
       tab: null,
-      tabItems: ["Social", "Shipping", "Timer"],
+      tabItems: ["Social", "Timer", "Shipping"],
     };
   },
 
