@@ -34,10 +34,20 @@
                 <v-list-item-subtitle>
                   {{
                     twitterData.public_metrics
-                      ? twitterData.public_metrics.followers_count
+                      ? numberWithCommas(
+                          twitterData.public_metrics.followers_count
+                        )
                       : 0
                   }}
                   followers
+                  <span
+                    :class="
+                      twitterData.diff >= 0 ? 'success--text' : 'error--text'
+                    "
+                  >
+                    ({{ twitterData.diff >= 0 ? "+" : "" }}
+                    {{ numberWithCommas(twitterData.diff) }})
+                  </span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -70,8 +80,20 @@
                   {{ facebookData.name ? facebookData.name : "Loading..." }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ facebookData.fan_count ? facebookData.fan_count : 0 }}
+                  {{
+                    facebookData.fan_count
+                      ? numberWithCommas(facebookData.fan_count)
+                      : 0
+                  }}
                   fans
+                  <span
+                    :class="
+                      facebookData.diff >= 0 ? 'success--text' : 'error--text'
+                    "
+                  >
+                    ({{ facebookData.diff >= 0 ? "+" : "" }}
+                    {{ numberWithCommas(facebookData.diff) }})
+                  </span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -95,10 +117,18 @@
                 <v-list-item-subtitle>
                   {{
                     pixivDataMain.followerCount
-                      ? pixivDataMain.followerCount
+                      ? numberWithCommas(pixivDataMain.followerCount)
                       : 0
                   }}
                   followers
+                  <span
+                    :class="
+                      pixivDataMain.diff >= 0 ? 'success--text' : 'error--text'
+                    "
+                  >
+                    ({{ pixivDataMain.diff >= 0 ? "+" : "" }}
+                    {{ numberWithCommas(pixivDataMain.diff) }})
+                  </span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -116,9 +146,19 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   {{
-                    pixivDataSub.followerCount ? pixivDataSub.followerCount : 0
+                    pixivDataSub.followerCount
+                      ? numberWithCommas(pixivDataSub.followerCount)
+                      : 0
                   }}
                   followers
+                  <span
+                    :class="
+                      pixivDataSub.diff >= 0 ? 'success--text' : 'error--text'
+                    "
+                  >
+                    ({{ pixivDataSub.diff >= 0 ? "+" : "" }}
+                    {{ numberWithCommas(pixivDataSub.diff) }})
+                  </span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -138,9 +178,18 @@
                   {{ fanboxData.name ? fanboxData.name : "Loading..." }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ fanboxData.fans ? fanboxData.fans : 0 }} fans (¥{{
-                    fanboxData.pledge ? fanboxData.pledge : 0
-                  }})
+                  {{ fanboxData.fans ? numberWithCommas(fanboxData.fans) : 0 }}
+                  fans ({{
+                    fanboxData.pledge ? numberWithCommas(fanboxData.pledge) : 0
+                  }}¥
+                  <span
+                    :class="
+                      fanboxData.diff >= 0 ? 'success--text' : 'error--text'
+                    "
+                  >
+                    {{ fanboxData.diff >= 0 ? "+" : "" }}
+                    {{ numberWithCommas(fanboxData.diff) }})
+                  </span>
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
@@ -165,11 +214,11 @@ export default {
     return {
       timer: null,
       loading: true,
-      twitterData: {},
-      facebookData: {},
-      pixivDataMain: {},
-      pixivDataSub: {},
-      fanboxData: {},
+      twitterData: { lastData: null, diff: 0 },
+      facebookData: { lastData: null, diff: 0 },
+      pixivDataMain: { lastData: null, diff: 0 },
+      pixivDataSub: { lastData: null, diff: 0 },
+      fanboxData: { lastData: null, diff: 0 },
     };
   },
 
@@ -190,10 +239,16 @@ export default {
         this.twitterData = { ...resTwitter.data };
 
         if (this.twitterData) {
-          this.twitterData.public_metrics.followers_count =
-            this.numberWithCommas(
-              this.twitterData.public_metrics.followers_count
-            );
+          if (!this.twitterData.lastData) {
+            this.twitterData.lastData =
+              this.twitterData.public_metrics.followers_count;
+          }
+          this.twitterData.diff =
+            this.twitterData.public_metrics.followers_count -
+            this.twitterData.lastData;
+
+          this.twitterData.lastData =
+            this.twitterData.public_metrics.followers_count;
         }
 
         const resFacebook = await axios.get(
@@ -202,9 +257,13 @@ export default {
         this.facebookData = { ...resFacebook.data };
 
         if (this.facebookData) {
-          this.facebookData.fan_count = this.numberWithCommas(
-            this.facebookData.fan_count
-          );
+          if (!this.facebookData.lastData) {
+            this.facebookData.lastData = this.facebookData.fan_count;
+          }
+          this.facebookData.diff =
+            this.facebookData.fan_count - this.facebookData.lastData;
+
+          this.facebookData.lastData = this.facebookData.fan_count;
         }
 
         const resPixivMain = await axios.get(
@@ -213,9 +272,13 @@ export default {
         this.pixivDataMain = { ...resPixivMain.data };
 
         if (this.pixivDataMain) {
-          this.pixivDataMain.followerCount = this.numberWithCommas(
-            this.pixivDataMain.followerCount
-          );
+          if (!this.pixivDataMain.lastData) {
+            this.pixivDataMain.lastData = this.pixivDataMain.followerCount;
+          }
+          this.pixivDataMain.diff =
+            this.pixivDataMain.followerCount - this.pixivDataMain.lastData;
+
+          this.pixivDataMain.lastData = this.pixivDataMain.followerCount;
         }
 
         const resPixivSub = await axios.get(
@@ -224,9 +287,13 @@ export default {
         this.pixivDataSub = { ...resPixivSub.data };
 
         if (this.pixivDataSub) {
-          this.pixivDataSub.followerCount = this.numberWithCommas(
-            this.pixivDataSub.followerCount
-          );
+          if (!this.pixivDataSub.lastData) {
+            this.pixivDataSub.lastData = this.pixivDataSub.followerCount;
+          }
+          this.pixivDataSub.diff =
+            this.pixivDataSub.followerCount - this.pixivDataSub.lastData;
+
+          this.pixivDataSub.lastData = this.pixivDataSub.followerCount;
         }
 
         const resFanbox = await axios.get(
@@ -235,10 +302,13 @@ export default {
         this.fanboxData = { ...resFanbox.data };
 
         if (this.fanboxData) {
-          this.fanboxData.pledge = this.numberWithCommas(
-            this.fanboxData.pledge
-          );
-          this.fanboxData.fans = this.numberWithCommas(this.fanboxData.fans);
+          if (!this.fanboxData.lastData) {
+            this.fanboxData.lastData = this.fanboxData.pledge;
+          }
+          this.fanboxData.diff =
+            this.fanboxData.pledge - this.fanboxData.lastData;
+
+          this.fanboxData.lastData = this.fanboxData.pledge;
         }
       } catch (e) {
         console.log(e);
