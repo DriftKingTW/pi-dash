@@ -1,7 +1,7 @@
 <template>
   <v-card color="primary" flat :loading="loading">
-    <v-card-title class="pb-0" @click="initialize">
-      <v-icon left>mdi-account-group-outline</v-icon>
+    <v-card-title class="pb-0">
+      <v-icon left @click="initialize">mdi-account-group-outline</v-icon>
       Social Statistics
     </v-card-title>
     <v-card-text>
@@ -214,11 +214,11 @@ export default {
     return {
       timer: null,
       loading: true,
-      twitterData: { lastData: null, diff: 0 },
-      facebookData: { lastData: null, diff: 0 },
-      pixivDataMain: { lastData: null, diff: 0 },
-      pixivDataSub: { lastData: null, diff: 0 },
-      fanboxData: { lastData: null, diff: 0 },
+      twitterData: { diff: 0 },
+      facebookData: { diff: 0 },
+      pixivDataMain: { diff: 0 },
+      pixivDataSub: { diff: 0 },
+      fanboxData: { diff: 0 },
     };
   },
 
@@ -238,78 +238,77 @@ export default {
         );
         this.twitterData = { ...resTwitter.data };
 
-        if (this.twitterData) {
-          if (!this.twitterData.lastData) {
-            this.twitterData.lastData =
-              this.twitterData.public_metrics.followers_count;
-          }
-          this.twitterData.diff =
-            this.twitterData.public_metrics.followers_count -
-            this.twitterData.lastData;
-
-          this.twitterData.lastData =
-            this.twitterData.public_metrics.followers_count;
+        if (localStorage.getItem("twitterFollowersCount") === null) {
+          localStorage.setItem(
+            "twitterFollowersCount",
+            this.twitterData.public_metrics.followers_count
+          );
         }
+
+        this.twitterData.diff =
+          this.twitterData.public_metrics.followers_count -
+          Number(localStorage.getItem("twitterFollowersCount"));
 
         const resFacebook = await axios.get(
           `${process.env.VUE_APP_API_URL}/facebook/statistics`
         );
         this.facebookData = { ...resFacebook.data };
 
-        if (this.facebookData) {
-          if (!this.facebookData.lastData) {
-            this.facebookData.lastData = this.facebookData.fan_count;
-          }
-          this.facebookData.diff =
-            this.facebookData.fan_count - this.facebookData.lastData;
-
-          this.facebookData.lastData = this.facebookData.fan_count;
+        if (localStorage.getItem("facebookFollowersCount") === null) {
+          localStorage.setItem(
+            "facebookFollowersCount",
+            this.facebookData.fan_count
+          );
         }
+
+        this.facebookData.diff =
+          this.facebookData.fan_count -
+          Number(localStorage.getItem("facebookFollowersCount"));
 
         const resPixivMain = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=driftkingtw`
         );
         this.pixivDataMain = { ...resPixivMain.data };
 
-        if (this.pixivDataMain) {
-          if (!this.pixivDataMain.lastData) {
-            this.pixivDataMain.lastData = this.pixivDataMain.followerCount;
-          }
-          this.pixivDataMain.diff =
-            this.pixivDataMain.followerCount - this.pixivDataMain.lastData;
-
-          this.pixivDataMain.lastData = this.pixivDataMain.followerCount;
+        if (localStorage.getItem("pixivMainFollowersCount") === null) {
+          localStorage.setItem(
+            "pixivMainFollowersCount",
+            this.pixivDataMain.followerCount
+          );
         }
+
+        this.pixivDataMain.diff =
+          this.pixivDataMain.followerCount -
+          Number(localStorage.getItem("pixivMainFollowersCount"));
 
         const resPixivSub = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=dkaze`
         );
         this.pixivDataSub = { ...resPixivSub.data };
 
-        if (this.pixivDataSub) {
-          if (!this.pixivDataSub.lastData) {
-            this.pixivDataSub.lastData = this.pixivDataSub.followerCount;
-          }
-          this.pixivDataSub.diff =
-            this.pixivDataSub.followerCount - this.pixivDataSub.lastData;
-
-          this.pixivDataSub.lastData = this.pixivDataSub.followerCount;
+        if (localStorage.getItem("pixivSubFollowersCount") === null) {
+          localStorage.setItem(
+            "pixivSubFollowersCount",
+            this.pixivDataSub.followerCount
+          );
         }
+
+        this.pixivDataSub.diff =
+          this.pixivDataSub.followerCount -
+          Number(localStorage.getItem("pixivSubFollowersCount"));
 
         const resFanbox = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics/fanbox?user=dkaze`
         );
         this.fanboxData = { ...resFanbox.data };
 
-        if (this.fanboxData) {
-          if (!this.fanboxData.lastData) {
-            this.fanboxData.lastData = this.fanboxData.pledge;
-          }
-          this.fanboxData.diff =
-            this.fanboxData.pledge - this.fanboxData.lastData;
-
-          this.fanboxData.lastData = this.fanboxData.pledge;
+        if (localStorage.getItem("fanboxPledgeNumber") === null) {
+          localStorage.setItem("fanboxPledgeNumber", this.fanboxData.pledge);
         }
+
+        this.fanboxData.diff =
+          this.fanboxData.pledge -
+          Number(localStorage.getItem("fanboxPledgeNumber"));
       } catch (e) {
         console.log(e);
       }
