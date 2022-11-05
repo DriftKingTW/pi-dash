@@ -3,6 +3,7 @@
     <v-card-title class="pb-0">
       <v-icon left @click="initialize">mdi-account-group-outline</v-icon>
       Social Statistics
+      <v-icon right @click="resetDiff">mdi-television-shimmer</v-icon>
     </v-card-title>
     <v-card-text>
       <v-row>
@@ -313,6 +314,26 @@ export default {
         console.log(e);
       }
       this.loading = false;
+    },
+
+    resetDiff() {
+      localStorage.setItem(
+        "twitterFollowersCount",
+        this.twitterData.public_metrics.followers_count
+      );
+      localStorage.setItem(
+        "facebookFollowersCount",
+        this.facebookData.fan_count
+      );
+      localStorage.setItem(
+        "pixivMainFollowersCount",
+        this.pixivDataMain.followerCount
+      );
+      localStorage.setItem(
+        "pixivSubFollowersCount",
+        this.pixivDataSub.followerCount
+      );
+      localStorage.setItem("fanboxPledgeNumber", this.fanboxData.pledge);
     },
 
     numberWithCommas(x) {
