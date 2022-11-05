@@ -1,6 +1,6 @@
 <template>
   <v-card color="primary" flat :loading="loading">
-    <v-card-title class="pb-0">
+    <v-card-title class="pb-0" @click="initialize">
       <v-icon left>mdi-account-group-outline</v-icon>
       Social Statistics
     </v-card-title>
