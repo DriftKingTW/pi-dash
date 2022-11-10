@@ -40,7 +40,6 @@
                         )
                       : 0
                   }}
-                  followers
                   <span
                     :class="
                       twitterData.diff >= 0 ? 'success--text' : 'error--text'
@@ -86,7 +85,6 @@
                       ? numberWithCommas(facebookData.fan_count)
                       : 0
                   }}
-                  fans
                   <span
                     :class="
                       facebookData.diff >= 0 ? 'success--text' : 'error--text'
@@ -121,7 +119,6 @@
                       ? numberWithCommas(pixivDataMain.followerCount)
                       : 0
                   }}
-                  followers
                   <span
                     :class="
                       pixivDataMain.diff >= 0 ? 'success--text' : 'error--text'
@@ -151,7 +148,6 @@
                       ? numberWithCommas(pixivDataSub.followerCount)
                       : 0
                   }}
-                  followers
                   <span
                     :class="
                       pixivDataSub.diff >= 0 ? 'success--text' : 'error--text'
@@ -180,7 +176,7 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   {{ fanboxData.fans ? numberWithCommas(fanboxData.fans) : 0 }}
-                  fans ({{
+                  ({{
                     fanboxData.pledge ? numberWithCommas(fanboxData.pledge) : 0
                   }}¥
                   <span
