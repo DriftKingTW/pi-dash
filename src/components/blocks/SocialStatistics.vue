@@ -185,8 +185,9 @@
                     "
                   >
                     {{ fanboxData.diff >= 0 ? "+" : "" }}
-                    {{ numberWithCommas(fanboxData.diff) }})
+                    {{ numberWithCommas(fanboxData.diff) }}¥
                   </span>
+                  )
                 </v-list-item-subtitle>
               </v-list-item-content>
             </v-list-item>
