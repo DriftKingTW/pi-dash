@@ -236,7 +236,10 @@ export default {
         );
         this.twitterData = { ...resTwitter.data };
 
-        if (localStorage.getItem("twitterFollowersCount") === null) {
+        if (
+          localStorage.getItem("twitterFollowersCount") === null &&
+          !isNaN(this.twitterData.public_metrics.followers_count)
+        ) {
           localStorage.setItem(
             "twitterFollowersCount",
             this.twitterData.public_metrics.followers_count
@@ -252,7 +255,10 @@ export default {
         );
         this.facebookData = { ...resFacebook.data };
 
-        if (localStorage.getItem("facebookFollowersCount") === null) {
+        if (
+          localStorage.getItem("facebookFollowersCount") === null &&
+          !isNaN(this.facebookData.fan_count)
+        ) {
           localStorage.setItem(
             "facebookFollowersCount",
             this.facebookData.fan_count
@@ -268,7 +274,10 @@ export default {
         );
         this.pixivDataMain = { ...resPixivMain.data };
 
-        if (localStorage.getItem("pixivMainFollowersCount") === null) {
+        if (
+          localStorage.getItem("pixivMainFollowersCount") === null &&
+          !isNaN(this.pixivDataMain.followerCount)
+        ) {
           localStorage.setItem(
             "pixivMainFollowersCount",
             this.pixivDataMain.followerCount
@@ -284,7 +293,10 @@ export default {
         );
         this.pixivDataSub = { ...resPixivSub.data };
 
-        if (localStorage.getItem("pixivSubFollowersCount") === null) {
+        if (
+          localStorage.getItem("pixivSubFollowersCount") === null &&
+          !isNaN(this.pixivDataSub.followerCount)
+        ) {
           localStorage.setItem(
             "pixivSubFollowersCount",
             this.pixivDataSub.followerCount
@@ -300,7 +312,10 @@ export default {
         );
         this.fanboxData = { ...resFanbox.data };
 
-        if (localStorage.getItem("fanboxPledgeNumber") === null) {
+        if (
+          localStorage.getItem("fanboxPledgeNumber") === null &&
+          !isNaN(this.fanboxData.pledge)
+        ) {
           localStorage.setItem("fanboxPledgeNumber", this.fanboxData.pledge);
         }
 
