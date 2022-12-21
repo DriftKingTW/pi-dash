@@ -88,11 +88,12 @@
           </div>
 
           <div class="d-flex flex-column">
-            <v-btn icon x-large @click="trigger('ToggleScreenBar')">
-              <v-icon>mdi-lightbulb</v-icon>
+            <v-btn icon x-large @click="trigger('SleepDisplay')">
+              <v-icon>mdi-television-off</v-icon>
             </v-btn>
-            <div class="text-center caption">Sc. Bar</div>
+            <div class="text-center caption">Sleep</div>
           </div>
+
           <div class="d-flex flex-column">
             <v-btn icon x-large @click="trigger('ToggleLyric')">
               <v-icon>mdi-subtitles</v-icon>
