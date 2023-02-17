@@ -346,6 +346,8 @@ export default {
         this.pixivDataSub.followerCount
       );
       localStorage.setItem("fanboxPledgeNumber", this.fanboxData.pledge);
+
+      this.initialize();
     },
 
     numberWithCommas(x) {
