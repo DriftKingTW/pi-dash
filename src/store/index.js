@@ -7,7 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     navDrawer: false,
-    isMacMode: false,
+    isExpand: false,
     snackbar: false,
     snackbarText: "",
     snackbarColor: "info",
@@ -29,16 +29,16 @@ export default new Vuex.Store({
     },
 
     syncMacModeFromLocalStorage(state) {
-      if (localStorage.getItem("isMacMode") === "true") {
-        state.isMacMode = true;
+      if (localStorage.getItem("isExpand") === "true") {
+        state.isExpand = true;
       } else {
-        state.isMacMode = false;
+        state.isExpand = false;
       }
     },
 
-    toggleMacMode(state) {
-      state.isMacMode = !state.isMacMode;
-      localStorage.setItem("isMacMode", state.isMacMode);
+    toggleExpand(state) {
+      state.isExpand = !state.isExpand;
+      localStorage.setItem("isExpand", state.isExpand);
     },
 
     triggerSnackbar(state, { status, text }) {
