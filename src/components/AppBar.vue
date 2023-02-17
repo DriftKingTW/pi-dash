@@ -28,9 +28,11 @@
     </v-chip>
     <v-divider vertical class="mx-1"></v-divider>
     <v-btn text>
-      <v-icon small left>mdi-thermometer</v-icon>
-      {{ temperature }}
-      <v-icon small right>mdi-temperature-celsius</v-icon>
+      <v-icon small left :color="temperatureColor">mdi-thermometer</v-icon>
+      <span :class="`${temperatureColor}--text`">{{ temperature }}</span>
+      <v-icon small right :color="temperatureColor">
+        mdi-temperature-celsius
+      </v-icon>
     </v-btn>
     <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @click="syncClipboard">
@@ -79,7 +81,7 @@ export default {
 
   data() {
     return {
-      temperature: {},
+      temperature: 0,
     };
   },
 
@@ -178,6 +180,15 @@ export default {
 
   computed: {
     ...mapState(["statusMessages", "connectionStatus", "isExpand"]),
+    temperatureColor() {
+      if (this.temperature >= 70) {
+        return "error";
+      } else if (this.temperature >= 60) {
+        return "warning";
+      } else {
+        return "white";
+      }
+    },
   },
 };
 </script>
