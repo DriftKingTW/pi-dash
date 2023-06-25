@@ -252,6 +252,7 @@ export default {
       } catch (e) {
         console.log(e);
       }
+
       try {
         const resFacebook = await axios.get(
           `${process.env.VUE_APP_API_URL}/facebook/statistics`
@@ -274,6 +275,7 @@ export default {
       } catch (e) {
         console.log(e);
       }
+
       try {
         const resPixivMain = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=driftkingtw`
@@ -363,6 +365,7 @@ export default {
     },
 
     numberWithCommas(x) {
+      if (x === undefined) return "Error";
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
   },
