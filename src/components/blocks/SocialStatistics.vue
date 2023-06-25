@@ -249,7 +249,10 @@ export default {
         this.twitterData.diff =
           this.twitterData.public_metrics.followers_count -
           Number(localStorage.getItem("twitterFollowersCount"));
-
+      } catch (e) {
+        console.log(e);
+      }
+      try {
         const resFacebook = await axios.get(
           `${process.env.VUE_APP_API_URL}/facebook/statistics`
         );
@@ -268,7 +271,10 @@ export default {
         this.facebookData.diff =
           this.facebookData.fan_count -
           Number(localStorage.getItem("facebookFollowersCount"));
-
+      } catch (e) {
+        console.log(e);
+      }
+      try {
         const resPixivMain = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=driftkingtw`
         );
@@ -287,7 +293,10 @@ export default {
         this.pixivDataMain.diff =
           this.pixivDataMain.followerCount -
           Number(localStorage.getItem("pixivMainFollowersCount"));
-
+      } catch (e) {
+        console.log(e);
+      }
+      try {
         const resPixivSub = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=dkaze`
         );
@@ -306,7 +315,10 @@ export default {
         this.pixivDataSub.diff =
           this.pixivDataSub.followerCount -
           Number(localStorage.getItem("pixivSubFollowersCount"));
-
+      } catch (e) {
+        console.log(e);
+      }
+      try {
         const resFanbox = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics/fanbox?user=dkaze`
         );
