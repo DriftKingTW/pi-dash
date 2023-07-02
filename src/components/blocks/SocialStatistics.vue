@@ -230,28 +230,28 @@ export default {
   methods: {
     async initialize() {
       this.loading = true;
-      try {
-        const resTwitter = await axios.get(
-          `${process.env.VUE_APP_API_URL}/twitter/statistics`
-        );
-        this.twitterData = { ...resTwitter.data };
+      // try {
+      //   const resTwitter = await axios.get(
+      //     `${process.env.VUE_APP_API_URL}/twitter/statistics`
+      //   );
+      //   this.twitterData = { ...resTwitter.data };
 
-        if (
-          localStorage.getItem("twitterFollowersCount") === null &&
-          !isNaN(this.twitterData.public_metrics.followers_count)
-        ) {
-          localStorage.setItem(
-            "twitterFollowersCount",
-            this.twitterData.public_metrics.followers_count
-          );
-        }
+      //   if (
+      //     localStorage.getItem("twitterFollowersCount") === null &&
+      //     !isNaN(this.twitterData.public_metrics.followers_count)
+      //   ) {
+      //     localStorage.setItem(
+      //       "twitterFollowersCount",
+      //       this.twitterData.public_metrics.followers_count
+      //     );
+      //   }
 
-        this.twitterData.diff =
-          this.twitterData.public_metrics.followers_count -
-          Number(localStorage.getItem("twitterFollowersCount"));
-      } catch (e) {
-        console.log(e);
-      }
+      //   this.twitterData.diff =
+      //     this.twitterData.public_metrics.followers_count -
+      //     Number(localStorage.getItem("twitterFollowersCount"));
+      // } catch (e) {
+      //   console.log(e);
+      // }
 
       try {
         const resFacebook = await axios.get(
@@ -343,23 +343,33 @@ export default {
     },
 
     resetDiff() {
-      localStorage.setItem(
-        "twitterFollowersCount",
-        this.twitterData.public_metrics.followers_count
-      );
-      localStorage.setItem(
-        "facebookFollowersCount",
-        this.facebookData.fan_count
-      );
-      localStorage.setItem(
-        "pixivMainFollowersCount",
-        this.pixivDataMain.followerCount
-      );
-      localStorage.setItem(
-        "pixivSubFollowersCount",
-        this.pixivDataSub.followerCount
-      );
-      localStorage.setItem("fanboxPledgeNumber", this.fanboxData.pledge);
+      if (!isNaN(this.twitterData.public_metrics.followers_count)) {
+        localStorage.setItem(
+          "twitterFollowersCount",
+          this.twitterData.public_metrics.followers_count
+        );
+      }
+      if (!isNaN(this.facebookData.fan_count)) {
+        localStorage.setItem(
+          "facebookFollowersCount",
+          this.facebookData.fan_count
+        );
+      }
+      if (!isNaN(this.pixivDataMain.followerCount)) {
+        localStorage.setItem(
+          "pixivMainFollowersCount",
+          this.pixivDataMain.followerCount
+        );
+      }
+      if (!isNaN(this.pixivDataSub.followerCount)) {
+        localStorage.setItem(
+          "pixivSubFollowersCount",
+          this.pixivDataSub.followerCount
+        );
+      }
+      if (!isNaN(this.fanboxData.pledge)) {
+        localStorage.setItem("fanboxPledgeNumber", this.fanboxData.pledge);
+      }
 
       this.initialize();
     },
