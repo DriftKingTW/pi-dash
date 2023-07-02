@@ -343,12 +343,12 @@ export default {
     },
 
     resetDiff() {
-      if (!isNaN(this.twitterData.public_metrics.followers_count)) {
-        localStorage.setItem(
-          "twitterFollowersCount",
-          this.twitterData.public_metrics.followers_count
-        );
-      }
+      // if (!isNaN(this.twitterData.public_metrics.followers_count)) {
+      //   localStorage.setItem(
+      //     "twitterFollowersCount",
+      //     this.twitterData.public_metrics.followers_count
+      //   );
+      // }
       if (!isNaN(this.facebookData.fan_count)) {
         localStorage.setItem(
           "facebookFollowersCount",
