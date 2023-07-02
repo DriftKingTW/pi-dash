@@ -371,6 +371,11 @@ export default {
         localStorage.setItem("fanboxPledgeNumber", this.fanboxData.pledge);
       }
 
+      this.$store.commit("triggerSnackbar", {
+        status: "success",
+        text: "Status has been reset.",
+      });
+
       this.initialize();
     },
 
