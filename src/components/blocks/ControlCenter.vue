@@ -109,10 +109,10 @@
           </div>
 
           <div class="d-flex flex-column">
-            <v-btn icon x-large @click="trigger('ShowFloatingWebView')">
-              <v-icon>mdi-picture-in-picture-bottom-right</v-icon>
+            <v-btn icon x-large @click="getKettleTemperature">
+              <v-icon>mdi-kettle</v-icon>
             </v-btn>
-            <div class="text-center caption">PiP</div>
+            <div class="text-center caption">KetTemp</div>
           </div>
         </v-col>
       </v-row>
@@ -253,6 +253,16 @@ export default {
         }
       }
       this.loading = false;
+    },
+
+    async getKettleTemperature() {
+      const res = await axios.get(
+        `${process.env.VUE_APP_API_URL}/mikettle/temperature`
+      );
+      this.$store.commit("triggerSnackbar", {
+        status: "success",
+        text: `Kettle temperature: ${res.data}°C`,
+      });
     },
   },
 
