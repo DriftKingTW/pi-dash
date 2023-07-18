@@ -109,7 +109,12 @@
           </div>
 
           <div class="d-flex flex-column">
-            <v-btn icon x-large @click="getKettleTemperature">
+            <v-btn
+              icon
+              x-large
+              @click="getKettleTemperature"
+              :loading="isKettleLoading"
+            >
               <v-icon>mdi-kettle</v-icon>
             </v-btn>
             <div class="text-center caption">KetTemp</div>
@@ -144,6 +149,7 @@ export default {
       },
       dnd: false,
       data: {},
+      isKettleLoading: false,
     };
   },
 
@@ -256,12 +262,26 @@ export default {
     },
 
     async getKettleTemperature() {
-      const res = await axios.get(
-        `${process.env.VUE_APP_API_URL}/mikettle/temperature`
-      );
+      let result = "";
+      let index = 0;
+      do {
+        try {
+          this.isKettleLoading = true;
+          const res = await axios.get(
+            `${process.env.VUE_APP_API_URL}/mikettle/temperature`
+          );
+          result = res.data;
+        } catch (e) {
+          console.log(e);
+        } finally {
+          this.isKettleLoading = false;
+          index++;
+        }
+      } while (result.includes("Read failed") && index < 10);
+
       this.$store.commit("triggerSnackbar", {
         status: "success",
-        text: `Kettle temperature: ${res.data}°C`,
+        text: `Kettle temperature: ${result}°C`,
       });
     },
   },
