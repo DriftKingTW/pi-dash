@@ -172,7 +172,7 @@ export default {
       this.memory.load = memoryLoad;
       const used = new Decimal(memoryUsed.split(" GB")[0]);
       const available = new Decimal(memoryAvailable.split(" GB")[0]);
-      this.memory.total = used.plus(available).toString() + "GB";
+      this.memory.total = used.plus(available).toFixed(1).toString() + "GB";
     },
   },
 
