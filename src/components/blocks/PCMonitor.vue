@@ -13,7 +13,10 @@
               </div>
               <v-progress-linear height="25" color="blue" v-model="cpu.load">
                 <template v-slot:default="{ value }">
-                  <strong>{{ value }}</strong>
+                  <strong>
+                    <v-icon left>mdi-cpu-64-bit</v-icon>
+                    {{ value }}
+                  </strong>
                 </template>
               </v-progress-linear>
             </v-col>
@@ -35,7 +38,10 @@
               </div>
               <v-progress-linear height="25" color="green" v-model="gpu.load">
                 <template v-slot:default="{ value }">
-                  <strong>{{ value }}</strong>
+                  <strong>
+                    <v-icon left>mdi-expansion-card</v-icon>
+                    {{ value }}
+                  </strong>
                 </template>
               </v-progress-linear>
             </v-col>
@@ -62,7 +68,10 @@
                 v-model="memory.load"
               >
                 <template v-slot:default="{ value }">
-                  <strong>{{ value }}</strong>
+                  <strong>
+                    <v-icon left>mdi-memory</v-icon>
+                    {{ value }}
+                  </strong>
                 </template>
               </v-progress-linear>
             </v-col>
