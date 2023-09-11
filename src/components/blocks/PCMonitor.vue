@@ -53,11 +53,7 @@
                 <v-icon left>mdi-memory</v-icon>
                 <span class="text-overline">
                   Used {{ memory.used }} | Free {{ memory.available }} | Total
-                  {{
-                    Number(memory.used.split(" GB")[0]) +
-                    Number(memory.available.split(" GB")[0])
-                  }}
-                  GB
+                  {{ memory.total }}
                 </span>
               </div>
               <v-progress-linear
