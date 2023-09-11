@@ -4,51 +4,51 @@
       <v-row>
         <v-col cols="12">
           <v-row>
-            <v-col cols="8">
+            <v-col cols="12">
               <div class="mb-1">
                 <v-icon left>mdi-cpu-64-bit</v-icon>
                 <span class="text-overline">
                   {{ cpu.name }}: {{ cpu.load }}
                 </span>
               </div>
-              <v-progress-linear
-                height="25"
-                color="blue"
-                v-model="cpu.load"
-              ></v-progress-linear>
+              <v-progress-linear height="25" color="blue" v-model="cpu.load">
+                <template v-slot:default="{ value }">
+                  <strong>{{ value }}</strong>
+                </template>
+              </v-progress-linear>
             </v-col>
-            <v-col cols="4" class="mt-2 d-flex justify-center align-center">
-              <span class="text-h3 blue--text">
+            <!-- <v-col cols="4" class="mt-2 d-flex justify-center align-center">
+              <span class="text-h4 blue--text">
                 {{ cpu.temp }}
               </span>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-col>
         <v-col cols="12">
           <v-row>
-            <v-col cols="8">
+            <v-col cols="12">
               <div class="mb-1">
                 <v-icon left>mdi-expansion-card</v-icon>
                 <span class="text-overline">
                   {{ gpu.name }} : {{ gpu.load }}
                 </span>
               </div>
-              <v-progress-linear
-                height="25"
-                color="green"
-                v-model="gpu.load"
-              ></v-progress-linear>
+              <v-progress-linear height="25" color="green" v-model="gpu.load">
+                <template v-slot:default="{ value }">
+                  <strong>{{ value }}</strong>
+                </template>
+              </v-progress-linear>
             </v-col>
-            <v-col cols="4" class="mt-2 d-flex justify-center align-center">
-              <span class="text-h3 green--text">
+            <!-- <v-col cols="4" class="mt-2 d-flex justify-center align-center">
+              <span class="text-h4 green--text">
                 {{ gpu.temp }}
               </span>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-col>
         <v-col cols="12">
           <v-row>
-            <v-col cols="8">
+            <v-col cols="12">
               <div class="mb-1">
                 <v-icon left>mdi-memory</v-icon>
                 <span class="text-overline">
@@ -64,13 +64,17 @@
                 height="25"
                 color="orange"
                 v-model="memory.load"
-              ></v-progress-linear>
+              >
+                <template v-slot:default="{ value }">
+                  <strong>{{ value }}</strong>
+                </template>
+              </v-progress-linear>
             </v-col>
-            <v-col cols="4" class="mt-2 d-flex justify-center align-center">
-              <span class="text-h3 orange--text">
+            <!-- <v-col cols="4" class="mt-2 d-flex justify-center align-center">
+              <span class="text-h4 orange--text">
                 {{ memory.load }}
               </span>
-            </v-col>
+            </v-col> -->
           </v-row>
         </v-col>
       </v-row>
