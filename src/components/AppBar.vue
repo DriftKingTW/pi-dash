@@ -101,10 +101,10 @@ export default {
     },
 
     switchPCMonitoring() {
-      this.$store.commit("switchPCMonitoring");
-      const notifyText = this.showPCMonitoring
+      const notifyText = !this.showPCMonitoring
         ? "PC Monitoring Enabled"
         : "PC Monitoring Disabled";
+      this.$store.commit("switchPCMonitoring");
       this.$store.commit("triggerSnackbar", {
         status: "success",
         text: notifyText,
