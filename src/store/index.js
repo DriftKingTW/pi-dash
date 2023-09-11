@@ -19,11 +19,18 @@ export default new Vuex.Store({
       connected: "Connected",
       disconnected: "Disconnected",
     },
+    showPCMonitoring: false,
+    updateKey: 0,
   },
   getters: {
     getField,
   },
   mutations: {
+    switchPCMonitoring(state) {
+      state.showPCMonitoring = !state.showPCMonitoring;
+      state.updateKey++;
+    },
+
     toggleNavDrawer(state) {
       state.navDrawer = !state.navDrawer;
     },

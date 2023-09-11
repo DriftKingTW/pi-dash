@@ -25,7 +25,12 @@
         </v-tab-item>
       </v-tabs-items>
     </div>
-    <ControlCenter class="control-block" />
+    <ControlCenter
+      class="control-block"
+      v-if="!showPCMonitoring"
+      :key="'control-center-' + updateKey"
+    />
+    <PCMonitor class="control-block" v-else :key="'pc-monitor-' + updateKey" />
   </div>
 </template>
 
@@ -36,6 +41,8 @@ import FamilyMartTracking from "@/components/blocks/FamilyMartTracking.vue";
 import CalendarClock from "@/components/blocks/CalendarClock.vue";
 import ControlCenter from "@/components/blocks/ControlCenter.vue";
 import CountdownTimer from "@/components/blocks/CountdownTimer.vue";
+import PCMonitor from "@/components/blocks/PCMonitor.vue";
+import { mapState } from "vuex";
 
 export default {
   name: "HomeView",
@@ -45,6 +52,7 @@ export default {
     CalendarClock,
     ControlCenter,
     CountdownTimer,
+    PCMonitor,
   },
 
   data() {
@@ -73,7 +81,9 @@ export default {
     },
   },
 
-  computed: {},
+  computed: {
+    ...mapState(["showPCMonitoring", "updateKey"]),
+  },
 };
 </script>
 

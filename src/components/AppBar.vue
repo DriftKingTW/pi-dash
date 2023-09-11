@@ -35,6 +35,10 @@
       </v-icon>
     </v-btn>
     <v-divider vertical class="mx-1"></v-divider>
+    <v-btn icon @click="switchPCMonitoring">
+      <v-icon small>mdi-swap-horizontal</v-icon>
+    </v-btn>
+    <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @click="syncClipboard">
       <v-icon small>mdi-clipboard-arrow-down-outline</v-icon>
     </v-btn>
@@ -94,6 +98,14 @@ export default {
       setInterval(() => {
         this.updateTemperature();
       }, 5000); // 5 seconds
+    },
+
+    switchPCMonitoring() {
+      this.$store.commit("switchPCMonitoring");
+      this.$store.commit("triggerSnackbar", {
+        status: "success",
+        text: "PC Monitoring Enabled",
+      });
     },
 
     async updateTemperature() {
