@@ -8,29 +8,27 @@
               <div class="mb-1">
                 <v-icon left>mdi-cpu-64-bit</v-icon>
                 <span class="text-overline">
-                  {{ cpu.name }}: {{ cpu.load }}
+                  {{ cpu.name }}
                 </span>
               </div>
               <v-progress-linear height="25" color="blue" v-model="cpu.load">
                 <template v-slot:default="{ value }">
                   <strong class="d-flex">
-                    <span class="mr-2">
+                    <span class="mr-2" v-if="isConnected">
                       <v-icon small left>mdi-cpu-64-bit</v-icon>
                       {{ value }}
                     </span>
-                    <span class="ml-2">
+                    <span class="ml-2" v-if="isConnected">
                       <v-icon small left>mdi-thermometer</v-icon>
                       {{ cpu.temp }}
+                    </span>
+                    <span v-if="!isConnected">
+                      <span class="text-overline">Not Connected</span>
                     </span>
                   </strong>
                 </template>
               </v-progress-linear>
             </v-col>
-            <!-- <v-col cols="4" class="mt-2 d-flex justify-center align-center">
-              <span class="text-h4 blue--text">
-                {{ cpu.temp }}
-              </span>
-            </v-col> -->
           </v-row>
         </v-col>
         <v-col cols="12">
@@ -39,29 +37,27 @@
               <div class="mb-1">
                 <v-icon left>mdi-expansion-card</v-icon>
                 <span class="text-overline">
-                  {{ gpu.name }} : {{ gpu.load }}
+                  {{ gpu.name }}
                 </span>
               </div>
               <v-progress-linear height="25" color="green" v-model="gpu.load">
                 <template v-slot:default="{ value }">
                   <strong>
-                    <span class="mr-2">
+                    <span class="mr-2" v-if="isConnected">
                       <v-icon small left>mdi-expansion-card</v-icon>
                       {{ value }}
                     </span>
-                    <span class="ml-2">
+                    <span class="ml-2" v-if="isConnected">
                       <v-icon small left>mdi-thermometer</v-icon>
                       {{ gpu.temp }}
+                    </span>
+                    <span v-if="!isConnected">
+                      <span class="text-overline">Not Connected</span>
                     </span>
                   </strong>
                 </template>
               </v-progress-linear>
             </v-col>
-            <!-- <v-col cols="4" class="mt-2 d-flex justify-center align-center">
-              <span class="text-h4 green--text">
-                {{ gpu.temp }}
-              </span>
-            </v-col> -->
           </v-row>
         </v-col>
         <v-col cols="12">
@@ -81,17 +77,17 @@
               >
                 <template v-slot:default="{ value }">
                   <strong>
-                    <v-icon left>mdi-memory</v-icon>
-                    {{ value }}
+                    <span v-if="isConnected">
+                      <v-icon left>mdi-memory</v-icon>
+                      {{ value }}
+                    </span>
+                    <span v-if="!isConnected">
+                      <span class="text-overline">Not Connected</span>
+                    </span>
                   </strong>
                 </template>
               </v-progress-linear>
             </v-col>
-            <!-- <v-col cols="4" class="mt-2 d-flex justify-center align-center">
-              <span class="text-h4 orange--text">
-                {{ memory.load }}
-              </span>
-            </v-col> -->
           </v-row>
         </v-col>
       </v-row>
@@ -114,21 +110,22 @@ export default {
 
   data() {
     return {
+      isConnected: false,
       cpu: {
         name: "-",
-        temp: "-",
-        load: "-",
+        temp: 0,
+        load: 0,
       },
       gpu: {
         name: "-",
-        temp: "-",
-        load: "-",
+        temp: 0,
+        load: 0,
       },
       memory: {
-        used: "-",
-        available: "-",
-        load: "-",
-        total: "-",
+        used: 0,
+        available: 0,
+        load: 0,
+        total: 0,
       },
     };
   },
@@ -196,8 +193,11 @@ export default {
         const used = new Decimal(memoryUsed.split(" GB")[0]);
         const available = new Decimal(memoryAvailable.split(" GB")[0]);
         this.memory.total = used.plus(available).toFixed(1).toString() + "GB";
+
+        this.isConnected = true;
       } catch (e) {
         console.log(e);
+        this.isConnected = false;
       }
     },
   },
