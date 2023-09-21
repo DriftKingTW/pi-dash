@@ -7,9 +7,11 @@
         color="white"
         class="flex-grow-0"
         background-color="primary"
+        fixed-tabs
       >
         <v-tabs-slider></v-tabs-slider>
-        <v-tab v-for="item in tabItems" :key="item">
+        <v-tab v-for="(item, index) in tabItems" :key="item">
+          <v-icon small left>{{ tabIcons[index] }}</v-icon>
           {{ item }}
         </v-tab>
       </v-tabs>
@@ -53,7 +55,8 @@ export default {
   data() {
     return {
       tab: null,
-      tabItems: ["Social", "Timer"],
+      tabItems: ["SNS Stats", "Timer"],
+      tabIcons: ["mdi-chart-line", "mdi-timer"],
     };
   },
 

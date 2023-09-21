@@ -1,13 +1,8 @@
 <template>
   <v-card color="primary" flat :loading="loading">
-    <v-card-title class="pb-0">
-      <v-icon left @click="initialize">mdi-account-group-outline</v-icon>
-      Social Statistics
-      <v-icon right @click="resetDiff">mdi-television-shimmer</v-icon>
-    </v-card-title>
     <v-card-text>
       <v-row>
-        <v-col cols="6" class="pa-0 pr-4 pt-4">
+        <v-col cols="6" class="pa-0 pr-4">
           <v-list dense color="primary">
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
@@ -100,7 +95,7 @@
           </v-list>
         </v-col>
 
-        <v-col cols="6" class="pa-0 pr-4 pt-4">
+        <v-col cols="6" class="pa-0 pr-4">
           <v-list dense color="primary">
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
@@ -196,6 +191,19 @@
         </v-col>
       </v-row>
     </v-card-text>
+
+    <v-card-actions class="px-4">
+      <span class="caption grey--text">
+        Last Updated: {{ lastUpdate.toLocaleString() }}
+      </span>
+      <v-spacer></v-spacer>
+      <v-btn text @dblclick="resetDiff" @click="showDblClickHint">
+        <v-icon left>mdi-television-shimmer</v-icon> Reset
+      </v-btn>
+      <v-btn text @click="initialize">
+        <v-icon left>mdi-refresh</v-icon> Reload
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -217,13 +225,16 @@ export default {
       pixivDataMain: { diff: 0 },
       pixivDataSub: { diff: 0 },
       fanboxData: { diff: 0 },
+      lastUpdate: null,
     };
   },
 
   mounted() {
     this.initialize();
+    this.lastUpdate = new Date();
     this.timer = setInterval(() => {
       this.initialize();
+      this.lastUpdate = new Date();
     }, 60 * 60 * 1000 /* 60 minutes */);
   },
 
@@ -382,6 +393,13 @@ export default {
     numberWithCommas(x) {
       if (x === undefined) return "Error";
       return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    },
+
+    showDblClickHint() {
+      this.$store.commit("triggerSnackbar", {
+        status: "info",
+        text: "Double click to reset status.",
+      });
     },
   },
 
