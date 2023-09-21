@@ -60,6 +60,11 @@
         </v-btn>
       </template>
     </v-snackbar>
+
+    <v-overlay
+      :value="screenControlOverlay"
+      @click="turnOnPiScreen"
+    ></v-overlay>
   </v-app>
 </template>
 
@@ -69,6 +74,7 @@ import SimpleKeyboard from "@/components/SimpleKeyboard.vue";
 import { mapFields } from "vuex-map-fields";
 import SnackBar from "@/components/SnackBar";
 import NavigationDrawer from "@/components/NavigationDrawer";
+import axios from "axios";
 
 export default {
   components: {
@@ -136,10 +142,15 @@ export default {
       // Send message to SW to skip the waiting and activate the new SW
       this.registration.waiting.postMessage({ type: "SKIP_WAITING" });
     },
+
+    turnOnPiScreen() {
+      this.$store.commit("closeScreenControlOverlay");
+      axios.get("screenControlOverlay");
+    },
   },
 
   computed: {
-    ...mapFields(["osk", "input"]),
+    ...mapFields(["osk", "input", "screenControlOverlay"]),
   },
 };
 </script>

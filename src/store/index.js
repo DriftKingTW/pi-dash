@@ -21,11 +21,20 @@ export default new Vuex.Store({
     },
     showPCMonitoring: false,
     updateKey: 0,
+    screenControlOverlay: false,
   },
   getters: {
     getField,
   },
   mutations: {
+    openScreenControlOverlay(state) {
+      state.screenControlOverlay = true;
+    },
+
+    closeScreenControlOverlay(state) {
+      state.screenControlOverlay = false;
+    },
+
     switchPCMonitoring(state) {
       state.showPCMonitoring = !state.showPCMonitoring;
       state.updateKey++;

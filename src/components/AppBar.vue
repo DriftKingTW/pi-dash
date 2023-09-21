@@ -116,6 +116,7 @@ export default {
     },
 
     async screenOff() {
+      this.$store.commit("openScreenControlOverlay");
       try {
         await axios.get(process.env.VUE_APP_API_URL + "/shell/display", {
           params: { action: "off" },
