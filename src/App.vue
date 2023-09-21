@@ -145,7 +145,7 @@ export default {
 
     turnOnPiScreen() {
       this.$store.commit("closeScreenControlOverlay");
-      axios.get("screenControlOverlay");
+      axios.get(process.env.VUE_APP_API_URL + "/shell/display?action=on");
     },
   },
 
