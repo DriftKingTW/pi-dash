@@ -76,8 +76,8 @@
                 </v-list-item-title>
                 <v-list-item-subtitle>
                   {{
-                    facebookData.fan_count
-                      ? numberWithCommas(facebookData.fan_count)
+                    facebookData.followers_count
+                      ? numberWithCommas(facebookData.followers_count)
                       : 0
                   }}
                   <span
@@ -272,16 +272,16 @@ export default {
 
         if (
           localStorage.getItem("facebookFollowersCount") === null &&
-          !isNaN(this.facebookData.fan_count)
+          !isNaN(this.facebookData.followers_count)
         ) {
           localStorage.setItem(
             "facebookFollowersCount",
-            this.facebookData.fan_count
+            this.facebookData.followers_count
           );
         }
 
         this.facebookData.diff =
-          this.facebookData.fan_count -
+          this.facebookData.followers_count -
           Number(localStorage.getItem("facebookFollowersCount"));
       } catch (e) {
         console.log(e);
@@ -360,10 +360,10 @@ export default {
       //     this.twitterData.public_metrics.followers_count
       //   );
       // }
-      if (!isNaN(this.facebookData.fan_count)) {
+      if (!isNaN(this.facebookData.followers_count)) {
         localStorage.setItem(
           "facebookFollowersCount",
-          this.facebookData.fan_count
+          this.facebookData.followers_count
         );
       }
       if (!isNaN(this.pixivDataMain.followerCount)) {
