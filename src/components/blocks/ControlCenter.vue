@@ -226,12 +226,10 @@ export default {
 
         const resDnD = res[4];
         this.dnd = resDnD.data === 1 ? true : false;
-        if (resDnD.data === "error") {
-          this.$store.commit("updateConnectionStatus", false);
-        } else {
-          this.$store.commit("updateConnectionStatus", true);
-        }
+        
+        this.$store.commit("updateConnectionStatus", true);
       } catch (e) {
+        this.$store.commit("updateConnectionStatus", false);
         console.log(e);
       }
     },
