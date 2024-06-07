@@ -107,7 +107,10 @@
 
     <v-card-actions class="px-4">
       <span class="caption grey--text">
-        Last Updated: {{ lastUpdate.toLocaleString() }}
+        Last Updated:
+        <template v-if="lastUpdate">
+          {{ lastUpdate.toLocaleString() }}
+        </template>
       </span>
       <v-spacer></v-spacer>
       <v-btn text @dblclick="resetDiff" @click="showDblClickHint">
