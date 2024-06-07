@@ -2,100 +2,7 @@
   <v-card color="primary" flat :loading="loading">
     <v-card-text>
       <v-row>
-        <v-col cols="6" class="pa-0 pr-4">
-          <v-list dense color="primary">
-            <v-list-item>
-              <v-list-item-icon class="mr-4 my-2">
-                <v-badge
-                  avatar
-                  bordered
-                  overlap
-                  bottom
-                  color="#1DA1F2"
-                  icon="mdi-twitter"
-                >
-                  <v-avatar size="40">
-                    <v-img
-                      :src="twitterData.profile_image_url"
-                      :alt="twitterData.name"
-                    ></v-img>
-                  </v-avatar>
-                </v-badge>
-              </v-list-item-icon>
-
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ twitterData.name ? twitterData.name : "Loading..." }}
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  {{
-                    twitterData.public_metrics
-                      ? numberWithCommas(
-                          twitterData.public_metrics.followers_count
-                        )
-                      : 0
-                  }}
-                  <span
-                    :class="
-                      twitterData.diff >= 0 ? 'success--text' : 'error--text'
-                    "
-                  >
-                    ({{ twitterData.diff >= 0 ? "+" : "" }}
-                    {{ numberWithCommas(twitterData.diff) }})
-                  </span>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider :inset="true"></v-divider>
-            <v-list-item>
-              <v-list-item-icon class="mr-4 my-2">
-                <v-badge
-                  avatar
-                  bordered
-                  overlap
-                  bottom
-                  color="#3B5998"
-                  icon="mdi-facebook"
-                >
-                  <v-avatar size="40">
-                    <v-img
-                      :src="
-                        facebookData.picture
-                          ? facebookData.picture.data.url
-                          : ''
-                      "
-                      :alt="facebookData.name"
-                    ></v-img>
-                  </v-avatar>
-                </v-badge>
-              </v-list-item-icon>
-
-              <v-list-item-content>
-                <v-list-item-title>
-                  {{ facebookData.name ? facebookData.name : "Loading..." }}
-                </v-list-item-title>
-                <v-list-item-subtitle>
-                  {{
-                    facebookData.followers_count
-                      ? numberWithCommas(facebookData.followers_count)
-                      : 0
-                  }}
-                  <span
-                    :class="
-                      facebookData.diff >= 0 ? 'success--text' : 'error--text'
-                    "
-                  >
-                    ({{ facebookData.diff >= 0 ? "+" : "" }}
-                    {{ numberWithCommas(facebookData.diff) }})
-                  </span>
-                </v-list-item-subtitle>
-              </v-list-item-content>
-            </v-list-item>
-            <v-divider :inset="true"></v-divider>
-          </v-list>
-        </v-col>
-
-        <v-col cols="6" class="pa-0 pr-4">
+        <v-col cols="12" class="pa-0 pr-4">
           <v-list dense color="primary">
             <v-list-item>
               <v-list-item-icon class="mr-4 my-2">
@@ -111,7 +18,8 @@
                 <v-list-item-subtitle>
                   {{
                     pixivDataMain.followerCount
-                      ? numberWithCommas(pixivDataMain.followerCount)
+                      ? numberWithCommas(pixivDataMain.followerCount) +
+                        " Followers"
                       : 0
                   }}
                   <span
@@ -140,7 +48,8 @@
                 <v-list-item-subtitle>
                   {{
                     pixivDataSub.followerCount
-                      ? numberWithCommas(pixivDataSub.followerCount)
+                      ? numberWithCommas(pixivDataSub.followerCount) +
+                        " Followers"
                       : 0
                   }}
                   <span
@@ -170,7 +79,11 @@
                   {{ fanboxData.name ? fanboxData.name : "Loading..." }}
                 </v-list-item-title>
                 <v-list-item-subtitle>
-                  {{ fanboxData.fans ? numberWithCommas(fanboxData.fans) : 0 }}
+                  {{
+                    fanboxData.fans
+                      ? numberWithCommas(fanboxData.fans) + " Fans"
+                      : 0
+                  }}
                   ({{
                     fanboxData.pledge ? numberWithCommas(fanboxData.pledge) : 0
                   }}¥
@@ -220,8 +133,6 @@ export default {
     return {
       timer: null,
       loading: true,
-      twitterData: { diff: 0 },
-      facebookData: { diff: 0 },
       pixivDataMain: { diff: 0 },
       pixivDataSub: { diff: 0 },
       fanboxData: { diff: 0 },
@@ -241,52 +152,6 @@ export default {
   methods: {
     async initialize() {
       this.loading = true;
-      // try {
-      //   const resTwitter = await axios.get(
-      //     `${process.env.VUE_APP_API_URL}/twitter/statistics`
-      //   );
-      //   this.twitterData = { ...resTwitter.data };
-
-      //   if (
-      //     localStorage.getItem("twitterFollowersCount") === null &&
-      //     !isNaN(this.twitterData.public_metrics.followers_count)
-      //   ) {
-      //     localStorage.setItem(
-      //       "twitterFollowersCount",
-      //       this.twitterData.public_metrics.followers_count
-      //     );
-      //   }
-
-      //   this.twitterData.diff =
-      //     this.twitterData.public_metrics.followers_count -
-      //     Number(localStorage.getItem("twitterFollowersCount"));
-      // } catch (e) {
-      //   console.log(e);
-      // }
-
-      try {
-        const resFacebook = await axios.get(
-          `${process.env.VUE_APP_API_URL}/facebook/statistics`
-        );
-        this.facebookData = { ...resFacebook.data };
-
-        if (
-          localStorage.getItem("facebookFollowersCount") === null &&
-          !isNaN(this.facebookData.followers_count)
-        ) {
-          localStorage.setItem(
-            "facebookFollowersCount",
-            this.facebookData.followers_count
-          );
-        }
-
-        this.facebookData.diff =
-          this.facebookData.followers_count -
-          Number(localStorage.getItem("facebookFollowersCount"));
-      } catch (e) {
-        console.log(e);
-      }
-
       try {
         const resPixivMain = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=driftkingtw`
@@ -354,18 +219,6 @@ export default {
     },
 
     resetDiff() {
-      // if (!isNaN(this.twitterData.public_metrics.followers_count)) {
-      //   localStorage.setItem(
-      //     "twitterFollowersCount",
-      //     this.twitterData.public_metrics.followers_count
-      //   );
-      // }
-      if (!isNaN(this.facebookData.followers_count)) {
-        localStorage.setItem(
-          "facebookFollowersCount",
-          this.facebookData.followers_count
-        );
-      }
       if (!isNaN(this.pixivDataMain.followerCount)) {
         localStorage.setItem(
           "pixivMainFollowersCount",
