@@ -24,12 +24,17 @@
         </v-tab-item>
       </v-tabs-items>
     </div>
-    <ControlCenter
+    <ControlCenter class="control-block" :key="'control-center-' + updateKey" />
+    <PCMonitor
       class="control-block"
-      v-if="!showPCMonitoring"
-      :key="'control-center-' + updateKey"
+      v-if="showPCMonitoring"
+      :key="'pc-monitor-' + updateKey"
     />
-    <PCMonitor class="control-block" v-else :key="'pc-monitor-' + updateKey" />
+    <OctoMonitor
+      class="control-block"
+      v-if="showOctoMonitoring"
+      :key="'octo-monitor-' + updateKey"
+    />
   </div>
 </template>
 
@@ -40,6 +45,7 @@ import CalendarClock from "@/components/blocks/CalendarClock.vue";
 import ControlCenter from "@/components/blocks/ControlCenter.vue";
 import CountdownTimer from "@/components/blocks/CountdownTimer.vue";
 import PCMonitor from "@/components/blocks/PCMonitor.vue";
+import OctoMonitor from "@/components/blocks/OctoMonitor.vue";
 import { mapState } from "vuex";
 
 export default {
@@ -50,6 +56,7 @@ export default {
     ControlCenter,
     CountdownTimer,
     PCMonitor,
+    OctoMonitor,
   },
 
   data() {
@@ -80,7 +87,7 @@ export default {
   },
 
   computed: {
-    ...mapState(["showPCMonitoring", "updateKey"]),
+    ...mapState(["showPCMonitoring", "showOctoMonitoring", "updateKey"]),
   },
 };
 </script>

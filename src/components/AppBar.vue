@@ -39,6 +39,10 @@
       <v-icon small>mdi-swap-horizontal</v-icon>
     </v-btn>
     <v-divider vertical class="mx-1"></v-divider>
+    <v-btn icon @click="switchOctoMonitoring">
+      <v-icon small>mdi-printer-3d-nozzle</v-icon>
+    </v-btn>
+    <v-divider vertical class="mx-1"></v-divider>
     <v-btn icon @click="syncClipboard">
       <v-icon small>mdi-clipboard-arrow-down-outline</v-icon>
     </v-btn>
@@ -102,6 +106,10 @@ export default {
 
     switchPCMonitoring() {
       this.$store.commit("switchPCMonitoring");
+    },
+
+    switchOctoMonitoring() {
+      this.$store.commit("switchOctoMonitoring");
     },
 
     async updateTemperature() {

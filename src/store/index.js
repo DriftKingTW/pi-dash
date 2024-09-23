@@ -20,6 +20,7 @@ export default new Vuex.Store({
       disconnected: "Disconnected",
     },
     showPCMonitoring: false,
+    showOctoMonitoring: false,
     updateKey: 0,
     screenControlOverlay: false,
   },
@@ -37,6 +38,11 @@ export default new Vuex.Store({
 
     switchPCMonitoring(state) {
       state.showPCMonitoring = !state.showPCMonitoring;
+      state.updateKey++;
+    },
+
+    switchOctoMonitoring(state) {
+      state.showOctoMonitoring = !state.showOctoMonitoring;
       state.updateKey++;
     },
 
