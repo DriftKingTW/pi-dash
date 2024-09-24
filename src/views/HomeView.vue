@@ -24,7 +24,11 @@
         </v-tab-item>
       </v-tabs-items>
     </div>
-    <ControlCenter class="control-block" :key="'control-center-' + updateKey" />
+    <ControlCenter
+      v-if="!showPCMonitoring && !showOctoMonitoring"
+      class="control-block"
+      :key="'control-center-' + updateKey"
+    />
     <PCMonitor
       class="control-block"
       v-if="showPCMonitoring"
