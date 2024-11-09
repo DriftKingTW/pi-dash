@@ -43,7 +43,7 @@
       </div>
     </v-fade-transition>
     <img
-      src="http://octopi.local/webcam/?action=stream"
+      :src="cameraStreamingUrl"
       alt="Camera Live Stream"
       width="100%"
       @click="showInfo = !showInfo"
@@ -52,7 +52,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 
 const timeout = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -65,6 +65,7 @@ export default {
 
   data() {
     return {
+      cameraStreamingUrl: process.env.VUE_APP_CAM_STERAMING_URL,
       showInfo: true,
       job: null,
       printer: null,
@@ -86,30 +87,7 @@ export default {
     },
 
     async getOctoStatus() {
-      // Get OctoPrint job status
-      try {
-        const result = await axios.get("http://octopi.local/api/job", {
-          headers: {
-            "X-Api-Key": "FCE8A025321B4373A2070D0F62746603",
-          },
-        });
-        this.job = result.data;
-        console.log("OCTO: ", this.job);
-      } catch (e) {
-        console.log(e);
-      }
-
-      // Get OctoPrint printer status
-      try {
-        const result = await axios.get("http://octopi.local/api/printer", {
-          headers: {
-            "X-Api-Key": "FCE8A025321B4373A2070D0F62746603",
-          },
-        });
-        this.printer = result.data;
-      } catch (e) {
-        console.log(e);
-      }
+      // TODO: Refactor this to get data from HA API
     },
 
     convertSecondstoTime(given_seconds) {
