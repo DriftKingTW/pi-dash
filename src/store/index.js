@@ -14,11 +14,6 @@ export default new Vuex.Store({
     timeout: 3000,
     osk: false,
     input: "",
-    connectionStatus: "disconnected",
-    statusMessages: {
-      connected: "Connected",
-      disconnected: "Disconnected",
-    },
     showPCMonitoring: false,
     showOctoMonitoring: false,
     updateKey: 0,
@@ -87,14 +82,6 @@ export default new Vuex.Store({
 
     clearInput(state) {
       state.input = "";
-    },
-
-    updateConnectionStatus(state, status) {
-      if (status) {
-        state.connectionStatus = "connected";
-      } else {
-        state.connectionStatus = "disconnected";
-      }
     },
 
     updateField,

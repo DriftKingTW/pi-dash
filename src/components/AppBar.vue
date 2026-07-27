@@ -13,20 +13,6 @@
       </v-toolbar-title>
     </div>
     <v-spacer></v-spacer>
-    <v-chip
-      v-if="connectionStatus === 'disconnected'"
-      small
-      color="primary"
-      class="error--text"
-    >
-      <v-icon small left color="error">mdi-server-network-off</v-icon>
-      {{ `BTT Server ${statusMessages[connectionStatus]}` }}
-    </v-chip>
-    <v-chip v-else small color="primary">
-      <v-icon small left>mdi-server-network</v-icon>
-      {{ `BTT Server ${statusMessages[connectionStatus]}` }}
-    </v-chip>
-    <v-divider vertical class="mx-1"></v-divider>
     <v-btn text>
       <v-icon small left :color="temperatureColor">mdi-thermometer</v-icon>
       <span :class="`${temperatureColor}--text`">{{ temperature }}</span>
@@ -196,7 +182,7 @@ export default {
   },
 
   computed: {
-    ...mapState(["statusMessages", "connectionStatus", "isExpand"]),
+    ...mapState(["isExpand"]),
     temperatureColor() {
       if (this.temperature >= 70) {
         return "error";
