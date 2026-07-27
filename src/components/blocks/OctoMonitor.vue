@@ -79,6 +79,7 @@ export default {
       cameraStreamingUrl: process.env.VUE_APP_CAM_STERAMING_URL,
       showInfo: true,
       isConnected: false,
+      polling: false,
       sensors: SENSOR_KEYS.reduce((acc, key) => {
         acc[key] = { state: "-", unit: "" };
         return acc;
@@ -90,11 +91,17 @@ export default {
     this.initialize();
   },
 
+  // HomeView remounts this block on every monitoring toggle, so the loop has
+  // to stop with the instance or every toggle leaves another one polling
+  beforeDestroy() {
+    this.polling = false;
+  },
+
   methods: {
     async initialize() {
-      await this.getPrinterStatus();
+      this.polling = true;
 
-      for (;;) {
+      while (this.polling) {
         await this.getPrinterStatus();
         await timeout(1000);
       }

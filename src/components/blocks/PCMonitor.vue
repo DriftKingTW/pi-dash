@@ -111,6 +111,7 @@ export default {
   data() {
     return {
       isConnected: false,
+      polling: false,
       cpu: {
         name: "-",
         temp: 0,
@@ -134,11 +135,17 @@ export default {
     this.initialize();
   },
 
+  // HomeView remounts this block on every monitoring toggle, so the loop has
+  // to stop with the instance or every toggle leaves another one polling
+  beforeDestroy() {
+    this.polling = false;
+  },
+
   methods: {
     async initialize() {
-      this.getHwInfo();
+      this.polling = true;
 
-      for (;;) {
+      while (this.polling) {
         await this.updateStatus();
         await timeout(500);
       }
