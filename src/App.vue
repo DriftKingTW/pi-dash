@@ -160,6 +160,16 @@ html {
   overflow: hidden;
 }
 
+/* Page can't scroll, so the content area must never exceed the viewport */
+.v-main {
+  height: 100vh;
+  height: 100dvh;
+}
+
+.v-main__wrap {
+  height: 100%;
+}
+
 /* Currently this method not working in Pi's touch screen */
 /* @media (pointer: coarse) {
 } */

@@ -99,10 +99,13 @@ export default {
 <style scoped>
 .grid-container {
   display: grid;
-  height: 290px;
+  height: min(290px, 100%);
   padding: 0.6rem;
   gap: 0.6rem;
   grid-template-columns: 33% 33% auto;
+  /* minmax(0, 1fr) lets the row shrink instead of being pushed past the
+     viewport by its content on short screens */
+  grid-template-rows: minmax(0, 1fr);
   grid-template-areas: "clock control statistics";
 }
 
