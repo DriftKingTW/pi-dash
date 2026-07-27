@@ -127,6 +127,10 @@
 import axios from "axios";
 import { PixivIcon } from "vue-simple-icons";
 
+// The pixiv statistics route scrapes with a headless browser and takes ~14s on
+// the Pi, well past the global axios default. Safe to wait: this runs hourly.
+const PIXIV_TIMEOUT = 60000;
+
 export default {
   components: {
     PixivIcon,
@@ -157,7 +161,8 @@ export default {
       this.loading = true;
       try {
         const resPixivMain = await axios.get(
-          `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=driftkingtw`
+          `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=driftkingtw`,
+          { timeout: PIXIV_TIMEOUT }
         );
         this.pixivDataMain = { ...resPixivMain.data };
 
@@ -179,7 +184,8 @@ export default {
       }
       try {
         const resPixivSub = await axios.get(
-          `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=dkaze`
+          `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=dkaze`,
+          { timeout: PIXIV_TIMEOUT }
         );
         this.pixivDataSub = { ...resPixivSub.data };
 
