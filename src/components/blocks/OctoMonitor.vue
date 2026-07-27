@@ -3,21 +3,14 @@
     <v-fade-transition>
       <div v-if="showInfo">
         <div class="float-info top-center caption">
-          <div v-if="job">
-            <div class="text-center">
-              {{ job.state }} - {{ job.job.file.name }}
+          <div v-if="isConnected">
+            <div class="text-center text-truncate">
+              {{ capitalize(sensors.currentStage.state) }} -
+              {{ sensors.taskName.state }}
             </div>
             <div class="d-flex justify-center">
-              <div class="mr-2">
-                Progress:
-                {{ job.progress.completion.toString().substring(0, 3) }}%
-              </div>
-              <div class="mr-1">
-                Total: {{ convertSecondstoTime(job.progress.printTime) }}
-              </div>
-              <div>
-                | Left: {{ convertSecondstoTime(job.progress.printTimeLeft) }}
-              </div>
+              <div class="mr-2">Progress: {{ readout(sensors.progress) }}</div>
+              <div>| Left: {{ readout(sensors.remainingTime) }}</div>
             </div>
           </div>
 
@@ -25,16 +18,19 @@
         </div>
 
         <div class="float-info bottom-center caption">
-          <div v-if="printer" class="d-flex justify-space-around">
-            <div class="mr-2">
+          <div v-if="isConnected" class="d-flex justify-space-around">
+            <div>
               <v-icon small>mdi-printer-3d-nozzle-heat</v-icon>
-              {{ printer.temperature.tool0.actual }}°C /
-              {{ printer.temperature.tool0.target }}°C
+              {{ readout(sensors.nozzleTemp) }} /
+              {{ readout(sensors.nozzleTarget) }}
             </div>
             <div>
               <v-icon small>mdi-radiator</v-icon>
-              {{ printer.temperature.bed.actual }}°C /
-              {{ printer.temperature.bed.target }}°C
+              {{ readout(sensors.bedTemp) }} / {{ readout(sensors.bedTarget) }}
+            </div>
+            <div>
+              <v-icon small>mdi-thermometer</v-icon>
+              {{ readout(sensors.envTemp) }} / {{ readout(sensors.envHumidity) }}
             </div>
           </div>
 
@@ -45,18 +41,33 @@
     <img
       :src="cameraStreamingUrl"
       alt="Camera Live Stream"
-      width="100%"
+      class="camera-stream"
       @click="showInfo = !showInfo"
     />
   </v-card>
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 const timeout = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
+
+// Keys returned by the server's /printer route. The Home Assistant entity ids
+// and token live there so they never reach the browser.
+const SENSOR_KEYS = [
+  "taskName",
+  "currentStage",
+  "progress",
+  "remainingTime",
+  "nozzleTemp",
+  "nozzleTarget",
+  "bedTemp",
+  "bedTarget",
+  "envTemp",
+  "envHumidity",
+];
 
 export default {
   components: {
@@ -67,8 +78,11 @@ export default {
     return {
       cameraStreamingUrl: process.env.VUE_APP_CAM_STERAMING_URL,
       showInfo: true,
-      job: null,
-      printer: null,
+      isConnected: false,
+      sensors: SENSOR_KEYS.reduce((acc, key) => {
+        acc[key] = { state: "-", unit: "" };
+        return acc;
+      }, {}),
     };
   },
 
@@ -78,31 +92,40 @@ export default {
 
   methods: {
     async initialize() {
-      await this.getOctoStatus();
+      await this.getPrinterStatus();
 
       for (;;) {
-        await this.getOctoStatus();
+        await this.getPrinterStatus();
         await timeout(1000);
       }
     },
 
-    async getOctoStatus() {
-      // TODO: Refactor this to get data from HA API
+    async getPrinterStatus() {
+      try {
+        const res = await axios.get(`${process.env.VUE_APP_API_URL}/printer`);
+
+        SENSOR_KEYS.forEach((key) => {
+          if (res.data[key]) this.sensors[key] = res.data[key];
+        });
+
+        this.isConnected = true;
+      } catch (e) {
+        console.log(e);
+        this.isConnected = false;
+      }
     },
 
-    convertSecondstoTime(given_seconds) {
-      const hours = Math.floor(given_seconds / 3600);
-      const minutes = Math.floor((given_seconds - hours * 3600) / 60);
-      const seconds = given_seconds - hours * 3600 - minutes * 60;
+    // Home Assistant reports "unknown"/"unavailable" when a sensor has no value
+    readout({ state, unit }) {
+      if (!state || state === "unknown" || state === "unavailable") return "-";
 
-      const timeString =
-        hours.toString().padStart(2, "0") +
-        ":" +
-        minutes.toString().padStart(2, "0") +
-        ":" +
-        seconds.toString().padStart(2, "0");
+      return unit ? `${state}${unit}` : state;
+    },
 
-      return timeString;
+    capitalize(text) {
+      if (!text) return "";
+
+      return text.charAt(0).toUpperCase() + text.slice(1);
     },
   },
 
@@ -113,6 +136,20 @@ export default {
 </script>
 
 <style scoped lang="scss">
+.v-card {
+  height: 100%;
+  overflow: hidden;
+}
+
+/* Fill the card instead of letting the stream's aspect ratio drive the card
+   height, so the overlays always sit on the image edges */
+.camera-stream {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
 .float-info {
   position: absolute;
   background-color: rgba(0, 0, 0, 0.2);
