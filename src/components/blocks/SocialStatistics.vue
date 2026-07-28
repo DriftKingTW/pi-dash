@@ -116,7 +116,7 @@
       <v-btn text @dblclick="resetDiff" @click="showDblClickHint">
         <v-icon left>mdi-television-shimmer</v-icon> Reset
       </v-btn>
-      <v-btn text @click="initialize">
+      <v-btn text @click="refresh">
         <v-icon left>mdi-refresh</v-icon> Reload
       </v-btn>
     </v-card-actions>
@@ -130,6 +130,10 @@ import { PixivIcon } from "vue-simple-icons";
 // The pixiv statistics route scrapes with a headless browser and takes ~14s on
 // the Pi, well past the global axios default. Safe to wait: this runs hourly.
 const PIXIV_TIMEOUT = 60000;
+
+const REFRESH_INTERVAL = 60 * 60 * 1000; // 60 minutes
+// A scrape that fails shouldn't leave the block stale for a whole hour
+const RETRY_INTERVAL = 5 * 60 * 1000; // 5 minutes
 
 export default {
   components: {
@@ -148,22 +152,35 @@ export default {
   },
 
   mounted() {
-    this.initialize();
-    this.lastUpdate = new Date();
-    this.timer = setInterval(() => {
-      this.initialize();
-      this.lastUpdate = new Date();
-    }, 60 * 60 * 1000 /* 60 minutes */);
+    this.refresh();
   },
 
   methods: {
+    async refresh() {
+      const succeeded = await this.initialize();
+
+      clearTimeout(this.timer);
+      this.timer = setTimeout(
+        this.refresh,
+        succeeded ? REFRESH_INTERVAL : RETRY_INTERVAL
+      );
+    },
+
     async initialize() {
       this.loading = true;
+      let succeeded = true;
+
       try {
         const resPixivMain = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=driftkingtw`,
           { timeout: PIXIV_TIMEOUT }
         );
+
+        // The server answers a failed scrape with an empty object, and holding
+        // on to the last good numbers beats blanking the block back to
+        // 'Loading...' until the next round
+        if (!resPixivMain.data.name) throw new Error("empty pixiv response");
+
         this.pixivDataMain = { ...resPixivMain.data };
 
         if (
@@ -181,12 +198,17 @@ export default {
           Number(localStorage.getItem("pixivMainFollowersCount"));
       } catch (e) {
         console.log(e);
+        succeeded = false;
       }
+
       try {
         const resPixivSub = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics?user=dkaze`,
           { timeout: PIXIV_TIMEOUT }
         );
+
+        if (!resPixivSub.data.name) throw new Error("empty pixiv response");
+
         this.pixivDataSub = { ...resPixivSub.data };
 
         if (
@@ -204,11 +226,16 @@ export default {
           Number(localStorage.getItem("pixivSubFollowersCount"));
       } catch (e) {
         console.log(e);
+        succeeded = false;
       }
+
       try {
         const resFanbox = await axios.get(
           `${process.env.VUE_APP_API_URL}/pixiv/statistics/fanbox?user=dkaze`
         );
+
+        if (!resFanbox.data.name) throw new Error("empty fanbox response");
+
         this.fanboxData = { ...resFanbox.data };
 
         if (
@@ -223,8 +250,16 @@ export default {
           Number(localStorage.getItem("fanboxPledgeNumber"));
       } catch (e) {
         console.log(e);
+        succeeded = false;
       }
+
       this.loading = false;
+
+      // Only a clean pass moves the timestamp, so it tells you how fresh the
+      // numbers on screen actually are
+      if (succeeded) this.lastUpdate = new Date();
+
+      return succeeded;
     },
 
     resetDiff() {
@@ -249,7 +284,7 @@ export default {
         text: "Status has been reset.",
       });
 
-      this.initialize();
+      this.refresh();
     },
 
     numberWithCommas(x) {
@@ -270,7 +305,7 @@ export default {
   },
 
   beforeDestroy() {
-    clearInterval(this.timer);
+    clearTimeout(this.timer);
   },
 };
 </script>
