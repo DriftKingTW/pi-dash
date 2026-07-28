@@ -29,9 +29,10 @@
       class="control-block"
       :key="'control-center-' + updateKey"
     />
+    <!-- A print takes the slot over while it runs, then hands it back -->
     <PCMonitor
       class="control-block"
-      v-if="showPCMonitoring"
+      v-if="showPCMonitoring && !showOctoMonitoring"
       :key="'pc-monitor-' + updateKey"
     />
     <OctoMonitor

@@ -41,6 +41,13 @@ export default new Vuex.Store({
       state.updateKey++;
     },
 
+    setOctoMonitoring(state, value) {
+      if (state.showOctoMonitoring === value) return;
+
+      state.showOctoMonitoring = value;
+      state.updateKey++;
+    },
+
     toggleNavDrawer(state) {
       state.navDrawer = !state.navDrawer;
     },

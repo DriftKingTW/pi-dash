@@ -76,6 +76,10 @@ import SnackBar from "@/components/SnackBar";
 import NavigationDrawer from "@/components/NavigationDrawer";
 import axios from "axios";
 
+// Home Assistant reports one of these when the printer is off or has nothing
+// to do, so anything else means there is a job worth watching
+const PRINTER_IDLE_STATES = ["idle", "offline", "unknown", "unavailable"];
+
 export default {
   components: {
     AppBar,
@@ -90,6 +94,7 @@ export default {
       registration: null,
       updateExists: false,
       theme: "hg-theme-default dark-theme",
+      printerBusy: false,
     };
   },
 
@@ -115,6 +120,36 @@ export default {
     initialize() {
       document.title = "Pi Dash";
       this.$store.commit("syncMacModeFromLocalStorage");
+      this.watchPrinterState();
+    },
+
+    // The printer block only polls while it is on screen, so the check that
+    // decides whether to show it has to live here, at the root
+    watchPrinterState() {
+      this.updatePrinterState();
+      setInterval(this.updatePrinterState, 5000); // 5 seconds
+    },
+
+    async updatePrinterState() {
+      let stage;
+      try {
+        const res = await axios.get(process.env.VUE_APP_API_URL + "/printer");
+        stage = res.data.currentStage && res.data.currentStage.state;
+      } catch (e) {
+        console.log(e);
+      }
+
+      // Leave whatever is on screen alone when the printer can't be reached
+      if (!stage) return;
+
+      const busy = !PRINTER_IDLE_STATES.includes(stage.toLowerCase());
+
+      // Only act on changes, so toggling the block by hand isn't undone by the
+      // next poll five seconds later
+      if (busy === this.printerBusy) return;
+
+      this.printerBusy = busy;
+      this.$store.commit("setOctoMonitoring", busy);
     },
 
     onChange(input) {
