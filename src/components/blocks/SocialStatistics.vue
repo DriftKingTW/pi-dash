@@ -383,11 +383,12 @@ export default {
               ? `${this.numberWithCommas(total)}${currency}`
               : "",
           diff,
+          // The sign keeps the space it has always had after it: '(+ 137)'
           diffText:
             diff === null
               ? ""
-              : `${diff >= 0 ? "+" : ""}${this.numberWithCommas(
-                  diff
+              : `${diff >= 0 ? "+" : "-"} ${this.numberWithCommas(
+                  Math.abs(diff)
                 )}${currency}`,
           placeholder:
             status === "error"
