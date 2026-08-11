@@ -29,10 +29,12 @@
                   <v-list-item-subtitle>
                     <template v-if="row.hasValue">
                       <span class="stat-value">{{ row.valueText }}</span>
+                      <!-- The gaps are written out because the newlines this
+                           markup needs to stay readable are dropped by the
+                           compiler's whitespace: 'condense' -->
                       <span class="stat-diff"
-                        >(<span v-if="row.totalText" class="mr-1">{{
-                          row.totalText
-                        }}</span
+                        >&nbsp;(<span v-if="row.totalText"
+                          >{{ row.totalText }}&nbsp;</span
                         ><span
                           :class="
                             row.diff >= 0 ? 'success--text' : 'error--text'
