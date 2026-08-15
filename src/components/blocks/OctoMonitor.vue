@@ -9,6 +9,7 @@
           <div
             v-if="progress !== null"
             class="progress-fill"
+            :class="{ 'is-complete': progress >= 100 }"
             :style="{ width: `${progress}%` }"
           ></div>
 
@@ -204,6 +205,46 @@ export default {
   box-shadow: inset -2px 0 0 rgba(255, 255, 255, 0.5);
   /* Matches the one-second poll, so the edge creeps instead of stepping */
   transition: width 1s linear;
+  overflow: hidden;
+}
+
+/* Light running along the filled part towards the leading edge, so the bar
+   reads as a print still going rather than a static shape. The same sweep the
+   statistics rows use while they load, on the same easing. */
+.progress-fill::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  /* Concentrated into the middle fifth on purpose: spread across the whole
+     band the gradient is so gradual it just washes the fill, and nothing
+     appears to move. It also leaves a pause between passes, which suits an
+     overlay you are not meant to keep looking at. */
+  background: linear-gradient(
+    90deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 70%
+  );
+  /* transform only, so the Pi composites this instead of repainting the
+     overlay every frame on top of decoding the stream */
+  animation: progress-sweep 2.4s ease-in-out infinite;
+}
+
+/* A finished print is not still working, so the light stops travelling */
+.progress-fill.is-complete::after {
+  animation: none;
+}
+
+@keyframes progress-sweep {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(100%);
+  }
 }
 
 .info-body {
