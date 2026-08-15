@@ -3,7 +3,16 @@
     <v-fade-transition>
       <div v-if="showInfo">
         <div class="float-info top-center caption">
-          <div v-if="isConnected">
+          <!-- The box doubles as the progress bar: it fills left to right as
+               the print advances, so a glance at the stream tells you how far
+               along it is without reading the number -->
+          <div
+            v-if="progress !== null"
+            class="progress-fill"
+            :style="{ width: `${progress}%` }"
+          ></div>
+
+          <div v-if="isConnected" class="info-body">
             <div class="text-center text-truncate">
               {{ capitalize(sensors.currentStage.state) }} -
               {{ sensors.taskName.state }}
@@ -14,7 +23,7 @@
             </div>
           </div>
 
-          <div v-else class="d-flex justify-center">Loading...</div>
+          <div v-else class="info-body d-flex justify-center">Loading...</div>
         </div>
 
         <div class="float-info bottom-center caption">
@@ -30,7 +39,8 @@
             </div>
             <div>
               <v-icon small>mdi-thermometer</v-icon>
-              {{ readout(sensors.envTemp) }} / {{ readout(sensors.envHumidity) }}
+              {{ readout(sensors.envTemp) }} /
+              {{ readout(sensors.envHumidity) }}
             </div>
           </div>
 
@@ -137,7 +147,21 @@ export default {
   },
 
   computed: {
-    //
+    // Percentage the top box is filled to, or null when there is no reading to
+    // draw — an unreachable server must not leave a stale bar on screen
+    progress() {
+      if (!this.isConnected) return null;
+
+      const { state } = this.sensors.progress;
+
+      if (!state || state === "unknown" || state === "unavailable") return null;
+
+      const value = Number(state);
+
+      if (!Number.isFinite(value)) return null;
+
+      return Math.min(Math.max(value, 0), 100);
+    },
   },
 };
 </script>
@@ -165,6 +189,25 @@ export default {
   border-radius: 5px;
   backdrop-filter: blur(2px);
   width: 96%;
+  /* Keeps the fill inside the rounded corners */
+  overflow: hidden;
+}
+
+.progress-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(255, 255, 255, 0.16);
+  /* A brighter leading edge so the boundary reads as a progress bar rather
+     than an uneven backdrop over a busy camera image */
+  box-shadow: inset -2px 0 0 rgba(255, 255, 255, 0.5);
+  /* Matches the one-second poll, so the edge creeps instead of stepping */
+  transition: width 1s linear;
+}
+
+.info-body {
+  position: relative;
 }
 
 .top-left {
