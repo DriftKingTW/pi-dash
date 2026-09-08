@@ -22,6 +22,7 @@
         <v-card-text class="pa-0 calendar">
           <Calendar
             :attributes="attrs"
+            :from-page="page"
             :first-day-of-week="1"
             color="blue"
             is-dark
@@ -95,6 +96,7 @@ export default {
 
   methods: {
     initialize() {
+      this.updateTime();
       this.timer = setInterval(() => {
         this.updateTime();
       }, 1000);
@@ -158,7 +160,11 @@ export default {
   },
 
   computed: {
-    //
+    // The month the calendar shows, so it follows along when the month rolls
+    // over. v-calendar counts months from 1.
+    page() {
+      return { month: this.now.month + 1, year: this.now.year };
+    },
   },
 
   beforeDestroy() {
