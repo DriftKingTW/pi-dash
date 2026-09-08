@@ -146,11 +146,9 @@ export default {
       this.now.monthName = months[this.now.month];
       this.now.day = date.getDate();
       this.now.dayName = days[date.getDay()].padStart(2, "0");
-      this.now.hour =
-        date.getHours() > 12
-          ? date.getHours() - 12
-          : String(date.getHours()).padStart(2, "0");
-      this.now.ampm = date.getHours() > 12 ? "PM" : "AM";
+      // Midnight and noon are 12, not 0, on a 12-hour clock.
+      this.now.hour = String(date.getHours() % 12 || 12).padStart(2, "0");
+      this.now.ampm = date.getHours() >= 12 ? "PM" : "AM";
       this.now.minute = String(date.getMinutes()).padStart(2, "0");
       this.now.second = String(date.getSeconds()).padStart(2, "0");
       if (this.attrs[0].dates.getDate() !== this.date.getDate()) {
