@@ -103,6 +103,26 @@ const timeout = (ms) => {
   return new Promise((resolve) => setTimeout(resolve, ms));
 };
 
+// Libre Hardware Monitor's ids for the readings shown here. Where a sensor
+// sits in the tree isn't stable: a group can be missing on one launch and
+// back on the next, moving every group after it, but these ids stay put
+const SENSOR_IDS = {
+  cpuTemp: "/intelcpu/0/temperature/14", // CPU Package
+  cpuLoad: "/intelcpu/0/load/0", // CPU Total
+  gpuTemp: "/gpu-nvidia/0/temperature/0", // GPU Core
+  gpuLoad: "/gpu-nvidia/0/load/0", // GPU Core
+  memoryLoad: "/ram/load/0",
+  memoryUsed: "/ram/data/0",
+  memoryAvailable: "/ram/data/1",
+};
+
+// Every sensor under a node, keyed by its id
+const collectSensors = (node, sensors = {}) => {
+  if (node.SensorId) sensors[node.SensorId] = node;
+  (node.Children || []).forEach((child) => collectSensors(child, sensors));
+  return sensors;
+};
+
 export default {
   components: {
     //
@@ -159,34 +179,26 @@ export default {
       try {
         const res = await axios.get(`${process.env.VUE_APP_PC_HWINFO_API_URL}`);
 
-        //   const computerName = res.data.Children[0].Text;
+        const sensors = collectSensors(res.data);
+        const reading = (id) => sensors[id].Value;
+        // The hardware a sensor belongs to, for its name
+        const hardwareOf = (id) =>
+          res.data.Children[0].Children.find((hardware) =>
+            Object.prototype.hasOwnProperty.call(collectSensors(hardware), id)
+          );
+
         // CPU
-        const cpuData = res.data.Children[0].Children[1];
-        const cpuName = cpuData.Text;
-        const cpuTemp = cpuData.Children[3].Children.find(
-          (item) => item.Text === "CPU Package"
-        ).Value;
-        const cpuLoad = cpuData.Children[4].Children.find(
-          (item) => item.Text === "CPU Total"
-        ).Value;
+        const cpuName = hardwareOf(SENSOR_IDS.cpuLoad).Text;
+        const cpuTemp = reading(SENSOR_IDS.cpuTemp);
+        const cpuLoad = reading(SENSOR_IDS.cpuLoad);
         // GPU
-        const gpuData = res.data.Children[0].Children[3];
-        const gpuName = gpuData.Text;
-        const gpuTemp = gpuData.Children[2].Children.find(
-          (item) => item.Text === "GPU Core"
-        ).Value;
-        const gpuLoad = gpuData.Children[3].Children.find(
-          (item) => item.Text === "GPU Core"
-        ).Value;
+        const gpuName = hardwareOf(SENSOR_IDS.gpuLoad).Text;
+        const gpuTemp = reading(SENSOR_IDS.gpuTemp);
+        const gpuLoad = reading(SENSOR_IDS.gpuLoad);
         // Memory
-        const memoryData = res.data.Children[0].Children[2];
-        const memoryUsed = memoryData.Children[1].Children.find(
-          (item) => item.Text === "Memory Used"
-        ).Value;
-        const memoryAvailable = memoryData.Children[1].Children.find(
-          (item) => item.Text === "Memory Available"
-        ).Value;
-        const memoryLoad = memoryData.Children[0].Children[0].Value;
+        const memoryUsed = reading(SENSOR_IDS.memoryUsed);
+        const memoryAvailable = reading(SENSOR_IDS.memoryAvailable);
+        const memoryLoad = reading(SENSOR_IDS.memoryLoad);
 
         this.cpu.name = cpuName;
         this.cpu.temp = cpuTemp;
