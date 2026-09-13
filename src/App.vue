@@ -80,6 +80,9 @@ import axios from "axios";
 // to do, so anything else means there is a job worth watching
 const PRINTER_IDLE_STATES = ["idle", "offline", "unknown", "unavailable"];
 
+// Checks in a row the PC has to miss before it counts as switched off
+const PC_OFFLINE_AFTER_MISSES = 3;
+
 export default {
   components: {
     AppBar,
@@ -95,6 +98,8 @@ export default {
       updateExists: false,
       theme: "hg-theme-default dark-theme",
       printerBusy: false,
+      pcOnline: false,
+      pcMisses: 0,
     };
   },
 
@@ -121,6 +126,7 @@ export default {
       document.title = "Pi Dash";
       this.$store.commit("syncMacModeFromLocalStorage");
       this.watchPrinterState();
+      this.watchPCState();
     },
 
     // The printer block only polls while it is on screen, so the check that
@@ -150,6 +156,40 @@ export default {
 
       this.printerBusy = busy;
       this.$store.commit("setOctoMonitoring", busy);
+    },
+
+    // The same goes for the PC block, which can't notice the PC come up while
+    // it is off screen
+    watchPCState() {
+      this.updatePCState();
+      setInterval(this.updatePCState, 5000); // 5 seconds
+    },
+
+    async updatePCState() {
+      let online;
+      try {
+        // Libre Hardware Monitor only answers while the PC is running. A PC
+        // that is switched off doesn't refuse the connection, it just never
+        // replies, so give up before the next check is due
+        await axios.get(process.env.VUE_APP_PC_HWINFO_API_URL, {
+          timeout: 3000,
+        });
+        this.pcMisses = 0;
+        online = true;
+      } catch (e) {
+        this.pcMisses++;
+        // Hand the slot back only once the PC has stayed quiet for a while, so
+        // one slow reply doesn't flip it away and straight back
+        if (this.pcMisses < PC_OFFLINE_AFTER_MISSES) return;
+        online = false;
+      }
+
+      // Only act on changes, so toggling the block by hand sticks until the PC
+      // is switched on or off
+      if (online === this.pcOnline) return;
+
+      this.pcOnline = online;
+      this.$store.commit("setPCMonitoring", online);
     },
 
     onChange(input) {

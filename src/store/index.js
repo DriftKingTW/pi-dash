@@ -36,6 +36,13 @@ export default new Vuex.Store({
       state.updateKey++;
     },
 
+    setPCMonitoring(state, value) {
+      if (state.showPCMonitoring === value) return;
+
+      state.showPCMonitoring = value;
+      state.updateKey++;
+    },
+
     switchOctoMonitoring(state) {
       state.showOctoMonitoring = !state.showOctoMonitoring;
       state.updateKey++;
