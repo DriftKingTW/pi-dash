@@ -30,9 +30,6 @@ jobs:
       # .env.production is committed, so this needs no secrets
       - run: npm run build
 
-      - name: Add CNAME
-        run: echo 'blog.driftking.tw' > dist/CNAME
-
       - name: Publish to gh-pages
         working-directory: dist
         env:
