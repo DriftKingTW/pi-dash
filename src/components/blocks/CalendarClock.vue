@@ -62,7 +62,9 @@ const attrs = ref([
   {
     key: "fanbox",
     dot: { style: { backgroundColor: "var(--color-accent)" } },
-    dates: { on: [{ days: 1 }, { days: 15 }] },
+    // v-calendar 3 syntax. The v2 `{ on: [...] }` form is silently accepted
+    // and matches every day.
+    dates: [{ repeat: { days: [1, 15] } }],
     popover: { label: "Fanbox Update", visibility: "click" },
   },
 ]);
