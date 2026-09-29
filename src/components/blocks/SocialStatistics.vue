@@ -61,20 +61,20 @@
       </div>
     </div>
 
-    <div class="flex shrink-0 items-center gap-2 px-3 py-1 text-xs">
+    <div class="flex shrink-0 items-center gap-2 px-3 pt-1 pb-2 text-xs">
       <span class="min-w-0 flex-1 truncate" :class="footer.textClass">
         <i :class="['mdi', footer.icon, footer.iconClass, 'mr-1']" />
         {{ footer.text }}
       </span>
       <button
-        class="flex items-center gap-1 rounded px-2 py-1 hover:bg-white/10"
+        class="glass-chip flex h-8 items-center gap-1.5 px-3 active:bg-white/20"
         @dblclick="resetDiff"
         @click="showDblClickHint"
       >
         <i class="mdi mdi-television-shimmer" /> Reset
       </button>
       <button
-        class="flex items-center gap-1 rounded px-2 py-1 hover:bg-white/10 disabled:opacity-40"
+        class="glass-chip flex h-8 items-center gap-1.5 px-3 active:bg-white/20 disabled:opacity-40"
         :disabled="loading"
         @click="refresh"
       >

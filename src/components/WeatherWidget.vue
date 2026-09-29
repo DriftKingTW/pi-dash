@@ -1,62 +1,57 @@
 <template>
-  <div class="flex flex-col text-ink">
-    <div class="flex items-center">
-      <div>
-        <h2 class="text-xl font-medium">{{ current.temperature.toFixed(1) }}°C</h2>
-        <small class="text-ink-faint">{{ current.description }}</small>
+  <div class="flex flex-col justify-between text-ink">
+    <div class="flex items-center gap-2">
+      <div class="min-w-0 flex-1">
+        <div class="text-2xl font-semibold tabular-nums leading-tight">
+          {{ current.temperature.toFixed(1) }}°
+        </div>
+        <div class="truncate text-xs text-ink-dim">{{ current.description }}</div>
       </div>
-      <div class="flex-1" />
       <img
         v-if="current.icon"
-        class="h-12 w-12 object-contain"
+        class="-my-2 h-12 w-12 object-contain"
         :src="`https://openweathermap.org/img/wn/${current.icon}@2x.png`"
         alt=""
       />
     </div>
 
-    <div class="mt-1 flex items-center">
+    <!-- Chance of rain for the next four hours -->
+    <div class="grid grid-cols-4">
       <div
         v-for="(hourly, i) in hourlyWeather"
         :key="`hourly_${i}`"
-        class="flex flex-1 flex-col items-center justify-center"
+        class="flex flex-col items-center"
       >
         <img
           v-if="hourly.icon"
-          class="h-6 w-6 object-contain"
+          class="h-7 w-7 object-contain"
           :src="`https://openweathermap.org/img/wn/${hourly.icon}.png`"
           alt=""
         />
-        <span class="text-xs">{{ (hourly.pop * 100).toFixed(0) }}%</span>
+        <div v-else class="h-7 w-7" />
+        <span class="text-[11px] tabular-nums text-ink-dim">
+          {{ (hourly.pop * 100).toFixed(0) }}%
+        </span>
       </div>
     </div>
 
-    <div class="my-2 h-px bg-line" />
-
-    <div class="flex text-xs text-ink-dim">
-      <div class="flex-1 text-center">
-        <i class="mdi mdi-sun-wireless mr-1" />{{ current.uvi.toFixed(0) }} UVI
-      </div>
-      <div class="flex-1 text-center">
-        <i class="mdi mdi-water-percent mr-1" />{{ current.humidity }} %
-      </div>
-      <div class="flex-1 text-center">
-        <i class="mdi mdi-windsock mr-1" />{{ current.windSpeed.toFixed(0) }} m/s
-      </div>
-    </div>
-
-    <div class="flex text-xs text-ink-dim">
-      <div class="flex-1 text-center">
-        <i class="mdi mdi-human mr-1" />{{ current.feelsLike.toFixed(1) }}°C
-      </div>
-      <div class="flex-1 text-center">
-        <i class="mdi mdi-eye mr-1" />{{ current.visibility }} m
+    <!-- One row, one column per reading, icon over value: a 3+2 split never
+         lines up, and a single grid does by construction. -->
+    <div class="grid grid-cols-5 border-t border-line pt-1.5">
+      <div
+        v-for="stat in stats"
+        :key="stat.icon"
+        class="flex flex-col items-center text-[11px] leading-tight text-ink-dim"
+      >
+        <i :class="['mdi', stat.icon, 'text-sm text-ink-faint']" />
+        <span class="tabular-nums whitespace-nowrap">{{ stat.value }}</span>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { onMounted, onUnmounted, reactive, ref } from "vue";
+import { computed, onMounted, onUnmounted, reactive, ref } from "vue";
 import axios from "axios";
 
 const REFRESH_MS = 30 * 60 * 1000;
@@ -69,6 +64,14 @@ const current = reactive({
 const hourlyWeather = ref([
   { pop: 0, icon: "" }, { pop: 0, icon: "" },
   { pop: 0, icon: "" }, { pop: 0, icon: "" },
+]);
+
+const stats = computed(() => [
+  { icon: "mdi-human", value: `${current.feelsLike.toFixed(1)}°` },
+  { icon: "mdi-water-percent", value: `${current.humidity}%` },
+  { icon: "mdi-windsock", value: `${current.windSpeed.toFixed(0)} m/s` },
+  { icon: "mdi-sun-wireless", value: `UV ${current.uvi.toFixed(0)}` },
+  { icon: "mdi-eye", value: `${(current.visibility / 1000).toFixed(0)} km` },
 ]);
 
 let timer = null;

@@ -7,14 +7,17 @@
   >
     <div
       v-if="ui.snackbar"
-      class="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 rounded-xl px-4 py-2 text-sm shadow-lg"
-      :class="toneClass"
+      class="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 max-w-[60%] rounded-2xl border border-white/15 bg-[#1e1e28] py-2 pr-2 pl-4 text-sm text-ink shadow-[inset_0_1px_0_#ffffff1f,0_8px_24px_#00000080]"
       role="status"
     >
-      <i :class="['mdi', toneIcon, 'text-base']" />
-      <span>{{ ui.snackbarText }}</span>
-      <button class="ml-2 font-medium uppercase" @click="ui.closeSnackbar()">
-        Close
+      <i :class="['mdi', toneIcon, toneClass, 'text-lg']" />
+      <span class="line-clamp-2">{{ ui.snackbarText }}</span>
+      <button
+        class="ml-1 grid h-7 w-7 place-items-center rounded-full text-ink-dim hover:bg-white/10"
+        aria-label="Close"
+        @click="ui.closeSnackbar()"
+      >
+        <i class="mdi mdi-close" />
       </button>
     </div>
   </Transition>
@@ -27,9 +30,10 @@ import { useUiStore } from "@/stores/ui";
 const ui = useUiStore();
 
 const TONES = {
-  info: { class: "bg-sky-700 text-white", icon: "mdi-information-outline" },
-  success: { class: "bg-emerald-700 text-white", icon: "mdi-check" },
-  error: { class: "bg-red-700 text-white", icon: "mdi-alert" },
+  // Glass pill for every tone, iOS style; only the icon carries the colour
+  info: { class: "text-sky-400", icon: "mdi-information-outline" },
+  success: { class: "text-ok", icon: "mdi-check-circle" },
+  error: { class: "text-crit", icon: "mdi-alert-circle" },
 };
 
 const tone = computed(() => TONES[ui.snackbarColor] || TONES.info);

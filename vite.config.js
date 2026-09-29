@@ -16,7 +16,12 @@ export default defineConfig({
       registerType: "autoUpdate",
       // The kiosk never reloads by hand, so a stale service worker would pin
       // it to an old build until someone drives out to the Pi.
-      workbox: { clientsClaim: true, skipWaiting: true },
+      workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
+        // Fonts too, so the kiosk keeps its typeface when the network drops
+        globPatterns: ["**/*.{js,css,html,ico,png,svg,woff2}"],
+      },
       manifest: {
         name: "Pi Dash",
         short_name: "Pi Dash",

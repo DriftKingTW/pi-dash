@@ -93,3 +93,38 @@ watch(
   (value) => keyboard?.setInput(value)
 );
 </script>
+
+<style>
+/* simple-keyboard ships white keys only; this is the dark glass variant the
+   kiosk passes in as `dark-theme`. Not scoped: the library owns this DOM. */
+.simple-keyboard.dark-theme {
+  width: 100%;
+  max-width: 1100px;
+  background: transparent;
+  font-family: inherit;
+}
+
+.simple-keyboard.dark-theme .hg-button {
+  height: 40px;
+  justify-content: center;
+  align-items: center;
+  background: #ffffff14;
+  color: var(--color-ink);
+  border: 1px solid #ffffff14;
+  border-bottom: 1px solid #ffffff14;
+  border-radius: 10px;
+  box-shadow: inset 0 1px 0 #ffffff14;
+  font-size: 15px;
+}
+
+.simple-keyboard.dark-theme .hg-button:active,
+.simple-keyboard.dark-theme .hg-button.hg-activeButton {
+  background: #ffffff33;
+}
+
+/* Modifier keys read as secondary, the way iOS greys them */
+.simple-keyboard.dark-theme .hg-functionBtn {
+  background: #ffffff0a;
+  color: var(--color-ink-dim);
+}
+</style>

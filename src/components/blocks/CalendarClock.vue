@@ -1,8 +1,8 @@
 <template>
   <div class="panel flex min-h-0 gap-2 overflow-hidden px-3 py-2">
     <div class="flex min-w-0 flex-1 flex-col">
-      <div class="flex items-baseline gap-2">
-        <span class="text-3xl font-medium tabular-nums">
+      <div class="flex items-baseline gap-1.5">
+        <span class="text-3xl font-semibold tracking-tight tabular-nums">
           {{ `${now.hour}:${now.minute}:${now.second}` }}
         </span>
         <small class="text-ink-dim">{{ now.ampm }}</small>
@@ -11,9 +11,7 @@
         {{ `${now.dayName} ${now.day} ${now.monthName} ${now.year}` }}
       </div>
 
-      <div class="my-2 h-px bg-line" />
-
-      <WeatherWidget class="min-h-0 flex-1" />
+      <WeatherWidget class="mt-2 min-h-0 flex-1 border-t border-line pt-2" />
     </div>
 
     <div class="shrink-0 calendar">
