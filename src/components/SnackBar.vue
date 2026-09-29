@@ -1,4 +1,7 @@
 <template>
+  <!-- The one place with real backdrop blur. The panels can't afford it (the
+       Pi drops to ~18fps with animation under glass), but a toast is small
+       and gone in seconds, and without blur it is either opaque or unreadable. -->
   <Transition
     enter-active-class="transition duration-200 ease-out"
     enter-from-class="translate-y-full opacity-0"
@@ -7,7 +10,7 @@
   >
     <div
       v-if="ui.snackbar"
-      class="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 max-w-[60%] rounded-2xl border border-white/15 bg-[#1e1e28] py-2 pr-2 pl-4 text-sm text-ink shadow-[inset_0_1px_0_#ffffff1f,0_8px_24px_#00000080]"
+      class="fixed bottom-4 left-1/2 z-50 flex -translate-x-1/2 items-center gap-2 max-w-[60%] rounded-2xl border border-white/15 bg-[#1e1e28]/55 py-2 pr-2 pl-4 text-sm text-ink shadow-[inset_0_1px_0_#ffffff26,0_8px_24px_#00000080] backdrop-blur-xl backdrop-saturate-150"
       role="status"
     >
       <i :class="['mdi', toneIcon, toneClass, 'text-lg']" />

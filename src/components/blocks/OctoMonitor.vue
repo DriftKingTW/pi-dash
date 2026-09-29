@@ -151,10 +151,14 @@ onUnmounted(() => {
 
 .float-info {
   position: absolute;
-  background-color: rgba(0, 0, 0, 0.2);
+  /* Glass over the stream, matching the panels: dark enough to read over a
+     bright bed, with the same lit top edge */
+  background-color: rgba(20, 20, 28, 0.45);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.18);
   color: white;
-  padding: 0.5rem;
-  border-radius: 5px;
+  padding: 0.5rem 0.75rem;
+  border-radius: 14px;
   backdrop-filter: blur(2px);
   width: 96%;
   /* Keeps the fill inside the rounded corners */
@@ -220,7 +224,7 @@ onUnmounted(() => {
 }
 
 .top-center {
-  top: 0.5rem;
+  top: 0.6rem;
   left: 50%;
   transform: translate(-50%, 0);
 }

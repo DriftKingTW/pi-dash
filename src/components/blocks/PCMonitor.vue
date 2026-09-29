@@ -1,26 +1,27 @@
 <template>
-  <div class="panel flex flex-col justify-center gap-3 overflow-hidden px-3">
-    <div v-for="gauge in gauges" :key="gauge.label">
-      <div class="mb-1 flex items-center gap-1 text-[11px] uppercase tracking-wide text-ink-dim">
-        <i :class="['mdi', gauge.icon]" />
-        <span class="truncate">{{ gauge.label }}</span>
+  <div class="panel flex flex-col justify-center gap-4 overflow-hidden px-5">
+    <div v-for="gauge in gauges" :key="gauge.icon">
+      <div class="mb-1.5 flex items-center gap-2 text-xs">
+        <i :class="['mdi', gauge.icon, 'text-base', gauge.textClass]" />
+        <span class="min-w-0 flex-1 truncate text-ink-dim">{{ gauge.label }}</span>
+        <template v-if="isConnected">
+          <span v-if="gauge.temp" class="flex items-center tabular-nums text-ink-faint">
+            <i class="mdi mdi-thermometer" />{{ gauge.temp }}°
+          </span>
+          <span class="w-10 text-right text-sm font-semibold tabular-nums">
+            {{ Math.round(gauge.value) }}%
+          </span>
+        </template>
+        <span v-else class="text-ink-faint">Offline</span>
       </div>
-      <div class="h-[25px] overflow-hidden rounded bg-surface-2">
+      <!-- Same track as the Claude windows, so the middle slot looks like one
+           family whichever block holds it -->
+      <div class="h-[14px] overflow-hidden rounded-full bg-surface-2">
         <div
-          class="flex h-full items-center rounded px-2 transition-[width] duration-300"
+          class="h-full rounded-full transition-[width] duration-300"
           :class="gauge.barClass"
           :style="{ width: barWidth(gauge.value) }"
-        >
-          <strong v-if="isConnected" class="flex items-center gap-3 whitespace-nowrap text-xs">
-            <span class="flex items-center gap-1">
-              <i :class="['mdi', gauge.icon]" />{{ Math.round(gauge.value) }}
-            </span>
-            <span v-if="gauge.temp" class="flex items-center gap-1">
-              <i class="mdi mdi-thermometer" />{{ gauge.temp }}
-            </span>
-          </strong>
-          <span v-else class="text-[11px] uppercase tracking-wide">Not Connected</span>
-        </div>
+        />
       </div>
     </div>
   </div>
@@ -54,28 +55,45 @@ const collectSensors = (node, sensors = {}) => {
 };
 
 const isConnected = ref(false);
-const cpu = reactive({ name: "-", temp: 0, load: 0 });
-const gpu = reactive({ name: "-", temp: 0, load: 0 });
+const cpu = reactive({ name: "CPU", temp: 0, load: 0 });
+const gpu = reactive({ name: "GPU", temp: 0, load: 0 });
 const memory = reactive({ used: 0, available: 0, load: 0, total: 0 });
 
 let polling = true;
 
 const gauges = computed(() => [
-  { label: cpu.name, icon: "mdi-cpu-64-bit", value: cpu.load, temp: cpu.temp, barClass: "bg-blue-600" },
-  { label: gpu.name, icon: "mdi-expansion-card", value: gpu.load, temp: gpu.temp, barClass: "bg-emerald-600" },
   {
-    label: `Used ${memory.used} | Free ${memory.available} | Total ${memory.total}`,
+    label: cpu.name,
+    icon: "mdi-cpu-64-bit",
+    value: cpu.load,
+    temp: cpu.temp,
+    textClass: "text-[#0a84ff]",
+    barClass: "bg-linear-to-r from-[#0a84ff99] to-[#0a84ff]",
+  },
+  {
+    label: gpu.name,
+    icon: "mdi-expansion-card",
+    value: gpu.load,
+    temp: gpu.temp,
+    textClass: "text-ok",
+    barClass: "bg-linear-to-r from-ok/60 to-ok",
+  },
+  {
+    label: isConnected.value
+      ? `Used ${memory.used} | Free ${memory.available} | Total ${memory.total}`
+      : "Memory",
     icon: "mdi-memory",
     value: memory.load,
     temp: null,
-    barClass: "bg-orange-600",
+    textClass: "text-warn",
+    barClass: "bg-linear-to-r from-warn/60 to-warn",
   },
 ]);
 
-// A disconnected gauge still has to be wide enough to read its own label.
 function barWidth(value) {
-  if (!isConnected.value) return "100%";
-  return Math.max(Number(value) || 0, 18) + "%";
+  if (!isConnected.value) return "0%";
+  // A sliver even at idle, so an empty track still reads as a live gauge
+  return Math.max(Number(value) || 0, 3) + "%";
 }
 
 async function getHwInfo() {
