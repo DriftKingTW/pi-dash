@@ -46,7 +46,7 @@
       <button
         v-for="t in timerList"
         :key="`${t.m}_${t.s}`"
-        class="flex items-center gap-1 rounded-full border border-line px-2 py-1 text-xs hover:bg-white/10"
+        class="flex items-center gap-1 glass-chip px-2 py-1 text-xs hover:bg-white/20"
         @click="setTimer(t.m, t.s)"
       >
         <i class="mdi mdi-alarm" />

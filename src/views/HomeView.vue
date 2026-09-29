@@ -10,24 +10,21 @@
 
     <component :is="middleBlock" :key="`middle-${ui.updateKey}`" class="min-h-0" />
 
-    <div class="flex min-h-0 flex-col">
-      <div class="flex shrink-0 rounded-t-xl bg-surface">
+    <div class="panel flex min-h-0 flex-col overflow-hidden">
+      <!-- iOS segmented control: the selected segment is a lighter pill -->
+      <div class="glass-chip m-2 mb-0 flex shrink-0 p-[3px]">
         <button
           v-for="(item, index) in tabItems"
           :key="item.label"
-          class="flex-1 border-b-2 px-2 py-2 text-xs font-medium uppercase tracking-wide transition-colors"
-          :class="
-            tab === index
-              ? 'border-ink text-ink'
-              : 'border-transparent text-ink-faint hover:text-ink-dim'
-          "
+          class="flex-1 rounded-full px-2 py-1 text-xs font-medium transition-colors"
+          :class="tab === index ? 'bg-white/20 text-ink' : 'text-ink-faint hover:text-ink-dim'"
           @click="tab = index"
         >
           <i :class="['mdi', item.icon, 'mr-1']" />
           {{ item.label }}
         </button>
       </div>
-      <div class="min-h-0 flex-1 rounded-b-xl bg-surface">
+      <div class="min-h-0 flex-1">
         <SocialStatistics v-if="tab === 0" />
         <CountdownTimer v-else />
       </div>

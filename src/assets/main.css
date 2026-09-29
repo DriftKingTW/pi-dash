@@ -4,17 +4,20 @@
    than hunting through components. `surface` is what panels sit on; `ink` is
    text. The accent is the Claude orange the T-QT monitor also uses. */
 @theme {
-  --color-bg: #0d0d10;
-  --color-surface: #191920;
-  --color-surface-2: #23232c;
+  --color-bg: #0b0b12;
+  /* Opaque, for overlays (drawer, keyboard) that must hide what is under them */
+  --color-surface: #1a1a24;
+  /* Translucent, for chips, tracks and hovers sitting on a glass panel */
+  --color-surface-2: #ffffff14;
   --color-line: #ffffff1f;
   --color-ink: #ffffff;
   --color-ink-dim: #ffffffb3;
   --color-ink-faint: #ffffff73;
-  --color-accent: #c4825e;
-  --color-ok: #4caf50;
-  --color-warn: #ff9800;
-  --color-crit: #f44336;
+  --color-accent: #d98b63;
+  /* iOS system colours, dark variants */
+  --color-ok: #30d158;
+  --color-warn: #ff9f0a;
+  --color-crit: #ff453a;
 }
 
 html,
@@ -25,22 +28,40 @@ body,
 
 body {
   margin: 0;
-  background: var(--color-bg);
+  /* The "wallpaper" the glass sits on. Static, so it is painted once; the
+     panels are translucent over it rather than blurring it (see below). */
+  background:
+    radial-gradient(ellipse 45% 120% at 8% 0%, #3b2a6b 0%, transparent 70%),
+    radial-gradient(ellipse 40% 110% at 55% 110%, #6b3a2a 0%, transparent 70%),
+    radial-gradient(ellipse 40% 120% at 95% 10%, #1f4a6b 0%, transparent 70%),
+    var(--color-bg);
   color: var(--color-ink);
-  font-family: Roboto, -apple-system, system-ui, "Helvetica Neue", sans-serif;
+  font-family: -apple-system, "SF Pro Text", Roboto, system-ui, "Helvetica Neue", sans-serif;
   /* A kiosk has no pointer to select with, and a stray long-press selecting
      text leaves a highlight nobody can clear. */
   user-select: none;
   overflow: hidden;
 }
 
-/* Panels. Kept as a class rather than repeated utilities because every block
-   uses it and the liquid-glass restyle will change it in one place.
-   Deliberately no backdrop-filter: measured on the Pi, three blurred panels
-   run at 60fps only while nothing animates near them, and this dashboard
-   animates constantly. See the notes in pi-dash-server's README. */
+/* Panels: "liquid glass" without the backdrop-filter. Measured on the Pi,
+   three blurred panels run at 60fps only while nothing animates near them,
+   and this dashboard animates constantly (~18fps otherwise). So the glass is
+   faked: a translucent sheen over the static wallpaper, a bright top edge
+   where light would catch it, and a soft inner glow along the bottom. */
 @utility panel {
-  background: var(--color-surface);
-  border: 1px solid var(--color-line);
-  border-radius: 14px;
+  background: linear-gradient(160deg, #ffffff1c 0%, #ffffff0a 45%, #ffffff05 100%);
+  border: 1px solid #ffffff1f;
+  border-radius: 22px;
+  box-shadow:
+    inset 0 1px 0 #ffffff40,
+    inset 0 -1px 12px #ffffff08,
+    0 8px 24px #00000059;
+}
+
+/* A pill-shaped control on a panel, iOS style: segmented tabs, chips. */
+@utility glass-chip {
+  background: #ffffff14;
+  border: 1px solid #ffffff14;
+  border-radius: 9999px;
+  box-shadow: inset 0 1px 0 #ffffff1f;
 }

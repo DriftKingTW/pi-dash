@@ -15,7 +15,7 @@
     >
       <nav
         v-if="ui.navDrawer"
-        class="fixed inset-y-0 left-0 z-40 w-56 border-r border-line bg-surface p-2"
+        class="fixed inset-y-0 left-0 z-40 w-56 rounded-r-[22px] border-r border-line bg-surface/95 p-2"
       >
         <button
           v-for="item in items"

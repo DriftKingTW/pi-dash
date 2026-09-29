@@ -1,5 +1,5 @@
 <template>
-  <div class="flex h-full flex-col overflow-hidden bg-bg text-ink">
+  <div class="flex h-full flex-col overflow-hidden text-ink">
     <AppBar />
     <NavigationDrawer />
 
@@ -12,7 +12,7 @@
     <Teleport to="body">
       <div
         v-if="ui.osk"
-        class="fixed inset-0 z-50 flex flex-col items-center justify-start gap-3 bg-surface p-3"
+        class="fixed inset-0 z-50 flex flex-col items-center justify-start gap-3 bg-surface/95 p-3"
       >
         <div class="flex w-full max-w-[850px] items-center gap-2">
           <input

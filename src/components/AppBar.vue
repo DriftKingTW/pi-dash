@@ -1,6 +1,6 @@
 <template>
   <header
-    class="flex h-[30px] shrink-0 items-center gap-1 bg-surface px-1 text-sm"
+    class="flex h-[30px] shrink-0 items-center gap-1 px-2 text-sm"
   >
     <button class="rounded-full p-1 hover:bg-surface-2" @click="ui.toggleNavDrawer()">
       <i class="mdi mdi-menu text-lg" />
