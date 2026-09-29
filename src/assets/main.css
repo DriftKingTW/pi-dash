@@ -29,11 +29,11 @@ body,
 body {
   margin: 0;
   /* The "wallpaper" the glass sits on. Static, so it is painted once; the
-     panels are translucent over it rather than blurring it (see below). */
+     panels are translucent over it rather than blurring it (see below).
+     Only the centre glow: the Pi's panel reproduces colour poorly, and the
+     purple and blue side glows did not survive it. */
   background:
-    radial-gradient(ellipse 45% 120% at 8% 0%, #2a1f4d 0%, transparent 70%),
     radial-gradient(ellipse 40% 110% at 55% 110%, #4a2a1f 0%, transparent 70%),
-    radial-gradient(ellipse 40% 120% at 95% 10%, #17344d 0%, transparent 70%),
     var(--color-bg);
   color: var(--color-ink);
   /* Bundled, not a system font: the Pi's fallback is thin and looks nothing
