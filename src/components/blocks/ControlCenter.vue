@@ -65,17 +65,6 @@
       </div>
     </div>
 
-    <!-- Kept at the bottom of the card: it is a touch target on a kiosk, and
-         the bottom edge is the easiest part of the screen to reach. -->
-    <div class="flex shrink-0 justify-center pb-1">
-      <button
-        class="rounded-full p-2 text-ink hover:bg-surface-2 disabled:opacity-50"
-        :disabled="isKettleLoading"
-        @click="getKettleTemperature"
-      >
-        <i class="mdi text-xl" :class="isKettleLoading ? 'mdi-loading mdi-spin' : 'mdi-kettle'" />
-      </button>
-    </div>
   </div>
 </template>
 
@@ -84,7 +73,6 @@ import { computed, onMounted, onUnmounted, ref } from "vue";
 import axios from "axios";
 
 import ClaudeRobot from "@/components/ClaudeRobot.vue";
-import { useUiStore } from "@/stores/ui";
 
 const ACCENT = "#c4825e";
 const POLL_INTERVAL_MS = 30000;
@@ -96,8 +84,6 @@ const STALE_AFTER_S = 900;
 // reading is the closest thing to "Claude is running right now".
 const SESSION_LIVE_WITHIN_S = 300;
 
-const ui = useUiStore();
-const isKettleLoading = ref(false);
 let polling = true;
 
 const claude = ref({
@@ -185,29 +171,6 @@ async function fetchClaudeUsage() {
     // becomes an error state when there has never been one.
     if (!claude.value.loaded) claude.value.error = "Claude usage unavailable";
   }
-}
-
-async function getKettleTemperature() {
-  let result = "";
-  let index = 0;
-  do {
-    try {
-      isKettleLoading.value = true;
-      const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/mikettle/temperature`,
-        // Reading over BLE is slower than the global default allows
-        { timeout: 30000 }
-      );
-      result = res.data;
-    } catch (e) {
-      console.log(e);
-    } finally {
-      isKettleLoading.value = false;
-      index++;
-    }
-  } while (result.includes("Read failed") && index < 10);
-
-  ui.triggerSnackbar({ status: "success", text: `Kettle temperature: ${result}°C` });
 }
 
 const claudeWindows = computed(() =>

@@ -2,7 +2,7 @@
   <header
     class="flex h-[30px] shrink-0 items-center gap-1 px-2 text-sm"
   >
-    <button class="rounded-full p-1 hover:bg-surface-2" @click="ui.toggleNavDrawer()">
+    <button class="grid h-7 w-7 place-items-center rounded-full hover:bg-surface-2" @click="ui.toggleNavDrawer()">
       <i class="mdi mdi-menu text-lg" />
     </button>
     <strong class="ml-1">Pi Dash</strong>
@@ -15,10 +15,20 @@
       <i class="mdi mdi-temperature-celsius" />
     </span>
 
+    <button
+      class="grid h-7 w-7 place-items-center rounded-full text-base hover:bg-surface-2 disabled:opacity-50"
+      :disabled="isKettleLoading"
+      aria-label="Kettle temperature"
+      @click="getKettleTemperature"
+    >
+      <i class="mdi" :class="isKettleLoading ? 'mdi-loading mdi-spin' : 'mdi-kettle'" />
+    </button>
+    <div class="mx-1.5 h-4 w-px bg-line" />
+
     <template v-for="(action, index) in actions" :key="action.icon">
-      <div v-if="index > 0" class="mx-1 h-4 w-px bg-line" />
+      <div v-if="index > 0" class="mx-1.5 h-4 w-px bg-line" />
       <button
-        class="rounded-full p-1 hover:bg-surface-2"
+        class="grid h-7 w-7 place-items-center rounded-full text-base hover:bg-surface-2"
         :class="action.class"
         @click="action.run"
       >
@@ -71,6 +81,40 @@ async function screenOff() {
   // land on whatever is underneath it.
   ui.openScreenControlOverlay();
   await shell("/shell/display", "off");
+}
+
+const isKettleLoading = ref(false);
+
+async function getKettleTemperature() {
+  let result = "";
+  let index = 0;
+  do {
+    try {
+      isKettleLoading.value = true;
+      const res = await axios.get(
+        `${import.meta.env.VITE_API_URL}/mikettle/temperature`,
+        // Reading over BLE is slower than the global default allows
+        { timeout: 30000 }
+      );
+      // axios JSON-parses a bare number, and .includes needs a string
+      result = String(res.data);
+    } catch (e) {
+      console.log(e);
+    } finally {
+      isKettleLoading.value = false;
+      index++;
+    }
+  } while (result.includes("Read failed") && index < 10);
+
+  // The server answers 200 with the script's error text when the read fails,
+  // so a number is the only thing that counts as success.
+  const temperature = Number.parseFloat(result);
+  if (Number.isNaN(temperature)) {
+    console.log("Kettle read failed:", result);
+    ui.triggerSnackbar({ status: "error", text: "Couldn't read the kettle" });
+    return;
+  }
+  ui.triggerSnackbar({ status: "success", text: `Kettle temperature: ${temperature}°C` });
 }
 
 // Trigger BTT actions
