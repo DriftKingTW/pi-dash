@@ -31,6 +31,11 @@ jobs:
       # --immutable fails the build rather than quietly rewriting the lockfile
       - run: yarn install --immutable
 
+      # A broken component must not reach the kiosk. The smoke test mounts
+      # every component and fails on anything Vue reports while doing so.
+      - run: yarn lint
+      - run: yarn test
+
       # .env.production is committed, so this needs no secrets
       - run: yarn build
 

@@ -32,4 +32,16 @@ export default defineConfig({
   },
 
   server: { port: 8080 },
+
+  test: {
+    environment: "jsdom",
+    include: ["tests/**/*.test.js"],
+    setupFiles: ["tests/setup.js"],
+    // Resolve a default import from a CommonJS package the way the browser
+    // build does - to the whole module - rather than quietly unwrapping its
+    // `.default`. With Vitest's default here, `import Timer from
+    // "easytimer.js"` yields a constructor in tests and a plain object in the
+    // browser, and the smoke test passes over exactly the bug it exists for.
+    deps: { interopDefault: false },
+  },
 });
