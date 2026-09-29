@@ -73,7 +73,9 @@ const timerList = [
 ];
 
 const clearAlarm = ref(false);
-const timerString = ref("");
+// Shown before any preset is picked. easytimer only reports on a tick, and a
+// timer that has never started never ticks, so without this the ring is empty.
+const timerString = ref("00:00:00");
 const isPlaying = ref(true);
 const percentage = ref(0);
 
