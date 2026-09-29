@@ -1,5 +1,5 @@
 <template>
-  <div class="panel flex min-h-0 gap-2 overflow-hidden px-3 py-2">
+  <div class="panel flex min-h-0 gap-3 overflow-hidden p-4">
     <div class="flex min-w-0 flex-1 flex-col">
       <!-- Lock-screen layout: date above, hours and minutes large, seconds and
            AM/PM stacked small beside them so the big figures stay steady -->
@@ -16,7 +16,7 @@
         </span>
       </div>
 
-      <WeatherWidget class="mt-2 min-h-0 flex-1 border-t border-line pt-2" />
+      <WeatherWidget class="mt-3 min-h-0 flex-1" />
     </div>
 
     <div class="shrink-0 calendar">

@@ -1,27 +1,29 @@
 <template>
-  <div class="flex flex-col justify-between text-ink">
-    <div class="flex items-center gap-2">
+  <div class="flex flex-col justify-between gap-2 text-ink">
+    <div class="flex items-center gap-1">
+      <img
+        v-if="current.icon"
+        class="-my-2 -ml-2 h-14 w-14 shrink-0 object-contain"
+        :src="`https://openweathermap.org/img/wn/${current.icon}@2x.png`"
+        alt=""
+      />
       <div class="min-w-0 flex-1">
-        <div class="text-2xl font-semibold tabular-nums leading-tight">
+        <div class="text-2xl leading-tight font-semibold tabular-nums">
           {{ current.temperature.toFixed(1) }}°
         </div>
         <div class="truncate text-xs text-ink-dim">{{ current.description }}</div>
       </div>
-      <img
-        v-if="current.icon"
-        class="-my-2 h-12 w-12 object-contain"
-        :src="`https://openweathermap.org/img/wn/${current.icon}@2x.png`"
-        alt=""
-      />
     </div>
 
-    <!-- Chance of rain for the next four hours -->
-    <div class="grid grid-cols-4">
+    <!-- Chance of rain for the next four hours. Grouped in a tinted tile
+         rather than split off with rules, which the glass panels don't suit. -->
+    <div class="grid grid-cols-4 rounded-xl bg-white/5 py-1.5">
       <div
         v-for="(hourly, i) in hourlyWeather"
         :key="`hourly_${i}`"
-        class="flex flex-col items-center"
+        class="flex flex-col items-center leading-tight"
       >
+        <span class="text-[10px] font-medium text-ink-faint">{{ hourly.label }}</span>
         <img
           v-if="hourly.icon"
           class="h-7 w-7 object-contain"
@@ -37,7 +39,7 @@
 
     <!-- One row, one column per reading, icon over value: a 3+2 split never
          lines up, and a single grid does by construction. -->
-    <div class="grid grid-cols-5 border-t border-line pt-1.5">
+    <div class="grid grid-cols-5 rounded-xl bg-white/5 py-1.5">
       <div
         v-for="stat in stats"
         :key="stat.icon"
@@ -62,9 +64,17 @@ const current = reactive({
 });
 
 const hourlyWeather = ref([
-  { pop: 0, icon: "" }, { pop: 0, icon: "" },
-  { pop: 0, icon: "" }, { pop: 0, icon: "" },
+  { pop: 0, icon: "", label: "" }, { pop: 0, icon: "", label: "" },
+  { pop: 0, icon: "", label: "" }, { pop: 0, icon: "", label: "" },
 ]);
+
+// "Now" for the current hour, then "3AM", "4AM"…, from the forecast's own
+// timestamp rather than counting from the clock
+function hourLabel(unixSeconds, index) {
+  if (index === 0) return "Now";
+  const hour = new Date(unixSeconds * 1000).getHours();
+  return `${hour % 12 || 12}${hour < 12 ? "AM" : "PM"}`;
+}
 
 const stats = computed(() => [
   { icon: "mdi-human", value: `${current.feelsLike.toFixed(1)}°` },
@@ -105,6 +115,7 @@ async function load() {
     hourlyWeather.value = hourlyWeather.value.map((_, i) => ({
       pop: data.hourly[i].pop,
       icon: data.hourly[i].weather[0].icon,
+      label: hourLabel(data.hourly[i].dt, i),
     }));
   } catch (e) {
     console.error(e);
