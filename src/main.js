@@ -1,20 +1,14 @@
-import Vue from 'vue'
-import axios from 'axios'
-import App from './App.vue'
-import './registerServiceWorker'
-import router from './router'
-import store from './store'
-import vuetify from './plugins/vuetify'
+import { createApp } from "vue";
+import { createPinia } from "pinia";
+import axios from "axios";
 
-Vue.config.productionTip = false
+import App from "./App.vue";
+import router from "./router";
+import "./assets/main.css";
+import "@mdi/font/css/materialdesignicons.css";
 
 // Without this an unreachable host hangs forever, and polling blocks pile up
 // until they exhaust the browser's connection limit and the dashboard stalls
-axios.defaults.timeout = 10000
+axios.defaults.timeout = 10000;
 
-new Vue({
-  router,
-  store,
-  vuetify,
-  render: h => h(App)
-}).$mount('#app')
+createApp(App).use(createPinia()).use(router).mount("#app");

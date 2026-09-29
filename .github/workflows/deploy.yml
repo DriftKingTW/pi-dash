@@ -20,15 +20,19 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Enable Corepack
+        run: corepack enable
+
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
+          cache: yarn
 
-      - run: npm ci
+      # --immutable fails the build rather than quietly rewriting the lockfile
+      - run: yarn install --immutable
 
       # .env.production is committed, so this needs no secrets
-      - run: npm run build
+      - run: yarn build
 
       - name: Publish to gh-pages
         working-directory: dist

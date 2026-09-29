@@ -21,3 +21,13 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
+
+# Yarn 4 (node-modules linker). Corepack supplies Yarn itself from the
+# packageManager field, so nothing under .yarn/ needs committing; the
+# exceptions are kept for patches or plugins added later.
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+.pnp.*

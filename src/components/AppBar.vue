@@ -1,197 +1,128 @@
 <template>
-  <v-app-bar app color="primary" dark height="30px" flat>
-    <div class="d-flex align-center">
-      <v-app-bar-nav-icon @click="$store.commit('toggleNavDrawer')">
-        <!-- <raspberry-pi-icon
-          size="1.2x"
-          fill="white"
-          class="mr-2"
-        ></raspberry-pi-icon> -->
-      </v-app-bar-nav-icon>
-      <v-toolbar-title>
-        <strong>Pi Dash</strong>
-      </v-toolbar-title>
-    </div>
-    <v-spacer></v-spacer>
-    <v-btn text>
-      <v-icon small left :color="temperatureColor">mdi-thermometer</v-icon>
-      <span :class="`${temperatureColor}--text`">{{ temperature }}</span>
-      <v-icon small right :color="temperatureColor">
-        mdi-temperature-celsius
-      </v-icon>
-    </v-btn>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="switchPCMonitoring">
-      <v-icon small>mdi-swap-horizontal</v-icon>
-    </v-btn>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="switchOctoMonitoring">
-      <v-icon small>mdi-printer-3d-nozzle</v-icon>
-    </v-btn>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="syncClipboard">
-      <v-icon small>mdi-clipboard-arrow-down-outline</v-icon>
-    </v-btn>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="$store.commit('openKeyboard')">
-      <v-icon small>mdi-keyboard</v-icon>
-    </v-btn>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="reloadPage">
-      <v-icon small>mdi-refresh</v-icon>
-    </v-btn>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="screenOff">
-      <v-icon small>mdi-television-off</v-icon>
-    </v-btn>
-    <template v-if="isExpand">
-      <v-divider vertical class="mx-1"></v-divider>
-      <v-btn icon @click="piReboot">
-        <v-icon small color="warning">mdi-restart</v-icon>
-      </v-btn>
-      <v-divider vertical class="mx-1"></v-divider>
-      <v-btn icon @click="piOff">
-        <v-icon small color="error">mdi-power</v-icon>
-      </v-btn>
+  <header
+    class="flex h-[30px] shrink-0 items-center gap-1 bg-surface px-1 text-sm"
+  >
+    <button class="rounded-full p-1 hover:bg-surface-2" @click="ui.toggleNavDrawer()">
+      <i class="mdi mdi-menu text-lg" />
+    </button>
+    <strong class="ml-1">Pi Dash</strong>
+
+    <div class="flex-1" />
+
+    <span class="flex items-center gap-1 px-2" :class="temperatureClass">
+      <i class="mdi mdi-thermometer" />
+      {{ temperature }}
+      <i class="mdi mdi-temperature-celsius" />
+    </span>
+
+    <template v-for="(action, index) in actions" :key="action.icon">
+      <div v-if="index > 0" class="mx-1 h-4 w-px bg-line" />
+      <button
+        class="rounded-full p-1 hover:bg-surface-2"
+        :class="action.class"
+        @click="action.run"
+      >
+        <i :class="['mdi', action.icon]" />
+      </button>
     </template>
-    <v-divider vertical class="mx-1"></v-divider>
-    <v-btn icon @click="$store.commit('toggleExpand')">
-      <v-icon small v-if="isExpand">mdi-chevron-right</v-icon>
-      <v-icon small v-else>mdi-dots-horizontal</v-icon>
-    </v-btn>
-  </v-app-bar>
+  </header>
 </template>
 
-<script>
-// import { RaspberryPiIcon } from "vue-simple-icons";
-import { mapState } from "vuex";
+<script setup>
+import { computed, onMounted, onUnmounted, ref } from "vue";
 import axios from "axios";
 import copy from "copy-to-clipboard";
 
-export default {
-  components: {
-    // RaspberryPiIcon,
+import { useUiStore } from "@/stores/ui";
+
+const TEMP_POLL_MS = 5000;
+
+const ui = useUiStore();
+const temperature = ref(0);
+let timer = null;
+
+const temperatureClass = computed(() => {
+  if (temperature.value >= 70) return "text-crit";
+  if (temperature.value >= 60) return "text-warn";
+  return "text-ink";
+});
+
+async function updateTemperature() {
+  try {
+    const res = await axios.get(
+      import.meta.env.VITE_API_URL + "/shell/temperature"
+    );
+    temperature.value = (res.data.value / 1000).toFixed(1);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function shell(path, action) {
+  try {
+    await axios.get(import.meta.env.VITE_API_URL + path, { params: { action } });
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function screenOff() {
+  // The overlay goes up first: the tap that wakes the screen would otherwise
+  // land on whatever is underneath it.
+  ui.openScreenControlOverlay();
+  await shell("/shell/display", "off");
+}
+
+// Trigger BTT actions
+async function trigger(triggerName) {
+  try {
+    await axios.get(
+      `${import.meta.env.VITE_BTT_API_URL}/trigger_named/?trigger_name=${triggerName}`
+    );
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function syncClipboard() {
+  try {
+    trigger("SetClipboardVariable");
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    const res = await axios.get(
+      `${import.meta.env.VITE_BTT_API_URL}/get_string_variable/?variableName=LatestClipboardData`
+    );
+    ui.updateInput(res.data);
+    ui.triggerSnackbar({ status: "success", text: "Clipboard synced: " + res.data });
+    copy(res.data);
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+// The destructive pair is hidden until the bar is expanded, so a stray tap on
+// a wall-mounted screen cannot power the Pi down.
+const actions = computed(() => [
+  { icon: "mdi-swap-horizontal", run: () => ui.switchPCMonitoring() },
+  { icon: "mdi-printer-3d-nozzle", run: () => ui.switchOctoMonitoring() },
+  { icon: "mdi-clipboard-arrow-down-outline", run: syncClipboard },
+  { icon: "mdi-keyboard", run: () => ui.openKeyboard() },
+  { icon: "mdi-refresh", run: () => window.location.reload() },
+  { icon: "mdi-television-off", run: screenOff },
+  ...(ui.isExpand
+    ? [
+        { icon: "mdi-restart", class: "text-warn", run: () => shell("/shell/power", "reboot") },
+        { icon: "mdi-power", class: "text-crit", run: () => shell("/shell/power", "off") },
+      ]
+    : []),
+  {
+    icon: ui.isExpand ? "mdi-chevron-right" : "mdi-dots-horizontal",
+    run: () => ui.toggleExpand(),
   },
+]);
 
-  data() {
-    return {
-      temperature: 0,
-    };
-  },
-
-  mounted() {
-    this.initialize();
-  },
-
-  methods: {
-    initialize() {
-      setInterval(() => {
-        this.updateTemperature();
-      }, 5000); // 5 seconds
-    },
-
-    switchPCMonitoring() {
-      this.$store.commit("switchPCMonitoring");
-    },
-
-    switchOctoMonitoring() {
-      this.$store.commit("switchOctoMonitoring");
-    },
-
-    async updateTemperature() {
-      try {
-        const result = await axios.get(
-          process.env.VUE_APP_API_URL + "/shell/temperature"
-        );
-        this.temperature = (result.data.value / 1000).toFixed(1);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    async screenOff() {
-      this.$store.commit("openScreenControlOverlay");
-      try {
-        await axios.get(process.env.VUE_APP_API_URL + "/shell/display", {
-          params: { action: "off" },
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    async piOff() {
-      try {
-        await axios.get(process.env.VUE_APP_API_URL + "/shell/power", {
-          params: { action: "off" },
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    async piReboot() {
-      try {
-        await axios.get(process.env.VUE_APP_API_URL + "/shell/power", {
-          params: { action: "reboot" },
-        });
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    reloadPage() {
-      window.location.reload();
-    },
-
-    showReloadHint() {
-      this.$store.commit("triggerSnackbar", {
-        status: "warning",
-        text: "Double click to reload page",
-      });
-    },
-
-    // Trigger BTT actions
-    async trigger(triggerName) {
-      try {
-        await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/trigger_named/?trigger_name=${triggerName}`
-        );
-      } catch (e) {
-        console.log(e);
-      }
-    },
-
-    async syncClipboard() {
-      try {
-        this.trigger("SetClipboardVariable");
-        await new Promise((resolve) => setTimeout(resolve, 500));
-        const res = await axios.get(
-          `${process.env.VUE_APP_BTT_API_URL}/get_string_variable/?variableName=LatestClipboardData`
-        );
-        this.$store.commit("updateInput", res.data);
-        this.$store.commit("triggerSnackbar", {
-          status: "success",
-          text: "Clipboard synced: " + res.data,
-        });
-        copy(res.data);
-      } catch (e) {
-        console.log(e);
-      }
-    },
-  },
-
-  computed: {
-    ...mapState(["isExpand"]),
-    temperatureColor() {
-      if (this.temperature >= 70) {
-        return "error";
-      } else if (this.temperature >= 60) {
-        return "warning";
-      } else {
-        return "white";
-      }
-    },
-  },
-};
+onMounted(() => {
+  updateTemperature();
+  timer = setInterval(updateTemperature, TEMP_POLL_MS);
+});
+onUnmounted(() => clearInterval(timer));
 </script>

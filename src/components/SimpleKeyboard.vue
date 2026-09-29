@@ -2,34 +2,49 @@
   <div :class="keyboardClass"></div>
 </template>
 
-<script>
-import Keyboard from "simple-keyboard";
+<script setup>
+import { onMounted, onBeforeUnmount, watch } from "vue";
+// Named, not default: the default export is a wrapper object under Vite,
+// and `new` on it throws before the keyboard renders a single key.
+import { SimpleKeyboard as Keyboard } from "simple-keyboard";
 import "simple-keyboard/build/css/index.css";
 
-export default {
-  name: "SimpleKeyboard",
+const props = defineProps({
+  keyboardClass: { type: String, default: "simple-keyboard" },
+  input: { type: String, default: "" },
+  theme: { type: String, default: "" },
+});
 
-  props: {
-    keyboardClass: {
-      default: "simple-keyboard",
-      type: String,
-    },
-    input: {
-      type: String,
-    },
-    theme: String,
-  },
+const emit = defineEmits(["onChange", "onKeyPress"]);
 
-  data: () => ({
-    keyboard: null,
-  }),
+let keyboard = null;
 
-  mounted() {
-    this.keyboard = new Keyboard({
-      onChange: this.onChange,
-      onKeyPress: this.onKeyPress,
-      theme: this.theme,
-      layout: {
+function onChange(input) {
+  emit("onChange", input);
+}
+
+function onKeyPress(button) {
+  emit("onKeyPress", button);
+  if (button === "{shift}" || button === "{capslock}") handleShift();
+  if (button === "{numbers}" || button === "{abc}") handleNumbers();
+}
+
+function handleShift() {
+  const current = keyboard.options.layoutName;
+  keyboard.setOptions({ layoutName: current === "default" ? "shift" : "default" });
+}
+
+function handleNumbers() {
+  const current = keyboard.options.layoutName;
+  keyboard.setOptions({ layoutName: current !== "numbers" ? "numbers" : "default" });
+}
+
+onMounted(() => {
+  keyboard = new Keyboard({
+    onChange,
+    onKeyPress,
+    theme: props.theme,
+    layout: {
         default: [
           "` 1 2 3 4 5 6 7 8 9 0 - = {backspace}",
           "{tab} q w e r t y u i o p [ ] \\",
@@ -62,51 +77,19 @@ export default {
         "{metaright}": "cmd ⌘",
         "{abc}": "ABC",
         "{space}": "space",
-      },
-    });
-  },
+      }
+  });
+});
 
-  methods: {
-    onChange(input) {
-      this.$emit("onChange", input);
-    },
+// simple-keyboard holds its own DOM, so it has to be torn down explicitly or
+// the next time the keyboard opens it attaches to an element that is gone.
+onBeforeUnmount(() => {
+  keyboard?.destroy();
+  keyboard = null;
+});
 
-    onKeyPress(button) {
-      this.$emit("onKeyPress", button);
-
-      /**
-       * If you want to handle the shift and caps lock buttons
-       */
-      if (button === "{shift}" || button === "{capslock}") this.handleShift();
-      if (button === "{numbers}" || button === "{abc}") this.handleNumbers();
-    },
-
-    handleShift() {
-      let currentLayout = this.keyboard.options.layoutName;
-      let shiftToggle = currentLayout === "default" ? "shift" : "default";
-
-      this.keyboard.setOptions({
-        layoutName: shiftToggle,
-      });
-    },
-
-    handleNumbers() {
-      let currentLayout = this.keyboard.options.layoutName;
-      let numbersToggle = currentLayout !== "numbers" ? "numbers" : "default";
-
-      this.keyboard.setOptions({
-        layoutName: numbersToggle,
-      });
-    },
-  },
-
-  watch: {
-    input(input) {
-      this.keyboard.setInput(input);
-    },
-  },
-};
+watch(
+  () => props.input,
+  (value) => keyboard?.setInput(value)
+);
 </script>
-
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped></style>

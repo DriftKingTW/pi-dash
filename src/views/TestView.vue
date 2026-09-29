@@ -1,33 +1,5 @@
 <template>
-  <div>
-    <h1>Test Page</h1>
+  <div class="p-4">
+    <h1 class="text-xl font-bold">Test Page</h1>
   </div>
 </template>
-
-<script>
-export default {
-  components: {
-    //
-  },
-
-  data() {
-    return {
-      //
-    };
-  },
-
-  mounted() {
-    this.initialize();
-  },
-
-  methods: {
-    initialize() {
-      //
-    },
-  },
-
-  computed: {
-    //
-  },
-};
-</script>

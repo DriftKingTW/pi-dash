@@ -1,166 +1,136 @@
 <template>
-  <v-card color="primary" flat :loading="loading">
-    <v-card-title>
-      <v-icon left>mdi-package-variant-closed</v-icon>
-      Family Mart Package Tracking
-      <v-spacer></v-spacer>
-      <v-btn icon @click="initialize" :disabled="loading">
-        <v-icon>mdi-refresh</v-icon>
-      </v-btn>
-    </v-card-title>
-    <v-card-subtitle>Updated at {{ lastUpdate }}</v-card-subtitle>
-    <v-card-text>
-      <v-text-field
-        label="Tracking ID"
-        v-model="trackingId"
-        dense
-        append-outer-icon="mdi-plus"
-        color="white"
-        @click="handleInput"
-        @click:append-outer="addPackage"
-        @keyup.enter="addPackage"
+  <div class="panel flex min-h-0 flex-col overflow-hidden p-3">
+    <div class="flex items-center gap-2">
+      <i class="mdi mdi-package-variant-closed" />
+      <span class="font-medium">Family Mart Package Tracking</span>
+      <div class="flex-1" />
+      <button
+        class="rounded-full p-1 text-ink-dim hover:bg-surface-2 disabled:opacity-40"
+        :disabled="loading"
+        @click="refresh"
       >
-      </v-text-field>
-      <v-row align="center" class="spacer" no-gutters>
-        <v-col cols="12" v-for="(d, i) in data" :key="i">
-          <v-skeleton-loader
-            v-if="loading"
-            class="mx-auto"
-            width="100%"
-            type="paragraph"
-          ></v-skeleton-loader>
-          <v-chip
-            v-if="d.orderId"
-            small
-            label
-            color="primary lighten-1"
-            class="mb-2"
-            :class="d.status.includes('完成取件') ? 'grey--text' : ''"
-            close
-            @click:close="removePackage(i)"
-          >
-            <v-icon small left>mdi-truck-cargo-container</v-icon>
+        <i class="mdi" :class="loading ? 'mdi-loading mdi-spin' : 'mdi-refresh'" />
+      </button>
+    </div>
+    <div class="text-xs text-ink-faint">Updated at {{ lastUpdate }}</div>
+
+    <div class="mt-2 flex items-center gap-2">
+      <input
+        v-model="trackingId"
+        class="min-w-0 flex-1 rounded-lg bg-surface-2 px-3 py-1.5 text-sm outline-none placeholder:text-ink-faint"
+        placeholder="Tracking ID"
+        @click="handleInput"
+        @keyup.enter="addPackage"
+      />
+      <button class="rounded-full p-1 hover:bg-surface-2" @click="addPackage">
+        <i class="mdi mdi-plus" />
+      </button>
+    </div>
+
+    <div class="mt-2 min-h-0 flex-1 overflow-y-auto">
+      <div
+        v-for="(d, i) in data"
+        :key="i"
+        class="mb-2 flex items-center gap-1 rounded bg-surface-2 px-2 py-1 text-xs"
+        :class="d.status && d.status.includes('完成取件') ? 'text-ink-faint' : ''"
+      >
+        <i class="mdi" :class="d.orderId ? 'mdi-truck-cargo-container' : 'mdi-emoticon-sad'" />
+        <span class="min-w-0 flex-1 truncate">
+          <template v-if="d.orderId">
             {{ d.orderId }} {{ d.status }} {{ d.receiveDate }}
-          </v-chip>
-          <v-chip
-            v-else
-            small
-            label
-            color="primary lighten-1"
-            class="mb-2"
-            close
-            @click:close="removePackage(i)"
-          >
-            <v-icon small left>mdi-emoticon-sad</v-icon>
-            No Data
-          </v-chip>
-          <br />
-        </v-col>
-      </v-row>
-    </v-card-text>
-  </v-card>
+          </template>
+          <template v-else>No Data</template>
+        </span>
+        <button class="rounded-full p-0.5 hover:bg-white/10" @click="removePackage(i)">
+          <i class="mdi mdi-close" />
+        </button>
+      </div>
+    </div>
+  </div>
 </template>
 
-<script>
+<script setup>
+import { onMounted, onUnmounted, ref } from "vue";
 import axios from "axios";
-import { mapState } from "vuex";
 
-export default {
-  components: {
-    //
-  },
+import { useUiStore } from "@/stores/ui";
 
-  data() {
-    return {
-      timer: null,
-      loading: true,
-      trackingId: "",
-      packages: [],
-      data: [],
-      lastUpdate: new Date().toLocaleString(),
-    };
-  },
+const REFRESH_MS = 1000 * 60 * 30;
 
-  mounted() {
-    this.initialize();
-    this.timer = setInterval(() => {
-      this.initialize();
-    }, 1000 * 60 * 30 /* 30 minutes */);
-  },
+const ui = useUiStore();
+const loading = ref(true);
+const trackingId = ref("");
+const packages = ref([]);
+const data = ref([]);
+const lastUpdate = ref(new Date().toLocaleString());
 
-  methods: {
-    async initialize() {
-      this.loading = true;
-      this.data = [];
-      this.packages = [];
-      this.packages = this.loadPackages();
-      for (const pkg of this.packages) {
-        try {
-          const query = {
-            trackingId: pkg,
-          };
-          const res = await axios.post(
-            `${process.env.VUE_APP_API_URL}/package/familymart`,
-            query
-          );
-          if (res.data.statusCode === "999") {
-            res.data.latestStatus.status = "查無訂單資料";
-          }
-          this.data = [...this.data, { ...res.data.latestStatus }];
-        } catch (e) {
-          console.log(e);
-        }
+let timer = null;
+
+function loadPackages() {
+  const saved = localStorage.getItem("familyMartPackages");
+  return saved === null ? [] : JSON.parse(saved);
+}
+
+function savePackages() {
+  localStorage.setItem("familyMartPackages", JSON.stringify(packages.value));
+}
+
+async function refresh() {
+  loading.value = true;
+  data.value = [];
+  packages.value = loadPackages();
+
+  for (const pkg of packages.value) {
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_API_URL}/package/familymart`,
+        { trackingId: pkg }
+      );
+      if (res.data.statusCode === "999") {
+        res.data.latestStatus.status = "查無訂單資料";
       }
-      this.lastUpdate = new Date().toLocaleString();
-      this.loading = false;
-    },
+      data.value = [...data.value, { ...res.data.latestStatus }];
+    } catch (e) {
+      console.log(e);
+    }
+  }
 
-    addPackage() {
-      this.packages = [this.trackingId, ...this.packages];
-      this.trackingId = "";
-      this.savePackages();
-      this.initialize();
-    },
+  lastUpdate.value = new Date().toLocaleString();
+  loading.value = false;
+}
 
-    removePackage(index) {
-      this.packages.splice(index, 1);
-      this.savePackages();
-      this.initialize();
-    },
+function addPackage() {
+  if (!trackingId.value) return;
+  packages.value = [trackingId.value, ...packages.value];
+  trackingId.value = "";
+  savePackages();
+  refresh();
+}
 
-    savePackages() {
-      localStorage.setItem("familyMartPackages", JSON.stringify(this.packages));
-    },
+function removePackage(index) {
+  packages.value.splice(index, 1);
+  savePackages();
+  refresh();
+}
 
-    loadPackages() {
-      if (localStorage.getItem("familyMartPackages") !== null) {
-        return JSON.parse(localStorage.getItem("familyMartPackages"));
-      } else {
-        return [];
-      }
-    },
+// The on-screen keyboard writes into the shared input; when it has nothing,
+// fall back to whatever was last copied.
+async function handleInput() {
+  if (ui.input.length > 0) {
+    trackingId.value = ui.input;
+    ui.clearInput();
+  } else {
+    try {
+      trackingId.value = await navigator.clipboard.readText();
+    } catch (e) {
+      console.log(e);
+    }
+  }
+}
 
-    async handleInput() {
-      if (this.input.length > 0) {
-        this.trackingId = this.input;
-        this.$store.commit("clearInput");
-      } else {
-        const clipboardText = await navigator.clipboard.readText();
-        this.trackingId = clipboardText;
-      }
-    },
-  },
-
-  computed: {
-    familyMartTrackingUrl: function () {
-      return `https://ecfme.fme.com.tw/fmedcfpwebv2/index.aspx`;
-    },
-
-    ...mapState(["input"]),
-  },
-
-  beforeDestroy() {
-    clearInterval(this.timer);
-  },
-};
+onMounted(() => {
+  refresh();
+  timer = setInterval(refresh, REFRESH_MS);
+});
+onUnmounted(() => clearInterval(timer));
 </script>

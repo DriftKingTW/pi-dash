@@ -1,80 +1,62 @@
 <template>
-  <v-app>
+  <div class="flex h-full flex-col overflow-hidden bg-bg text-ink">
     <AppBar />
     <NavigationDrawer />
-    <v-main>
-      <router-view />
-      <v-dialog
-        v-model="osk"
-        fullscreen
-        hide-overlay
-        transition="dialog-bottom-transition"
-      >
-        <v-card>
-          <div class="d-flex">
-            <v-spacer></v-spacer>
-            <div class="d-flex" style="width: 850px">
-              <v-text-field
-                :value="input"
-                dense
-                solo
-                flat
-                hide-details
-                class="w-full white--text"
-                placeholder="Tap on the virtual keyboard to start"
-                @input="onInputChange"
-              />
-              <v-btn icon @click="$store.commit('closeKeyboard')">
-                <v-icon>mdi-close</v-icon>
-              </v-btn>
-            </div>
-            <v-spacer></v-spacer>
-          </div>
-          <div class="d-flex">
-            <v-spacer></v-spacer>
-            <SimpleKeyboard
-              @onChange="onChange"
-              @onKeyPress="onKeyPress"
-              :input="input"
-              :theme="theme"
-            />
-            <v-spacer></v-spacer>
-          </div>
-        </v-card>
-      </v-dialog>
-    </v-main>
-    <SnackBar />
-    <v-snackbar
-      bottom
-      right
-      :value="updateExists"
-      :timeout="-1"
-      color="info"
-      transition="slide-x-reverse-transition"
-    >
-      <v-icon left small>mdi-alert-circle-outline</v-icon>
-      An update is available!
-      <template v-slot:action="{ attrs }">
-        <v-btn text small class="ma-0" @click="refreshApp" v-bind="attrs">
-          Update
-        </v-btn>
-      </template>
-    </v-snackbar>
 
-    <v-overlay
-      :value="screenControlOverlay"
+    <main class="min-h-0 flex-1">
+      <RouterView />
+    </main>
+
+    <!-- On-screen keyboard. Vuetify's fullscreen dialog is just a fixed
+         overlay, so it is one here rather than a component. -->
+    <Teleport to="body">
+      <div
+        v-if="ui.osk"
+        class="fixed inset-0 z-50 flex flex-col items-center justify-start gap-3 bg-surface p-3"
+      >
+        <div class="flex w-full max-w-[850px] items-center gap-2">
+          <input
+            :value="ui.input"
+            class="min-w-0 flex-1 rounded-lg bg-surface-2 px-3 py-2 text-ink outline-none placeholder:text-ink-faint"
+            placeholder="Tap on the virtual keyboard to start"
+            @input="ui.updateInput($event.target.value)"
+          />
+          <button
+            class="rounded-full p-2 text-ink-dim hover:bg-surface-2"
+            @click="ui.closeKeyboard()"
+          >
+            <i class="mdi mdi-close text-xl" />
+          </button>
+        </div>
+        <SimpleKeyboard
+          :input="ui.input"
+          theme="hg-theme-default dark-theme"
+          @onChange="ui.updateInput($event)"
+        />
+      </div>
+    </Teleport>
+
+    <SnackBar />
+
+    <!-- Swallows the first tap after the screen is woken, so whatever is under
+         the finger is not triggered by the tap that turned the screen on. -->
+    <div
+      v-if="ui.screenControlOverlay"
+      class="fixed inset-0 z-40 bg-black/70"
       @click="turnOnPiScreen"
-    ></v-overlay>
-  </v-app>
+    />
+  </div>
 </template>
 
-<script>
-import AppBar from "@/components/AppBar.vue";
-import SimpleKeyboard from "@/components/SimpleKeyboard.vue";
-import { mapFields } from "vuex-map-fields";
-import SnackBar from "@/components/SnackBar";
-import NavigationDrawer from "@/components/NavigationDrawer";
+<script setup>
+import { onMounted, onUnmounted } from "vue";
 import axios from "axios";
+
+import AppBar from "@/components/AppBar.vue";
+import NavigationDrawer from "@/components/NavigationDrawer.vue";
+import SimpleKeyboard from "@/components/SimpleKeyboard.vue";
+import SnackBar from "@/components/SnackBar.vue";
+import { useUiStore } from "@/stores/ui";
 
 // Home Assistant reports one of these when the printer is off or has nothing
 // to do, so anything else means there is a job worth watching
@@ -83,214 +65,82 @@ const PRINTER_IDLE_STATES = ["idle", "offline", "unknown", "unavailable"];
 // Checks in a row the PC has to miss before it counts as switched off
 const PC_OFFLINE_AFTER_MISSES = 3;
 
-export default {
-  components: {
-    AppBar,
-    SimpleKeyboard,
-    SnackBar,
-    NavigationDrawer,
-  },
+const WATCH_INTERVAL_MS = 5000;
 
-  data() {
-    return {
-      refreshing: false,
-      registration: null,
-      updateExists: false,
-      theme: "hg-theme-default dark-theme",
-      printerBusy: false,
-      pcOnline: false,
-      pcMisses: 0,
-    };
-  },
+const ui = useUiStore();
 
-  created() {
-    document.addEventListener("swUpdated", this.updateAvailable, {
-      once: true,
-    });
+let printerBusy = false;
+let pcOnline = false;
+let pcMisses = 0;
+let timers = [];
 
-    navigator.serviceWorker.addEventListener("controllerchange", () => {
-      // We'll also need to add 'refreshing' to our data originally set to false.
-      if (this.refreshing) return;
-      this.refreshing = true;
-      // Here the actual reload of the page occurs
-      window.location.reload();
-    });
-  },
+// The printer block only polls while it is on screen, so the check that
+// decides whether to show it has to live here, at the root
+async function updatePrinterState() {
+  let stage;
+  try {
+    const res = await axios.get(import.meta.env.VITE_API_URL + "/printer");
+    stage = res.data.currentStage && res.data.currentStage.state;
+  } catch (e) {
+    console.log(e);
+  }
 
-  mounted() {
-    this.initialize();
-  },
+  // Leave whatever is on screen alone when the printer can't be reached
+  if (!stage) return;
 
-  methods: {
-    initialize() {
-      document.title = "Pi Dash";
-      this.$store.commit("syncMacModeFromLocalStorage");
-      this.watchPrinterState();
-      this.watchPCState();
-    },
+  const busy = !PRINTER_IDLE_STATES.includes(stage.toLowerCase());
 
-    // The printer block only polls while it is on screen, so the check that
-    // decides whether to show it has to live here, at the root
-    watchPrinterState() {
-      this.updatePrinterState();
-      setInterval(this.updatePrinterState, 5000); // 5 seconds
-    },
+  // Only act on changes, so toggling the block by hand isn't undone by the
+  // next poll five seconds later
+  if (busy === printerBusy) return;
 
-    async updatePrinterState() {
-      let stage;
-      try {
-        const res = await axios.get(process.env.VUE_APP_API_URL + "/printer");
-        stage = res.data.currentStage && res.data.currentStage.state;
-      } catch (e) {
-        console.log(e);
-      }
+  printerBusy = busy;
+  ui.setOctoMonitoring(busy);
+}
 
-      // Leave whatever is on screen alone when the printer can't be reached
-      if (!stage) return;
+// The same goes for the PC block, which can't notice the PC come up while it
+// is off screen
+async function updatePCState() {
+  let online;
+  try {
+    // Libre Hardware Monitor only answers while the PC is running. A PC that
+    // is switched off doesn't refuse the connection, it just never replies, so
+    // give up before the next check is due
+    await axios.get(import.meta.env.VITE_PC_HWINFO_API_URL, { timeout: 3000 });
+    pcMisses = 0;
+    online = true;
+  } catch {
+    pcMisses++;
+    // Hand the slot back only once the PC has stayed quiet for a while, so one
+    // slow reply doesn't flip it away and straight back
+    if (pcMisses < PC_OFFLINE_AFTER_MISSES) return;
+    online = false;
+  }
 
-      const busy = !PRINTER_IDLE_STATES.includes(stage.toLowerCase());
+  // Only act on changes, so toggling the block by hand sticks until the PC is
+  // switched on or off
+  if (online === pcOnline) return;
 
-      // Only act on changes, so toggling the block by hand isn't undone by the
-      // next poll five seconds later
-      if (busy === this.printerBusy) return;
+  pcOnline = online;
+  ui.setPCMonitoring(online);
+}
 
-      this.printerBusy = busy;
-      this.$store.commit("setOctoMonitoring", busy);
-    },
+function turnOnPiScreen() {
+  ui.closeScreenControlOverlay();
+  axios.get(import.meta.env.VITE_API_URL + "/shell/display?action=on");
+}
 
-    // The same goes for the PC block, which can't notice the PC come up while
-    // it is off screen
-    watchPCState() {
-      this.updatePCState();
-      setInterval(this.updatePCState, 5000); // 5 seconds
-    },
+onMounted(() => {
+  document.title = "Pi Dash";
+  ui.syncMacModeFromLocalStorage();
 
-    async updatePCState() {
-      let online;
-      try {
-        // Libre Hardware Monitor only answers while the PC is running. A PC
-        // that is switched off doesn't refuse the connection, it just never
-        // replies, so give up before the next check is due
-        await axios.get(process.env.VUE_APP_PC_HWINFO_API_URL, {
-          timeout: 3000,
-        });
-        this.pcMisses = 0;
-        online = true;
-      } catch (e) {
-        this.pcMisses++;
-        // Hand the slot back only once the PC has stayed quiet for a while, so
-        // one slow reply doesn't flip it away and straight back
-        if (this.pcMisses < PC_OFFLINE_AFTER_MISSES) return;
-        online = false;
-      }
+  updatePrinterState();
+  updatePCState();
+  timers = [
+    setInterval(updatePrinterState, WATCH_INTERVAL_MS),
+    setInterval(updatePCState, WATCH_INTERVAL_MS),
+  ];
+});
 
-      // Only act on changes, so toggling the block by hand sticks until the PC
-      // is switched on or off
-      if (online === this.pcOnline) return;
-
-      this.pcOnline = online;
-      this.$store.commit("setPCMonitoring", online);
-    },
-
-    onChange(input) {
-      this.input = input;
-      this.$store.commit("updateInput", input);
-    },
-
-    onKeyPress(button) {
-      console.log("button", button);
-    },
-
-    onInputChange(input) {
-      this.input = input.target.value;
-    },
-
-    updateAvailable(event) {
-      this.registration = event.detail;
-      this.updateExists = true;
-    },
-
-    refreshApp() {
-      this.updateExists = false;
-      // Make sure we only send a 'skip waiting' message if the SW is waiting
-      if (!this.registration || !this.registration.waiting) return;
-      // Send message to SW to skip the waiting and activate the new SW
-      this.registration.waiting.postMessage({ type: "SKIP_WAITING" });
-    },
-
-    turnOnPiScreen() {
-      this.$store.commit("closeScreenControlOverlay");
-      axios.get(process.env.VUE_APP_API_URL + "/shell/display?action=on");
-    },
-  },
-
-  computed: {
-    ...mapFields(["osk", "input", "screenControlOverlay"]),
-  },
-};
+onUnmounted(() => timers.forEach(clearInterval));
 </script>
-
-<style>
-html {
-  overflow: hidden;
-}
-
-/* Page can't scroll, so the content area must never exceed the viewport */
-.v-main {
-  height: 100vh;
-  height: 100dvh;
-}
-
-.v-main__wrap {
-  height: 100%;
-}
-
-/* Currently this method not working in Pi's touch screen */
-/* @media (pointer: coarse) {
-} */
-.v-btn:hover:before {
-  opacity: 0 !important;
-}
-
-.v-tab:hover:before {
-  opacity: 0 !important;
-}
-
-.vc-arrow:hover {
-  background: none !important;
-}
-
-.simple-keyboard {
-  max-width: 850px;
-}
-
-/*
-  Theme: dark-theme
-*/
-.simple-keyboard.dark-theme {
-  background-color: rgba(50, 50, 50, 0.8);
-  border-radius: 0;
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
-}
-
-.simple-keyboard.dark-theme .hg-button {
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: rgba(20, 20, 20, 0.8);
-  color: white;
-  border: none;
-}
-
-.simple-keyboard.dark-theme .hg-button:active {
-  background: #1c4995;
-  color: white;
-  border: none;
-}
-
-#root .simple-keyboard.dark-theme + .simple-keyboard-preview {
-  background: #1c4995;
-}
-</style>

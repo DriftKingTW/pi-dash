@@ -1,124 +1,70 @@
 <template>
-  <div class="grid-container">
-    <CalendarClock class="clock-block" />
-    <div class="statistics-block d-flex flex-column">
-      <v-tabs
-        v-model="tab"
-        color="white"
-        class="flex-grow-0"
-        background-color="primary"
-        fixed-tabs
-      >
-        <v-tabs-slider></v-tabs-slider>
-        <v-tab v-for="(item, index) in tabItems" :key="item">
-          <v-icon small left>{{ tabIcons[index] }}</v-icon>
-          {{ item }}
-        </v-tab>
-      </v-tabs>
-      <v-tabs-items v-model="tab" class="flex-grow-1 primary">
-        <v-tab-item>
-          <SocialStatistics />
-        </v-tab-item>
-        <v-tab-item>
-          <CountdownTimer />
-        </v-tab-item>
-      </v-tabs-items>
+  <!-- Three blocks across a 1480x320 panel. The middle slot is shared: a print
+       or the PC coming up takes it over and hands it back afterwards. -->
+  <!-- minmax(0,1fr) lets the row shrink instead of being pushed past the
+       viewport by its content on short screens -->
+  <div
+    class="grid h-[min(290px,100%)] grid-cols-[33%_33%_auto] grid-rows-[minmax(0,1fr)] gap-2 p-2"
+  >
+    <CalendarClock class="min-h-0" />
+
+    <component :is="middleBlock" :key="`middle-${ui.updateKey}`" class="min-h-0" />
+
+    <div class="flex min-h-0 flex-col">
+      <div class="flex shrink-0 rounded-t-xl bg-surface">
+        <button
+          v-for="(item, index) in tabItems"
+          :key="item.label"
+          class="flex-1 border-b-2 px-2 py-2 text-xs font-medium uppercase tracking-wide transition-colors"
+          :class="
+            tab === index
+              ? 'border-ink text-ink'
+              : 'border-transparent text-ink-faint hover:text-ink-dim'
+          "
+          @click="tab = index"
+        >
+          <i :class="['mdi', item.icon, 'mr-1']" />
+          {{ item.label }}
+        </button>
+      </div>
+      <div class="min-h-0 flex-1 rounded-b-xl bg-surface">
+        <SocialStatistics v-if="tab === 0" />
+        <CountdownTimer v-else />
+      </div>
     </div>
-    <ControlCenter
-      v-if="!showPCMonitoring && !showOctoMonitoring"
-      class="control-block"
-      :key="'control-center-' + updateKey"
-    />
-    <!-- A print takes the slot over while it runs, then hands it back -->
-    <PCMonitor
-      class="control-block"
-      v-if="showPCMonitoring && !showOctoMonitoring"
-      :key="'pc-monitor-' + updateKey"
-    />
-    <OctoMonitor
-      class="control-block"
-      v-if="showOctoMonitoring"
-      :key="'octo-monitor-' + updateKey"
-    />
   </div>
 </template>
 
-<script>
-// @ is an alias to /src
-import SocialStatistics from "@/components/blocks/SocialStatistics.vue";
+<script setup>
+import { computed, onMounted, ref, watch } from "vue";
+
 import CalendarClock from "@/components/blocks/CalendarClock.vue";
 import ControlCenter from "@/components/blocks/ControlCenter.vue";
 import CountdownTimer from "@/components/blocks/CountdownTimer.vue";
-import PCMonitor from "@/components/blocks/PCMonitor.vue";
 import OctoMonitor from "@/components/blocks/OctoMonitor.vue";
-import { mapState } from "vuex";
+import PCMonitor from "@/components/blocks/PCMonitor.vue";
+import SocialStatistics from "@/components/blocks/SocialStatistics.vue";
+import { useUiStore } from "@/stores/ui";
 
-export default {
-  name: "HomeView",
-  components: {
-    SocialStatistics,
-    CalendarClock,
-    ControlCenter,
-    CountdownTimer,
-    PCMonitor,
-    OctoMonitor,
-  },
+const ui = useUiStore();
 
-  data() {
-    return {
-      tab: null,
-      tabItems: ["SNS Stats", "Timer"],
-      tabIcons: ["mdi-chart-line", "mdi-timer"],
-    };
-  },
+const tab = ref(0);
+const tabItems = [
+  { label: "SNS Stats", icon: "mdi-chart-line" },
+  { label: "Timer", icon: "mdi-timer" },
+];
 
-  mounted() {
-    this.initialize();
-  },
+// A print outranks the PC: it is the one with a deadline.
+const middleBlock = computed(() => {
+  if (ui.showOctoMonitoring) return OctoMonitor;
+  if (ui.showPCMonitoring) return PCMonitor;
+  return ControlCenter;
+});
 
-  methods: {
-    initialize() {
-      // Load tab state from localStorage
-      if (localStorage.getItem("tab")) {
-        this.tab = Number(localStorage.getItem("tab"));
-      }
-    },
-  },
+onMounted(() => {
+  const saved = localStorage.getItem("tab");
+  if (saved !== null) tab.value = Number(saved);
+});
 
-  watch: {
-    tab: function (val) {
-      localStorage.setItem("tab", val);
-    },
-  },
-
-  computed: {
-    ...mapState(["showPCMonitoring", "showOctoMonitoring", "updateKey"]),
-  },
-};
+watch(tab, (value) => localStorage.setItem("tab", String(value)));
 </script>
-
-<style scoped>
-.grid-container {
-  display: grid;
-  height: min(290px, 100%);
-  padding: 0.6rem;
-  gap: 0.6rem;
-  grid-template-columns: 33% 33% auto;
-  /* minmax(0, 1fr) lets the row shrink instead of being pushed past the
-     viewport by its content on short screens */
-  grid-template-rows: minmax(0, 1fr);
-  grid-template-areas: "clock control statistics";
-}
-
-.statistics-block {
-  grid-area: statistics;
-}
-
-.control-block {
-  grid-area: control;
-}
-
-.clock-block {
-  grid-area: clock;
-}
-</style>

@@ -1,0 +1,46 @@
+@import "tailwindcss";
+
+/* Palette in one place, so the restyle is a matter of changing these rather
+   than hunting through components. `surface` is what panels sit on; `ink` is
+   text. The accent is the Claude orange the T-QT monitor also uses. */
+@theme {
+  --color-bg: #0d0d10;
+  --color-surface: #191920;
+  --color-surface-2: #23232c;
+  --color-line: #ffffff1f;
+  --color-ink: #ffffff;
+  --color-ink-dim: #ffffffb3;
+  --color-ink-faint: #ffffff73;
+  --color-accent: #c4825e;
+  --color-ok: #4caf50;
+  --color-warn: #ff9800;
+  --color-crit: #f44336;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: Roboto, -apple-system, system-ui, "Helvetica Neue", sans-serif;
+  /* A kiosk has no pointer to select with, and a stray long-press selecting
+     text leaves a highlight nobody can clear. */
+  user-select: none;
+  overflow: hidden;
+}
+
+/* Panels. Kept as a class rather than repeated utilities because every block
+   uses it and the liquid-glass restyle will change it in one place.
+   Deliberately no backdrop-filter: measured on the Pi, three blurred panels
+   run at 60fps only while nothing animates near them, and this dashboard
+   animates constantly. See the notes in pi-dash-server's README. */
+@utility panel {
+  background: var(--color-surface);
+  border: 1px solid var(--color-line);
+  border-radius: 14px;
+}
