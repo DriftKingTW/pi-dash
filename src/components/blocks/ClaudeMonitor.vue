@@ -1,7 +1,7 @@
 <template>
   <div class="panel flex flex-col overflow-hidden" :class="{ 'opacity-45': isStale }">
     <!-- Title row, the space the kettle button used to take at the bottom -->
-    <div class="flex shrink-0 items-center gap-2 px-4 pt-3">
+    <div class="flex shrink-0 items-center gap-2 px-4 pt-4">
       <span class="text-sm font-semibold">Claude Code</span>
       <div class="flex-1" />
       <span class="flex items-center gap-1.5 text-[11px] text-ink-faint">
@@ -16,7 +16,7 @@
     <!-- The card is 482x271 on the kiosk: wide and short. Two columns use that
          far better than one stacked one, and give the mark room to be more
          than an icon. -->
-    <div class="flex min-h-0 flex-1 items-center gap-4 px-3 pb-2">
+    <div class="flex min-h-0 flex-1 items-center gap-4 px-4 pb-4">
       <div class="flex w-[150px] shrink-0 flex-col items-center justify-center">
         <ClaudeRobot :size="120" :color="ACCENT" :asleep="!isSessionLive" />
         <div class="mt-2 max-w-[150px] truncate text-xs text-ink-faint">
@@ -53,7 +53,7 @@
 
           <!-- Seven days of spend, scaled to the busiest day so the shape of
                the week reads even when the totals are small. -->
-          <div class="mt-1 flex h-[44px] items-end gap-[3px]">
+          <div class="mt-1 flex h-[76px] items-end gap-[3px]">
             <div
               v-for="(day, index) in week"
               :key="day.date"

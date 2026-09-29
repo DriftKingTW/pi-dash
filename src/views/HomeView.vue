@@ -14,7 +14,7 @@
       <!-- iOS segmented control. The selected pill is one element that slides
            (transform only, so it stays cheap on the Pi) rather than a
            background that jumps from segment to segment. -->
-      <div class="glass-chip relative m-2 mb-0 flex shrink-0 p-[3px]">
+      <div class="glass-chip relative m-3 mb-1 flex shrink-0 p-[3px]">
         <div
           class="absolute inset-y-[3px] left-[3px] rounded-full bg-white/20 transition-transform duration-300 ease-out"
           :style="{

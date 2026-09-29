@@ -1,5 +1,5 @@
 <template>
-  <div class="flex flex-col justify-between gap-2 text-ink">
+  <div class="flex flex-col justify-between gap-1.5 text-ink">
     <div class="flex items-center gap-1">
       <img
         v-if="current.icon"
@@ -17,7 +17,7 @@
 
     <!-- Chance of rain for the next four hours. Grouped in a tinted tile
          rather than split off with rules, which the glass panels don't suit. -->
-    <div class="grid grid-cols-4 rounded-xl bg-white/5 py-1.5">
+    <div class="grid grid-cols-4 rounded-xl bg-white/5 py-1">
       <div
         v-for="(hourly, i) in hourlyWeather"
         :key="`hourly_${i}`"
@@ -26,11 +26,11 @@
         <span class="text-[10px] font-medium text-ink-faint">{{ hourly.label }}</span>
         <img
           v-if="hourly.icon"
-          class="h-7 w-7 object-contain"
+          class="h-6 w-6 object-contain"
           :src="`https://openweathermap.org/img/wn/${hourly.icon}.png`"
           alt=""
         />
-        <div v-else class="h-7 w-7" />
+        <div v-else class="h-6 w-6" />
         <span class="text-[11px] tabular-nums text-ink-dim">
           {{ (hourly.pop * 100).toFixed(0) }}%
         </span>
@@ -39,7 +39,7 @@
 
     <!-- One row, one column per reading, icon over value: a 3+2 split never
          lines up, and a single grid does by construction. -->
-    <div class="grid grid-cols-5 rounded-xl bg-white/5 py-1.5">
+    <div class="grid grid-cols-5 rounded-xl bg-white/5 py-1">
       <div
         v-for="stat in stats"
         :key="stat.icon"

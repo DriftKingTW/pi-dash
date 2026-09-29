@@ -16,7 +16,7 @@
         </span>
       </div>
 
-      <WeatherWidget class="mt-3 min-h-0 flex-1" />
+      <WeatherWidget class="mt-2 min-h-0 flex-1" />
     </div>
 
     <div class="shrink-0 calendar">

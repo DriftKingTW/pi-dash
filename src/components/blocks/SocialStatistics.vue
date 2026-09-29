@@ -1,10 +1,12 @@
 <template>
   <div class="flex h-full flex-col overflow-hidden">
-    <div class="min-h-0 flex-1 overflow-y-auto px-3 py-1">
+    <!-- Rows share the height between them, so three fill the panel instead
+         of bunching at the top; more than fit still scroll. -->
+    <div class="flex min-h-0 flex-1 flex-col overflow-y-auto px-3 py-1">
       <div
         v-for="(row, index) in rows"
         :key="row.key"
-        class="sns-row flex items-center gap-3 py-2"
+        class="sns-row flex min-h-[52px] flex-1 items-center gap-3 py-2"
         :class="{
           'is-loading': row.status === 'loading',
           'is-error': row.status === 'error',
