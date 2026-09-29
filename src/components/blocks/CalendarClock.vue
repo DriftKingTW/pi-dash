@@ -1,14 +1,19 @@
 <template>
   <div class="panel flex min-h-0 gap-2 overflow-hidden px-3 py-2">
     <div class="flex min-w-0 flex-1 flex-col">
-      <div class="flex items-baseline gap-1.5">
-        <span class="text-[42px] leading-none font-semibold tracking-tight tabular-nums">
-          {{ `${now.hour}:${now.minute}:${now.second}` }}
-        </span>
-        <small class="text-ink-dim">{{ now.ampm }}</small>
+      <!-- Lock-screen layout: date above, hours and minutes large, seconds and
+           AM/PM stacked small beside them so the big figures stay steady -->
+      <div class="text-[13px] font-medium text-ink-dim">
+        {{ `${now.dayName}, ${now.day} ${now.monthName}` }}
       </div>
-      <div class="text-xs text-ink-faint">
-        {{ `${now.dayName} ${now.day} ${now.monthName} ${now.year}` }}
+      <div class="flex items-center gap-2">
+        <span class="text-[46px] leading-none font-semibold tracking-tight tabular-nums">
+          {{ `${now.hour}:${now.minute}` }}
+        </span>
+        <span class="flex flex-col text-xs leading-tight font-semibold tabular-nums">
+          <span class="text-ink-dim">{{ now.second }}</span>
+          <span class="text-ink-faint">{{ now.ampm }}</span>
+        </span>
       </div>
 
       <WeatherWidget class="mt-2 min-h-0 flex-1 border-t border-line pt-2" />
@@ -42,7 +47,9 @@ const MONTHS = [
   "January", "February", "March", "April", "May", "June",
   "July", "August", "September", "October", "November", "December",
 ];
-const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const DAYS = [
+  "Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday",
+];
 
 const now = reactive({
   year: "", month: 0, monthName: "", day: "", dayName: "",
@@ -51,10 +58,10 @@ const now = reactive({
 
 const attrs = ref([
   { key: "today", highlight: true, dates: new Date() },
-  { key: "weekend", dot: { style: { backgroundColor: "brown" } }, dates: [] },
+  { key: "weekend", dot: { style: { backgroundColor: "#ff453acc" } }, dates: [] },
   {
     key: "fanbox",
-    dot: "orange",
+    dot: { style: { backgroundColor: "var(--color-accent)" } },
     dates: { on: [{ days: 1 }, { days: 15 }] },
     popover: { label: "Fanbox Update", visibility: "click" },
   },
@@ -126,6 +133,47 @@ onUnmounted(() => clearInterval(timer));
 .calendar :deep(.vc-container) {
   background-color: transparent;
   border: none;
+  font-family: inherit;
+}
+
+/* Restyled to match the glass panels: quieter header and weekday row, the
+   theme's ink colours, and today in the accent instead of v-calendar blue. */
+.calendar :deep(.vc-title) {
+  background: transparent;
+  color: var(--color-ink);
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.calendar :deep(.vc-arrow) {
+  background: transparent;
+  color: var(--color-ink-faint);
+}
+
+.calendar :deep(.vc-weekday) {
+  color: var(--color-ink-faint);
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.calendar :deep(.vc-day-content) {
+  color: var(--color-ink-dim);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.calendar :deep(.vc-highlight-bg-solid) {
+  background-color: var(--color-accent);
+}
+
+.calendar :deep(.vc-highlight-content-solid) {
+  color: var(--color-ink);
+  font-weight: 700;
+}
+
+.calendar :deep(.vc-dot) {
+  width: 4px;
+  height: 4px;
 }
 
 /* v-calendar 3 lays days out at 32px, taller than v2 did. Six weeks of that
