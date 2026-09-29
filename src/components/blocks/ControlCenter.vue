@@ -1,10 +1,5 @@
 <template>
   <v-card color="primary" flat class="d-flex flex-column control-card">
-    <v-card-title class="flex-grow-0 card-title py-1">
-      <v-icon left small>mdi-tune-vertical</v-icon>
-      <span class="subtitle-2">Control Center</span>
-    </v-card-title>
-
     <v-card-text
       class="flex-grow-1 py-0 d-flex align-center"
       :class="{ 'is-stale': isStale }"
@@ -13,7 +8,7 @@
            that far better than one stacked one, and give the mark room to be
            more than an icon. -->
       <div class="mascot d-flex flex-column align-center justify-center mr-4">
-        <ClaudeRobot :size="112" :color="accent" :asleep="!isSessionLive" />
+        <ClaudeRobot :size="132" :color="accent" :asleep="!isSessionLive" />
         <div class="caption text--secondary mt-2 text-truncate mascot-label">
           {{ sessionLabel }}
         </div>
@@ -294,25 +289,21 @@ export default {
   overflow: hidden;
 }
 
-/* The card has a fixed 290px of grid row to live in, so the chrome around the
+/* The card has a fixed slice of grid row to live in, so the chrome around the
    readings is kept deliberately thin - every pixel here is one the bars and
    the week chart do not get. */
-.card-title {
-  line-height: 1.2;
-}
-
 .card-actions {
   min-height: 40px;
 }
 
 .mascot {
-  width: 130px;
-  flex: 0 0 130px;
+  width: 150px;
+  flex: 0 0 150px;
 }
 
 /* The project name can be long; keep it from widening the column */
 .mascot-label {
-  max-width: 130px;
+  max-width: 150px;
 }
 
 .readings {
@@ -330,7 +321,7 @@ export default {
 /* Tall enough for the shape of the week to be legible. At 20px a quiet day
    and a busy one were the same two-pixel stub. */
 .week {
-  height: 34px;
+  height: 44px;
   gap: 3px;
 }
 
