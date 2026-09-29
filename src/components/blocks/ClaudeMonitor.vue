@@ -1,11 +1,24 @@
 <template>
   <div class="panel flex flex-col overflow-hidden" :class="{ 'opacity-45': isStale }">
+    <!-- Title row, the space the kettle button used to take at the bottom -->
+    <div class="flex shrink-0 items-center gap-2 px-4 pt-3">
+      <span class="text-sm font-semibold">Claude Code</span>
+      <div class="flex-1" />
+      <span class="flex items-center gap-1.5 text-[11px] text-ink-faint">
+        <span
+          class="h-1.5 w-1.5 rounded-full"
+          :class="isStale ? 'bg-warn' : 'bg-ok'"
+        />
+        {{ isStale ? "Stale" : "Live" }}
+      </span>
+    </div>
+
     <!-- The card is 482x271 on the kiosk: wide and short. Two columns use that
          far better than one stacked one, and give the mark room to be more
          than an icon. -->
-    <div class="flex min-h-0 flex-1 items-center gap-4 px-3">
+    <div class="flex min-h-0 flex-1 items-center gap-4 px-3 pb-2">
       <div class="flex w-[150px] shrink-0 flex-col items-center justify-center">
-        <ClaudeRobot :size="132" :color="ACCENT" :asleep="!isSessionLive" />
+        <ClaudeRobot :size="120" :color="ACCENT" :asleep="!isSessionLive" />
         <div class="mt-2 max-w-[150px] truncate text-xs text-ink-faint">
           {{ sessionLabel }}
         </div>

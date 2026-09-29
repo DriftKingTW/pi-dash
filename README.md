@@ -12,7 +12,7 @@ line - so they arrive via `GET /claude` on pi-dash-server, which proxies a
 bridge running on that Mac and caches the last reading for when it is asleep.
 
 That means the block has to say when it is showing something old rather than
-something current. `ControlCenter.vue` adds the payload's own `age` to the
+something current. `ClaudeMonitor.vue` adds the payload's own `age` to the
 server's `bridge.cachedSeconds` and, past 15 minutes, fades the whole block and
 labels it with its age. Past 5 minutes the mascot closes its eyes.
 

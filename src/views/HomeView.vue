@@ -53,7 +53,7 @@
 import { computed, ref, watch } from "vue";
 
 import CalendarClock from "@/components/blocks/CalendarClock.vue";
-import ControlCenter from "@/components/blocks/ControlCenter.vue";
+import ClaudeMonitor from "@/components/blocks/ClaudeMonitor.vue";
 import CountdownTimer from "@/components/blocks/CountdownTimer.vue";
 import OctoMonitor from "@/components/blocks/OctoMonitor.vue";
 import PCMonitor from "@/components/blocks/PCMonitor.vue";
@@ -74,7 +74,7 @@ const tabItems = [
 const middleBlock = computed(() => {
   if (ui.showOctoMonitoring) return OctoMonitor;
   if (ui.showPCMonitoring) return PCMonitor;
-  return ControlCenter;
+  return ClaudeMonitor;
 });
 
 function readSavedTab() {
