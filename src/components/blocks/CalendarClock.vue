@@ -2,7 +2,7 @@
   <div class="panel flex min-h-0 gap-2 overflow-hidden px-3 py-2">
     <div class="flex min-w-0 flex-1 flex-col">
       <div class="flex items-baseline gap-1.5">
-        <span class="text-3xl font-semibold tracking-tight tabular-nums">
+        <span class="text-[42px] leading-none font-semibold tracking-tight tabular-nums">
           {{ `${now.hour}:${now.minute}:${now.second}` }}
         </span>
         <small class="text-ink-dim">{{ now.ampm }}</small>
