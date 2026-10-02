@@ -2,7 +2,17 @@
   <div class="panel flex flex-col overflow-hidden" :class="{ 'opacity-45': isStale }">
     <!-- Title row, the space the kettle button used to take at the bottom -->
     <div class="flex shrink-0 items-center gap-2 px-4 pt-4">
-      <span class="text-sm font-semibold">Claude Code</span>
+      <span class="shrink-0 text-sm font-semibold">Claude Code</span>
+      <!-- Which account the numbers below belong to. Worth the room: the
+           figures are a whole account's quota, and switching accounts changes
+           every one of them without changing anything else on the card. -->
+      <span
+        v-if="account"
+        class="min-w-0 truncate text-[11px] text-ink-faint"
+        :title="account"
+      >
+        {{ account }}
+      </span>
       <div class="flex-1" />
       <span class="flex items-center gap-1.5 text-[11px] text-ink-faint">
         <span
@@ -102,6 +112,7 @@ let polling = true;
 const claude = ref({
   loaded: false,
   error: "",
+  account: null,
   fiveHour: null,
   sevenDay: null,
   model: "",
@@ -161,6 +172,7 @@ function applyUsage(data) {
   claude.value = {
     loaded: true,
     error: "",
+    account: data.account || null,
     fiveHour: limits.h5 || null,
     sevenDay: limits.d7 || null,
     model: session.model || "",
@@ -185,6 +197,15 @@ async function fetchClaudeUsage() {
     if (!claude.value.loaded) claude.value.error = "Claude usage unavailable";
   }
 }
+
+// "someone@example.com · Pro". The bridge reads this from the CLI's config on
+// the Mac, which may name no plan and may name no account at all, so each half
+// is dropped on its own rather than shown as a placeholder.
+const account = computed(() => {
+  const acct = claude.value.account;
+  if (!acct || !acct.email) return "";
+  return [acct.email, acct.plan].filter(Boolean).join(" · ");
+});
 
 const claudeWindows = computed(() =>
   [
