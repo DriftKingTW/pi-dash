@@ -1,0 +1,1 @@
+if('serviceWorker' in navigator) {window.addEventListener('load', () => {navigator.serviceWorker.register('/pi-dash/sw.js', { scope: '/pi-dash/' })})}
