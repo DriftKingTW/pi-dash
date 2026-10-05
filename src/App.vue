@@ -103,9 +103,11 @@ async function updatePrinterState() {
 async function updatePCState() {
   let online;
   try {
-    // Libre Hardware Monitor only answers while the PC is running. A PC that
-    // is switched off doesn't refuse the connection, it just never replies, so
-    // give up before the next check is due
+    // The sensor server only answers while the PC is running, and a PC that is
+    // switched off never replies at all rather than refusing the connection.
+    // Our own server fronts it and gives up at 2.5s for that reason; this
+    // timeout is the backstop, and either way it has to land before the next
+    // check is due
     await axios.get(import.meta.env.VITE_PC_HWINFO_API_URL, { timeout: 3000 });
     pcMisses = 0;
     online = true;
