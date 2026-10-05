@@ -5,11 +5,14 @@
         <i :class="['mdi', gauge.icon, 'text-base', gauge.textClass]" />
         <span class="min-w-0 flex-1 truncate text-ink-dim">{{ gauge.label }}</span>
         <template v-if="isConnected">
-          <span v-if="gauge.temp" class="flex items-center tabular-nums text-ink-faint">
-            <i class="mdi mdi-thermometer" />{{ gauge.temp }}°
+          <span
+            v-if="gauge.temp !== null"
+            class="flex items-center tabular-nums text-ink-faint"
+          >
+            <i class="mdi mdi-thermometer" />{{ Math.round(gauge.temp) }}°
           </span>
           <span class="w-10 text-right text-sm font-semibold tabular-nums">
-            {{ Math.round(gauge.value) }}%
+            {{ gauge.value === null ? "—" : Math.round(gauge.value) + "%" }}
           </span>
         </template>
         <span v-else class="text-ink-faint">Offline</span>
@@ -54,10 +57,20 @@ const collectSensors = (node, sensors = {}) => {
   return sensors;
 };
 
+// Every reading arrives as a formatted string - "5.6 %", "45.0 °C", "12.8 GB" -
+// and as "-" when the sensor exists but has nothing to report, which is what
+// the Intel package temperatures do unless the monitor runs elevated. Pull the
+// number back out; anything without one is unknown rather than zero, so a
+// missing sensor reads as "—" instead of a plausible-looking 0%.
+function numeric(value) {
+  const parsed = Number.parseFloat(String(value ?? ""));
+  return Number.isFinite(parsed) ? parsed : null;
+}
+
 const isConnected = ref(false);
-const cpu = reactive({ name: "CPU", temp: 0, load: 0 });
-const gpu = reactive({ name: "GPU", temp: 0, load: 0 });
-const memory = reactive({ used: 0, available: 0, load: 0, total: 0 });
+const cpu = reactive({ name: "CPU", temp: null, load: null });
+const gpu = reactive({ name: "GPU", temp: null, load: null });
+const memory = reactive({ used: "—", available: "—", load: null, total: "—" });
 
 let polling = true;
 
@@ -91,9 +104,9 @@ const gauges = computed(() => [
 ]);
 
 function barWidth(value) {
-  if (!isConnected.value) return "0%";
+  if (!isConnected.value || value === null) return "0%";
   // A sliver even at idle, so an empty track still reads as a live gauge
-  return Math.max(Number(value) || 0, 3) + "%";
+  return Math.max(value, 3) + "%";
 }
 
 async function getHwInfo() {
@@ -109,18 +122,23 @@ async function getHwInfo() {
       );
 
     cpu.name = hardwareOf(SENSOR_IDS.cpuLoad).Text;
-    cpu.temp = reading(SENSOR_IDS.cpuTemp);
-    cpu.load = reading(SENSOR_IDS.cpuLoad);
+    cpu.temp = numeric(reading(SENSOR_IDS.cpuTemp));
+    cpu.load = numeric(reading(SENSOR_IDS.cpuLoad));
     gpu.name = hardwareOf(SENSOR_IDS.gpuLoad).Text;
-    gpu.temp = reading(SENSOR_IDS.gpuTemp);
-    gpu.load = reading(SENSOR_IDS.gpuLoad);
+    gpu.temp = numeric(reading(SENSOR_IDS.gpuTemp));
+    gpu.load = numeric(reading(SENSOR_IDS.gpuLoad));
+    memory.load = numeric(reading(SENSOR_IDS.memoryLoad));
+
+    // The memory figures stay as the strings they arrive as, units and all,
+    // because they are shown as a label rather than plotted
     memory.used = reading(SENSOR_IDS.memoryUsed);
     memory.available = reading(SENSOR_IDS.memoryAvailable);
-    memory.load = reading(SENSOR_IDS.memoryLoad);
-
-    const used = new Decimal(memory.used.split(" GB")[0]);
-    const available = new Decimal(memory.available.split(" GB")[0]);
-    memory.total = used.plus(available).toFixed(1).toString() + "GB";
+    const used = numeric(memory.used);
+    const available = numeric(memory.available);
+    memory.total =
+      used === null || available === null
+        ? "—"
+        : new Decimal(used).plus(available).toFixed(1) + " GB";
 
     isConnected.value = true;
   } catch (e) {
