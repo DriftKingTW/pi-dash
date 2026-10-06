@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import { createPinia } from "pinia";
 import axios from "axios";
+import { registerWithUpdateChecks } from "./pwa";
 
 import App from "./App.vue";
 import router from "./router";
@@ -11,5 +12,7 @@ import "@mdi/font/css/materialdesignicons.css";
 // Without this an unreachable host hangs forever, and polling blocks pile up
 // until they exhaust the browser's connection limit and the dashboard stalls
 axios.defaults.timeout = 10000;
+
+registerWithUpdateChecks();
 
 createApp(App).use(createPinia()).use(router).mount("#app");

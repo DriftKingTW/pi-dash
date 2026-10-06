@@ -14,6 +14,10 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       registerType: "autoUpdate",
+      // main.js does the registering, so it can also ask for an update check
+      // on a timer. The script this plugin injects by default offers no hook
+      // for that, and having both would register the worker twice.
+      injectRegister: null,
       // The kiosk never reloads by hand, so a stale service worker would pin
       // it to an old build until someone drives out to the Pi.
       workbox: {
